@@ -54,13 +54,15 @@
 
                 <!-- Buttons -->
                 <div class="flex flex-wrap justify-between">
-                  <button class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700" type="submit">
-                    Login
+                  <button class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700" type="submit" :disabled="loading">
+                    <ButtonSpinner v-if="loading" size="small" bgColor="#000000" /> {{ loading ? 'Processing...' : 'Login' }}
                   </button>
                   <router-link class="text-blue-600 hover:underline mt-2 md:mt-0">
                     Forgot password?
                   </router-link>
                 </div>
+
+                <div v-if="error">{{ error.message }}</div>
               </form>
             </div>
 
@@ -91,6 +93,7 @@
   import { toTypedSchema } from '@vee-validate/yup';
   import { loginUser } from '@/services/api'
   import { useApi } from '@/composables/useApi'
+  import { ButtonSpinner } from '@/components/General/Spinner.vue';
 
   const role = ref('realtor');
   const userRole = readonly(role);
@@ -127,9 +130,8 @@
     meta: passwordMeta
   } = useField('password');
 
-  const submitLoginUser = handleSubmit(async (values) => {
-    console.log('Form values:', values)
-    //execute(formData)
+  const submitLoginUser = handleSubmit(async (formData) => {
+    execute(formData)
   })
 </script>
 

@@ -2,10 +2,11 @@ import axios from 'axios'
 
 // Create axios instance
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL ?? 'https://127.0.0.1:8000',
+    baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000',
     timeout: 8000,
     headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
     }
 })
 
@@ -22,7 +23,7 @@ axiosInstance.interceptors.request.use(
 )
 
 // Response interceptor
-axiosInstance.interceptors.request.use(
+axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
         // Handle 401, 403 error status
