@@ -28,8 +28,7 @@
       return () => h('span', { class: 'button-spinner', style: style.value });
     },
   });
-
-  // Todo: Need to add global spinner yet
+  
   export { ButtonSpinner };
 </script>
 
