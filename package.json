@@ -12,6 +12,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@coreui/icons": "^3.0.1",
+    "@coreui/icons-vue": "^2.2.0",
+    "@coreui/vue": "^5.7.0",
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2.0",
     "@tailwindcss/forms": "^0.5.10",
@@ -21,6 +24,8 @@
     "@vee-validate/yup": "^4.15.1",
     "axios": "^1.12.2",
     "pinia": "^3.0.3",
+    "simplebar": "^6.3.2",
+    "simplebar-vue": "^2.4.2",
     "vee-validate": "^4.15.1",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1",
@@ -31,7 +36,6 @@
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
     "sass": "^1.93.2",
-    "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2",
     "vite": "^7.0.6",
     "vite-plugin-vue-devtools": "^8.0.0"

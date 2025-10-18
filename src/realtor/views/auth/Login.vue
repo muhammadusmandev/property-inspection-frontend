@@ -76,6 +76,7 @@
                 <router-link :to="{ name: 'realtor.signup' }" class="border border-white text-white px-4 py-2 rounded hover:bg-white hover:text-blue-600 transition">
                   Register Now!
                 </router-link>
+                <CButton color="primary" class="ml-2">CoreUI Button</CButton>
               </div>
             </div>
 
