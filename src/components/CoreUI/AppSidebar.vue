@@ -1,28 +1,24 @@
 <script setup>
   import { RouterLink } from 'vue-router'
-
-  import { logo } from '@/assets/js/coreui/logo'
-  import { sygnet } from '@/assets/js/coreui/sygnet'
   import { AppSidebarNav } from '@/components/CoreUI/AppSidebarNav.js'
   import { useSidebarStore } from '@/stores/CoreUI/sidebar.js'
+  import appLogo from '@/assets/images/Inspexly_logo.jpg'
 
   const sidebar = useSidebarStore()
 </script>
 
 <template>
   <CSidebar
-    class="border-end"
     colorScheme="dark"
     position="fixed"
     :unfoldable="sidebar.unfoldable"
     :visible="sidebar.visible"
     @visible-change="(value) => sidebar.toggleVisible(value)"
   >
-    <CSidebarHeader class="border-bottom">
-      <RouterLink custom to="/" v-slot="{ href, navigate }">
+    <CSidebarHeader class="border-bottom app-header">
+      <RouterLink custom to="/realtor/dashboard" v-slot="{ href, navigate }">
         <CSidebarBrand v-bind="$attrs" as="a" :href="href" @click="navigate">
-          <CIcon custom-class-name="sidebar-brand-full" :icon="logo" :height="32" />
-          <CIcon custom-class-name="sidebar-brand-narrow" :icon="sygnet" :height="32" />
+          <CImage :src="appLogo" alt="Inspexly Logo" class="app-logo" fluid />
         </CSidebarBrand>
       </RouterLink>
       <CCloseButton class="d-lg-none" dark @click="sidebar.toggleVisible()" />
@@ -33,3 +29,13 @@
     </CSidebarFooter>
   </CSidebar>
 </template>
+
+<style scoped>
+  .app-header {
+    background-color: #f6f6f6;
+  }
+
+  .app-logo {
+    max-width: 160px;
+  }
+</style>

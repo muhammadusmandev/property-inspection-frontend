@@ -3,7 +3,7 @@
     <div>
       <a href="https://inspexly.com" target="_blank">Inspexly</a>
       <span class="ms-1"
-        >&copy; {{ new Date().getFullYear() }} creativeLabs.</span
+        >&copy; {{ new Date().getFullYear() }} Inspexly</span
       >
     </div>
     <div class="ms-auto">
