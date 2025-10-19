@@ -63,3 +63,10 @@ body {
     --cui-footer-bg: var(--cui-body-bg);
   }
 }
+
+/*** Form CSS ***/
+.form-label-required::after {
+  content: '*';
+  color: rgb(248, 16, 16);
+  margin-left: 3px;
+}

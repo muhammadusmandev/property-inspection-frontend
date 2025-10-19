@@ -18,12 +18,12 @@ export default [
       {
         component: 'CNavItem',
         name: 'Add Property',
-        to: '/properties/add-property',
+        to: '/realtor/properties/add_property',
       },
       {
         component: 'CNavItem',
         name: 'List Property',
-        to: '/properties/list-properties',
+        to: '/realtor/properties/list',
       },
     ],
   },
