@@ -9,7 +9,7 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
   },
   {
     path: '/realtor',
-    name: 'realtor',
+    name: 'home',
     component: AppLayout,
     redirect: {name: 'realtor.dashboard'},
     children: [

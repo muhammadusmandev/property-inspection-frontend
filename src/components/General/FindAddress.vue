@@ -1,108 +1,136 @@
 <template>
     
     <div class="mb-1">
-        <CCol xs="12">
+        <CCol xs="12" v-if="isFindPropertyEnable">
             <CFormLabel :for="inputId">{{ inputLabel }}</CFormLabel>
-            <CFormInput 
-                type="text" 
-                :id="inputId" 
-                :placeholder="inputPlaceHolder"
-                v-model="findClientProperty"
-                @blur="findClientPropertyMeta.touched = true; findClientPropertyValidate()"
-            />
-            <div class="flex color-red form-input-error my-2">
-                <span v-if="findClientPropertyMeta.touched && findClientPropertyError">* {{ findClientPropertyError }}</span>
+            <div class="input-group">
+                <span class="input-group-text">
+                    <CIcon icon="cilLocationPin" class="text-info" />
+                </span>
+                <CFormInput 
+                    type="text" 
+                    :id="inputId" 
+                    :placeholder="inputPlaceHolder"
+                    v-model="findClientProperty"
+                    @blur="findClientPropertyMeta.touched = true; findClientPropertyValidate()"
+                />
+            </div>
+            <div class="flex form-field-error d-inline-block mt-2" v-if="findClientPropertyMeta.touched && findClientPropertyError">
+                <span>* {{ findClientPropertyError }}</span>
             </div>
         </CCol>
 
         <CButton 
             class="btn bg-transparent border-0 p-0 mb-3 mt-2 text-info d-inline text-start"
             type="button"
-            v-if="!manualAddressClicked"
+            v-if="!manualAddressClicked && isFindPropertyEnable"
             @click="handleShowManualAddress"
         >
             <strong>Don't find address? Add address manually. </strong>
         </CButton>
 
         <!-- Show Manual Address Fields -->
-        <div class="row g-3" v-if="showManualAddressFields">
+        <div class="row g-3 mt-0" v-if="showManualAddressFields">
             <CCol xs="12">
-                <CFormLabel for="inputAddress" class="form-label-required">Address</CFormLabel>
-                <CFormInput 
-                    id="inputAddress" 
-                    placeholder="1234 Main St" 
-                    v-model="inputAddress"
-                    @blur="inputAddressMeta.touched = true; inputAddressValidate()"
-                />
-                <div class="flex color-red form-input-error my-2">
-                    <span v-if="inputAddressMeta.touched && inputAddressError">* {{ inputAddressError }}</span>
+                <CFormLabel for="address" class="form-label-required">Address</CFormLabel>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <CIcon icon="cilLocationPin" class="text-info" />
+                    </span>
+                    <CFormInput 
+                        placeholder="8787 Main Street etc.." 
+                        v-model="address"
+                        @blur="addressMeta.touched = true; addressValidate()"
+                    />
+                </div>
+                <div class="flex form-field-error d-inline-block mt-2" v-if="addressMeta.touched && addressError">
+                    <span>* {{ addressError }}</span>
                 </div>
             </CCol>
             <CCol xs="12">
-                <CFormLabel for="inputAddress2">Address 2</CFormLabel>
-                <CFormInput 
-                    id="inputAddress2" 
-                    placeholder="Apartment, studio, or floor"
-                    v-model="inputAddress2"
-                    @blur="inputAddress2Meta.touched = true; inputAddress2Validate()"
-                />
-                <div class="flex color-red form-input-error my-2">
-                    <span v-if="inputAddress2Meta.touched && inputAddress2Error">* {{ inputAddress2Error }}</span>
+                <CFormLabel for="address2">Address 2</CFormLabel>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <CIcon icon="cilLocationPin" class="text-info" />
+                    </span>
+                    <CFormInput 
+                        placeholder="Apartment, Floor etc."
+                        v-model="address2"
+                        @blur="address2Meta.touched = true; address2Validate()"
+                    />
+                </div>
+                <div class="flex form-field-error d-inline-block mt-2" v-if="address2Meta.touched && address2Error">
+                    <span>* {{ address2Error }}</span>
                 </div>
             </CCol>
-            <CCol md="4">
-                <CFormLabel for="inputCity" class="form-label-required">City</CFormLabel>
-                <CFormInput 
-                    id="inputCity" 
-                    placeholder="New York" 
-                    v-model="inputCity"
-                    @blur="inputCityMeta.touched = true; inputCityValidate()"
-                />
-                <div class="flex color-red form-input-error my-2">
-                    <span v-if="inputCityMeta.touched && inputCityError">* {{ inputCityError }}</span>
+            <CCol md="6">
+                <CFormLabel for="city" class="form-label-required">City</CFormLabel>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <CIcon icon="cilChevronRight" class="text-info" />
+                    </span>
+                    <CFormInput
+                        placeholder="New York" 
+                        v-model="city"
+                        @blur="cityMeta.touched = true; cityValidate()"
+                    />
+                </div>
+                <div class="flex form-field-error d-inline-block mt-2" v-if="cityMeta.touched && cityError">
+                    <span>* {{ cityError }}</span>
                 </div>
             </CCol>
-            <CCol md="3">
-                <CFormLabel for="inputState" class="form-label-required">State</CFormLabel>
-                <CFormSelect 
-                    id="inputState"
-                    v-model="inputState"
-                    @blur="inputStateMeta.touched = true; inputStateValidate()"
-                >
-                    <option value="">Choose...</option>
-                    <option value="New York">New York</option>
-                </CFormSelect>
-                <div class="flex color-red form-input-error my-2">
-                    <span v-if="inputStateMeta.touched && inputStateError">* {{ inputStateError }}</span>
+            <CCol md="6">
+                <CFormLabel for="state">State</CFormLabel>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <CIcon icon="cilChevronRight" class="text-info" />
+                    </span>
+                    <CFormInput
+                        placeholder="New York" 
+                        v-model="state"
+                        @blur="stateMeta.touched = true; stateValidate()"
+                    />
+                </div>
+                <div class="flex form-field-error d-inline-block mt-2" v-if="stateMeta.touched && stateError">
+                    <span>* {{ stateError }}</span>
                 </div>
             </CCol>
-            <CCol md="2">
-                <CFormLabel for="inputZip" class="form-label-required">Zip</CFormLabel>
-                <CFormInput 
-                    id="inputZip" 
-                    placeholder="10005" 
-                    v-model="inputZip"
-                    @blur="inputZipMeta.touched = true; inputZipValidate()"
-                />
-                <div class="flex color-red form-input-error my-2">
-                    <span v-if="inputZipMeta.touched && inputZipError">* {{ inputZipError }}</span>
+            <CCol md="6">
+                <CFormLabel for="zipCode" class="form-label-required">Zip Code</CFormLabel>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <CIcon icon="cilChevronRight" class="text-info" />
+                    </span>
+                    <CFormInput 
+                        placeholder="10005" 
+                        v-model="zipCode"
+                        @blur="zipCodeMeta.touched = true; zipCodeValidate()"
+                    />
+                </div>
+                <div class="flex form-field-error d-inline-block mt-2" v-if="zipCodeMeta.touched && zipCodeError">
+                    <span>* {{ zipCodeError }}</span>
                 </div>
             </CCol>
-            <CCol md="3">
-                <CFormLabel for="inputCountry" class="form-label-required">Country</CFormLabel>
-                <CFormSelect 
-                    id="inputCountry"
-                    v-model="inputCountry"
-                    @blur="inputCountryMeta.touched = true; inputCountryValidate()"
-                >
-                    <option value="">Choose...</option>
-                    <option value="United States">United States</option>
-                </CFormSelect>
-                <div class="flex color-red form-input-error my-2">
-                    <span v-if="inputCountryMeta.touched && inputCountryError">* {{ inputCountryError }}</span>
+            <CCol md="6">
+                <CFormLabel for="country" class="form-label-required">Country</CFormLabel>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <CIcon icon="cilGlobeAlt" class="text-info" />
+                    </span>
+                    <CFormSelect
+                        v-model="country"
+                        @blur="countryMeta.touched = true; countryValidate()"
+                    >
+                        <option value="">Choose...</option>
+                        <option value="US">United States</option>
+                    </CFormSelect>
+                </div>
+                <div class="flex form-field-error d-inline-block mt-2" v-if="countryMeta.touched && countryError">
+                    <span>* {{ countryError }}</span>
                 </div>
             </CCol>
         </div>
+
     </div>
 </template>
 
@@ -132,6 +160,11 @@
     // const inputValue = ref(props.modelValue)
     const showManualAddressFields = ref(false)
     const manualAddressClicked = ref(false)
+    const isFindPropertyEnable = ref(false)
+
+    if(!isFindPropertyEnable.value){
+        handleShowManualAddress();
+    }
 
     const { 
         value: findClientProperty, 
@@ -141,55 +174,60 @@
     } = useField('findClientProperty');
 
     const { 
-        value: inputAddress, 
-        errorMessage: inputAddressError,
-        validate: inputAddressValidate,
-        meta: inputAddressMeta
-    } = useField('inputAddress');
+        value: address, 
+        errorMessage: addressError,
+        validate: addressValidate,
+        meta: addressMeta
+    } = useField('address');
 
     const { 
-        value: inputAddress2, 
-        errorMessage: inputAddress2Error,
-        validate: inputAddress2Validate,
-        meta: inputAddress2Meta
-    } = useField('inputAddress2');
+        value: address2, 
+        errorMessage: address2Error,
+        validate: address2Validate,
+        meta: address2Meta
+    } = useField('address2');
 
     const { 
-        value: inputCity, 
-        errorMessage: inputCityError,
-        validate: inputCityValidate,
-        meta: inputCityMeta
-    } = useField('inputCity');
+        value: city, 
+        errorMessage: cityError,
+        validate: cityValidate,
+        meta: cityMeta
+    } = useField('city');
 
     const { 
-        value: inputState, 
-        errorMessage: inputStateError,
-        validate: inputStateValidate,
-        meta: inputStateMeta
-    } = useField('inputState');
+        value: state, 
+        errorMessage: stateError,
+        validate: stateValidate,
+        meta: stateMeta
+    } = useField('state');
 
     const { 
-        value: inputZip, 
-        errorMessage: inputZipError,
-        validate: inputZipValidate,
-        meta: inputZipMeta
-    } = useField('inputZip');
+        value: zipCode, 
+        errorMessage: zipCodeError,
+        validate: zipCodeValidate,
+        meta: zipCodeMeta
+    } = useField('zipCode');
 
     const { 
-        value: inputCountry, 
-        errorMessage: inputCountryError,
-        validate: inputCountryValidate,
-        meta: inputCountryMeta
-    } = useField('inputCountry');
+        value: country, 
+        errorMessage: countryError,
+        validate: countryValidate,
+        meta: countryMeta
+    } = useField('country');
 
     function handleShowManualAddress() {
         manualAddressClicked.value = true
         showManualAddressFields.value = true
+        console.log('show manual')
     }
 
     watch(() => props.clearFormTrigger, () => {
-        manualAddressClicked.value = false
-        showManualAddressFields.value = false
+        if(isFindPropertyEnable.value){
+            manualAddressClicked.value = false
+            showManualAddressFields.value = false
+        } else{
+            manualAddressClicked.value = true
+        }
     })
 
     // watch(

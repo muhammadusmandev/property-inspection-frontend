@@ -9,11 +9,11 @@
 
 <template>
   <CSidebar
-    colorScheme="dark"
     position="fixed"
     :unfoldable="sidebar.unfoldable"
     :visible="sidebar.visible"
     @visible-change="(value) => sidebar.toggleVisible(value)"
+    unfoldable
   >
     <CSidebarHeader class="border-bottom app-header">
       <RouterLink custom to="/realtor/dashboard" v-slot="{ href, navigate }">
@@ -31,11 +31,7 @@
 </template>
 
 <style scoped>
-  .app-header {
-    background-color: #f6f6f6;
-  }
-
   .app-logo {
-    max-width: 160px;
+    max-width: 145px;
   }
 </style>

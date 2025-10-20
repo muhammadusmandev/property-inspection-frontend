@@ -1,17 +1,60 @@
 <template>
-  <div>
+  <div class="add-property-form-container">
+    <PageBodyHeader
+      heading="Add New Property"
+      description="Create new property for your client"
+    />
     <CRow>
-      <CForm class="row g-3" @submit.prevent="submitAddProperty">
+      <CForm class="row g-3 mt-0 w-75" @submit.prevent="submitAddProperty">
         <FindAddress 
           inputLabel="Find Client Property" 
           inputPlaceHolder="Search property address on map" 
           inputId="findClientProperty"
           :clearFormTrigger="clearFormTrigger"
-          @click="handleManualAdd"
         />
 
+        <div class="row g-3 mt-0">
+            <CCol md="6">
+                <CFormLabel :for="client">Client</CFormLabel>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <CIcon icon="cilUser" class="text-info" />
+                    </span>
+                    <CFormSelect
+                        v-model="client"
+                        @blur="clientMeta.touched = true; clientValidate()"
+                    >
+                        <option value="">Choose...</option>
+                        <option value="John">John</option>
+                    </CFormSelect>
+                </div>
+                
+                <div class="flex form-field-error d-inline-block mt-2" v-if="clientMeta.touched && clientError">
+                    <span>* {{ clientError }}</span>
+                </div>
+            </CCol>
+            <CCol md="6">
+                <CFormLabel :for="branch">Branch</CFormLabel>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <CIcon icon="cibTreehouse" class="text-info" />
+                    </span>
+                    <CFormSelect
+                        v-model="branch"
+                        @blur="branchMeta.touched = true; branchValidate()"
+                    >
+                        <option value="">Choose Branch...</option>
+                        <option value="-">-</option>
+                    </CFormSelect>
+                </div>
+                <div class="flex form-field-error d-inline-block mt-2" v-if="branchMeta.touched && branchError">
+                    <span>* {{ branchError }}</span>
+                </div>
+            </CCol>
+        </div>
+
         <CCol xs="12">
-          <CButton color="info" class="text-white mt-3" type="submit"><CIcon icon="cilHouse" /> Add New Property</CButton>
+          <CButton color="info" class="text-white mt-3" type="submit"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Add New Property' }}</CButton>
           <CButton color="danger" class="text-white mt-3 ms-2" type="button" @click="clearForm"><CIcon icon="cilClearAll" /> Clear Form</CButton>
         </CCol>
       </CForm>
@@ -19,64 +62,94 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ref, reactive } from 'vue'
   import { useForm, useField } from 'vee-validate'
   import * as yup from 'yup'
   import { toTypedSchema } from '@vee-validate/yup'
   import FindAddress from '@/components/General/FindAddress.vue'
+  import PageBodyHeader from '@/components/General/PageBodyHeader.vue'
+  import { ButtonSpinner } from '@/components/General/Spinner.vue'
+  import { addProperty } from '@/services/api'
+  import { useApi } from '@/composables/useApi'
 
   const clearFormTrigger = ref(0)
+
+  const zipCodePatterns = {
+    US: /^\d{5}(-\d{4})?$/,
+    CA: /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/,
+    GB: /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i,
+    DE: /^\d{5}$/,
+    FR: /^\d{5}$/,
+    AU: /^\d{4}$/,
+    NL: /^\d{4}\s?[A-Za-z]{2}$/,
+  }
 
   const schema = toTypedSchema( yup.object({
     findClientProperty: yup
           .string()
-          .required('Must add location.')
-          .min(5, 'Must be atleast 5 characters long')
           .max(150, 'Must be 150 characters long'),
-    inputAddress: yup
+    address: yup
           .string()
           .required('Must add address.')
           .min(5, 'Must be atleast 5 characters long')
           .max(100, 'Must be 100 characters long'),
-    inputAddress2: yup
+    address2: yup
           .string()
-          .min(5, 'Must be atleast 5 characters long')
           .max(100, 'Must be 100 characters long'),
-    inputCity: yup
+    city: yup
           .string()
           .required('Must add city.')
           .min(2, 'Must be atleast 2 characters long')
           .max(50, 'Must be 50 characters long'),
-    inputState: yup
+    state: yup
           .string()
-          .required('Must select state.'),
-    inputZip: yup
-          .number('Must be valid zip code.')
-          .typeError('Must be valid zip code.')
+          .max(50, 'Must be 50 characters long'),
+    zipCode: yup
+          .string()
           .required('Must add zip code.')
-          .min(10000, 'Must be valid zip code.')
-          .max(99999, 'Must be valid zip code.')
-          .integer('Must be valid zip code.'),
-    inputCountry: yup
+          .when('country', (country, schema) => { // temp 'US' else dynamic
+            const regex = zipCodePatterns[country]    
+            return regex
+              ? schema.matches(regex, `ZIP code must be valid for ${country}`)
+              : schema
+          }),
+    country: yup
           .string()
           .required('Must select country.'),
+    client: yup
+          .string(),
+    branch: yup
+          .string(),
   }))
 
   const { handleSubmit, isSubmitting, resetForm } = useForm({
     validationSchema: schema
   })
 
-  function handleManualAdd() {
-    console.log('Manual add pressed...')
-  }
+  const { 
+    value: client, 
+    errorMessage: clientError,
+    validate: clientValidate,
+    meta: clientMeta
+  } = useField('client');
+
+  const { 
+    value: branch, 
+    errorMessage: branchError,
+    validate: branchValidate,
+    meta: branchMeta
+  } = useField('branch');
 
   function clearForm() {
     resetForm()
     clearFormTrigger.value++
   }
 
+  const { btnLoading, data, error, execute } = useApi(addProperty, false)
+
   const submitAddProperty = handleSubmit(async (formData) => {
     console.log(formData)
+    execute(formData)
   })
 </script>

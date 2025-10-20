@@ -1,14 +1,17 @@
 <template>
-  <CFooter class="px-4">
-    <div>
-      <a href="https://inspexly.com" target="_blank">Inspexly</a>
+  <CFooter class="px-4 footer">
+    <div class="text-center w-100">
+      Copyright
       <span class="ms-1"
-        >&copy; {{ new Date().getFullYear() }} Inspexly</span
+        >&copy; {{ new Date().getFullYear() }}. All right resereved. <a href="https://inspexly.com" class="text-decoration-none brand-link" target="_blank">Inspexly</a></span
       >
-    </div>
-    <div class="ms-auto">
-      <span class="me-1" target="_blank">Powered by</span>
-      <a href="https://inspexly.com">Inspexly</a>
     </div>
   </CFooter>
 </template>
+
+<style scoped>
+  .footer .brand-link{
+    color: #07a7d9;
+    font-weight: bold
+  }
+</style>

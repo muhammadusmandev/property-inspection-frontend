@@ -31,11 +31,6 @@ export default [
     component: 'CNavItem',
     name: 'Settings',
     to: '/#',
-    icon: 'cil-settings',
-    badge: {
-      color: 'primary',
-      text: 'NEW',
-      shape: 'pill',
-    },
+    icon: 'cil-settings'
   },
 ]
