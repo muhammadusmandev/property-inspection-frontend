@@ -2,8 +2,8 @@
   $enable-deprecation-messages: false
 );
 
-body {
-  background-color: var(--cui-tertiary-bg);
+html[data-coreui-theme='light'] body {
+  background-color: #f4f4fd;
 }
 
 .wrapper {
@@ -13,9 +13,20 @@ body {
   @include transition(padding .15s);
 }
 
+.header{
+  border-bottom: 1px solid rgb(228 228 228 / 0%);
+  -webkit-box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 0px 6px 0 rgb(206 206 238 / 54%);
+  box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 0px 6px 0 rgb(206 206 238 / 54%);
+}
+
 .header > .container-fluid,
 .sidebar-header {
   min-height: calc(4rem + 1px);
+}
+
+.sidebar{
+  box-shadow: 0 2px 6px 0 rgb(233 233 249 / 65%), 0 2px 6px 0 rgb(166 166 254 / 54%) !important;
+  transition: all .5s ease-in-out !important;
 }
 
 .sidebar-brand-full {
@@ -46,8 +57,57 @@ body {
   }
 }
 
+.sidebar-nav .nav-link {
+  color: #5f5f5f !important;
+  font-size: 0.97rem !important;
+}
+
+.sidebar-nav .nav-link:hover,
+.sidebar-nav .nav-link:focus {
+  color: #5f5f5f !important;
+}
+
+.sidebar-nav .nav-link.active {
+  color: #07a7d9 !important;
+  background: #e9efff !important;
+}
+
+.sidebar-nav svg.nav-icon{
+  color: #5f5f5f !important;
+}
+
+.sidebar-nav .nav-title{
+  color: #b1b0b0 !important;
+  font-weight: 400 !important;
+}
+
+.simplebar-content{
+  padding-top: 13px !important;
+}
+
 .header > .container-fluid + .container-fluid {
   min-height: 3rem;
+}
+
+.body-card{
+  background-color: #ffffff;
+  border: 1px solid #e4e4e4;
+  border-radius: 15px;
+  box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%);
+}
+
+.custom-breadcrumb{
+  --cui-breadcrumb-divider: '>';
+}
+
+.breadcrumb-item + .breadcrumb-item {
+  font-weight: 400;
+}
+
+.breadcrumb-item > a{
+  color: #5f5f5f !important;
+  text-decoration: none !important;
+  font-size: 1.04rem !important;
 }
 
 .footer {
@@ -62,4 +122,27 @@ body {
   .footer {
     --cui-footer-bg: var(--cui-body-bg);
   }
+}
+
+/*** Form CSS ***/
+.form-label{
+  font-size: 0.98rem;
+  color: #747474;
+}
+
+.form-label-required::after {
+  content: '*';
+  color: rgb(248, 16, 16);
+  margin-left: 3px;
+}
+
+.form-field-error{
+  font-size: 14px;
+  background: #f8bebe;
+  padding: 4px 15px;
+  border-radius: 5px;
+}
+
+.input-group-text {
+  background-color: #ffffff !important;
 }

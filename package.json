@@ -22,6 +22,7 @@
     "@vee-validate/i18n": "^4.15.1",
     "@vee-validate/rules": "^4.15.1",
     "@vee-validate/yup": "^4.15.1",
+    "@voomap/map": "^0.1.1",
     "axios": "^1.12.2",
     "pinia": "^3.0.3",
     "simplebar": "^6.3.2",
@@ -29,9 +30,11 @@
     "vee-validate": "^4.15.1",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1",
+    "vue-toastification": "^2.0.0-rc.5",
     "yup": "^1.7.1"
   },
   "devDependencies": {
+    "@types/google.maps": "^3.58.1",
     "@types/node": "^24.5.2",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",

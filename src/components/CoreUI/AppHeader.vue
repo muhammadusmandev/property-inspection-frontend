@@ -1,21 +1,19 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useColorModes } from '@coreui/vue'
-
-import AppBreadcrumb from '@/components/CoreUI/AppBreadcrumb.vue'
 import AppHeaderDropdownAccnt from '@/components/CoreUI/AppHeaderDropdownAccnt.vue'
 import { useSidebarStore } from '@/stores/CoreUI/sidebar.js'
 
-const headerClassNames = ref('mb-4 p-0')
+const headerClassNames = ref('p-0')
 const { colorMode, setColorMode } = useColorModes('coreui-free-vue-admin-template-theme')
 const sidebar = useSidebarStore()
 
 onMounted(() => {
   document.addEventListener('scroll', () => {
     if (document.documentElement.scrollTop > 0) {
-      headerClassNames.value = 'mb-4 p-0 shadow-sm'
+      headerClassNames.value = 'p-0 shadow-sm'
     } else {
-      headerClassNames.value = 'mb-4 p-0'
+      headerClassNames.value = 'p-0'
     }
   })
 })
@@ -31,27 +29,11 @@ onMounted(() => {
         <CNavItem>
           <CNavLink href="/dashboard"> Dashboard </CNavLink>
         </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">Users</CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">Settings</CNavLink>
-        </CNavItem>
       </CHeaderNav>
       <CHeaderNav class="ms-auto">
         <CNavItem>
           <CNavLink href="#">
             <CIcon icon="cil-bell" size="lg" />
-          </CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">
-            <CIcon icon="cil-list" size="lg" />
-          </CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">
-            <CIcon icon="cil-envelope-open" size="lg" />
           </CNavLink>
         </CNavItem>
       </CHeaderNav>
@@ -100,9 +82,6 @@ onMounted(() => {
         </li>
         <AppHeaderDropdownAccnt />
       </CHeaderNav>
-    </CContainer>
-    <CContainer class="px-4" fluid>
-      <AppBreadcrumb />
     </CContainer>
   </CHeader>
 </template>

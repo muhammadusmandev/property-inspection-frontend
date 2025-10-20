@@ -18,12 +18,12 @@ export default [
       {
         component: 'CNavItem',
         name: 'Add Property',
-        to: '/properties/add-property',
+        to: '/realtor/properties/add_property',
       },
       {
         component: 'CNavItem',
         name: 'List Property',
-        to: '/properties/list-properties',
+        to: '/realtor/properties/list',
       },
     ],
   },
@@ -31,11 +31,6 @@ export default [
     component: 'CNavItem',
     name: 'Settings',
     to: '/#',
-    icon: 'cil-settings',
-    badge: {
-      color: 'primary',
-      text: 'NEW',
-      shape: 'pill',
-    },
+    icon: 'cil-settings'
   },
 ]
