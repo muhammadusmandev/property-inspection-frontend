@@ -6,34 +6,37 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
   {
     path: '/:pathMatch(.*)*',
     redirect: { name: 'realtor.dashboard' },
+    meta: { requireAuth: true },
+  },
+  {
+    name: 'realtor.auth',
+    path: '/realtor/auth',
+    component: AuthLayout,
+    meta: { guest: true },
+    children: [
+      {
+        path: '/realtor/auth/login',
+        name: 'realtor.login',
+        component: () => import('@/realtor/views/auth/Login.vue'),
+      },
+      {
+        path: '/realtor/auth/register',
+        name: 'realtor.register',
+        component: () => import('@/realtor/views/auth/Register.vue'),
+      }
+    ]
   },
   {
     path: '/realtor',
     name: 'home',
     component: AppLayout,
     redirect: {name: 'realtor.dashboard'},
+    meta: { requireAuth: true },
     children: [
       {
         name: 'realtor.dashboard',
         path: '/realtor/dashboard',
         component: () => import('@/realtor/views/dashboard/Dashboard.vue')
-      },
-      {
-        name: 'realtor.auth',
-        path: '/realtor/auth',
-        component: AuthLayout,
-        children: [
-          {
-            path: '/realtor/auth/login',
-            name: 'realtor.login',
-            component: () => import('@/realtor/views/auth/Login.vue'),
-          },
-          {
-            path: '/realtor/auth/signup',
-            name: 'realtor.signup',
-            component: () => import('@/realtor/views/auth/Signup.vue'),
-          }
-        ]
       },
       {
         name: 'realtor.properties',

@@ -17,7 +17,7 @@ const axiosInstance = axios.create({
 // Request interceptor
 axiosInstance.interceptors.request.use(
     (config) => {
-        const authToken = localStorage.getItem('auth_token')
+        const authToken = localStorage.getItem('token')
         if (authToken) {
             config.headers.Authorization = `Bearer ${authToken}`
         }
@@ -44,7 +44,6 @@ axiosInstance.interceptors.response.use(
 
             case 401:
                 showToast('error', 'Oops! You are not authenticated. Try to login.')
-                localStorage.removeItem('auth_token')
                 router.push({ name: 'realtor.login' })
                 break
 

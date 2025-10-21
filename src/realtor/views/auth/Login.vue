@@ -1,106 +1,108 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100 font-bold">
-    <div class="container mx-auto px-4">
-      <div class="flex justify-center">
-        <div class="w-full md:w-2/3">
-          <div class="flex flex-col md:flex-row bg-white rounded shadow overflow-hidden">
-            <!-- Login Card -->
-            <div class="w-full md:w-3/5 p-6">
-              <form @submit.prevent="submitLoginUser">
-                <h1 class="text-2xl font-bold mb-2">Login</h1>
-                <p class="text-gray-600 mb-6">Sign In to your account</p>
-
-                <!-- Email -->
-                <div class="flex items-center border rounded px-3 py-2 mb-2 bg-white">
-                  <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 0112 15h0a4 4 0 016.879 2.804M15 11a3 3 0 10-6 0 3 3 0 006 0z"/>
-                  </svg>
-                  <input
-                    type="text"
-                    placeholder="Email"
-                    autocomplete="email"
-                    class="w-full outline-none"
-                    v-model="email"
-                    @blur="emailMeta.touched = true; emailValidate()"
-                  />
+  <div class="wrapper min-vh-100 d-flex flex-row align-items-center">
+    <CContainer>
+      <CRow class="justify-content-center">
+        <CCol :md="10">
+          <CCardGroup class="login-card-group">
+            <CCard class="p-4">
+              <CCardBody>
+                <CForm class="row g-2 text-center mt-0" @submit.prevent="submitLoginUser">
+                  <div class="clearfix">
+                    <CImage align="center" rounded :src="appLogo" alt="Inspexly Logo" width="250" height="200" fluid />
+                  </div>
+                  <h2 class="mt-4 fw-bold border-top pt-3 mb-0">Login</h2>
+                  <p class="text-body-secondary my-1">Access your connected space</p>
+                  <CFormLabel :for="email" class="text-start mb-0 form-label-required">Email</CFormLabel>
+                  <CInputGroup class="mb-3">
+                    <CInputGroupText>
+                      <CIcon icon="cil-user" />
+                    </CInputGroupText>
+                    <CFormInput
+                      placeholder="johndoe@example.com"
+                      autocomplete="email"
+                      v-model="email"
+                      @blur="emailMeta.touched = true; emailValidate()"
+                    />
+                  </CInputGroup>
+                  <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="emailMeta.touched && emailError">
+                    <span>* {{ emailError }}</span>
+                  </div>
+                  <CFormLabel :for="password" class="text-start mb-0 form-label-required">Password</CFormLabel>
+                  <CInputGroup class="mb-4">
+                    <CInputGroupText>
+                      <CIcon icon="cil-lock-locked" />
+                    </CInputGroupText>
+                    <CFormInput
+                      type="password"
+                      placeholder="Password"
+                      autocomplete="current-password"
+                      v-model="password"
+                      @blur="passwordMeta.touched = true; passwordValidate()"
+                    />
+                  </CInputGroup>
+                  <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="passwordMeta.touched && passwordError">
+                    <span>* {{ passwordError }}</span>
+                  </div>
+                  <CRow class="mt-4">
+                    <CCol :xs="6" class="text-start">
+                      <CButton color="primary" class="px-4 self-button" type="submit"> <CIcon icon="cilLockUnlocked" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Login' }} </CButton>
+                    </CCol>
+                    <CCol :xs="6" class="text-end">
+                      <CButton color="link" class="px-0 self-color-primary">
+                        Forgot password?
+                      </CButton>
+                    </CCol>
+                  </CRow>
+                </CForm>
+              </CCardBody>
+            </CCard>
+            <CCard class="text-white" style="max-width: 40%">
+              <CCardBody class="text-center bg-wrapper position-relative">
+                <div class="bg-image"></div>
+                <div class="bg-overlay"></div>
+                <div class="overlay-content">
+                  <CIcon icon="cilHouse" size="3xl" class="mb-3 house-icon" />
+                  <h3 class="mb-3 text-uppercase fw-bold text-white">Generate First Report</h3>
+                  <p class="mb-1">
+                    <CIcon icon="cilArrowThickRight" /> Automated Property Inspection Reports
+                  </p>
+                  <p class="mb-1">
+                    <CIcon icon="cilArrowThickRight" /> Centralized Task & Maintenance Management
+                  </p>
+                  <p class="mb-1">
+                    <CIcon icon="cilArrowThickRight" /> Client & Team Collaboration Tools
+                  </p>
+                  <CButton as="a" href="/realtor/auth/register" class="mt-4 px-4 self-bg-light-dark self-color-tertiary fs-6">
+                    <CIcon icon="cilUserPlus" /> Create Your Free Account
+                  </CButton>
                 </div>
-
-                <div class="flex color-red form-input-error mb-4">
-                  <span v-if="emailMeta.touched && emailError">* {{ emailError }}</span>
-                </div>
-
-                <!-- Password -->
-                <div class="flex items-center border rounded px-3 py-2 mb-2 bg-white">
-                  <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-1.104.896-2 2-2s2 .896 2 2v1H10v-1zM6 11v2a6 6 0 0012 0v-2a2 2 0 10-4 0v2a2 2 0 11-4 0v-2a2 2 0 10-4 0z"/>
-                  </svg>
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    autocomplete="current-password"
-                    class="w-full outline-none"
-                    v-model="password"
-                    @blur="passwordMeta.touched = true; passwordValidate()"
-                  />
-                </div>
-
-                <div class="flex color-red form-input-error mb-4">
-                  <span v-if="passwordMeta.touched && passwordError">* {{ passwordError }}</span>
-                </div>
-
-                <div class="px-3 py-2 mb-4 text-red" v-if="loginError">
-                  * {{ loginError }}
-                </div>
-
-                <!-- Buttons -->
-                <div class="flex flex-wrap justify-between">
-                  <button class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700" type="submit" :disabled="loading">
-                    <ButtonSpinner v-if="loading" size="small" bgColor="#000000" /> {{ loading ? 'Processing...' : 'Login' }}
-                  </button>
-                  <router-link class="text-blue-600 hover:underline mt-2 md:mt-0">
-                    Forgot password?
-                  </router-link>
-                </div>
-
-                <div v-if="error">{{ error.message }}</div>
-              </form>
-            </div>
-
-            <!-- Signup Card -->
-            <div class="w-full md:w-2/5 bg-blue-600 text-white flex items-center justify-center p-6">
-              <div class="text-center">
-                <h2 class="text-2xl font-bold mb-2">Sign up</h2>
-                <p class="mb-4 text-sm">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-                <router-link :to="{ name: 'realtor.signup' }" class="border border-white text-white px-4 py-2 rounded hover:bg-white hover:text-blue-600 transition">
-                  Register Now!
-                </router-link>
-                <CButton color="primary" class="ml-2">CoreUI Button</CButton>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
+              </CCardBody>
+            </CCard>
+          </CCardGroup>
+        </CCol>
+      </CRow>
+    </CContainer>
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
   import { ref, readonly } from 'vue'
   import { useForm, useField } from 'vee-validate'
   import * as yup from 'yup'
   import { toTypedSchema } from '@vee-validate/yup';
   import { loginUser } from '@/services/api'
   import { useApi } from '@/composables/useApi'
-  import { ButtonSpinner } from '@/components/General/Spinner.vue';
+  import { ButtonSpinner } from '@/components/General/Spinner.vue'
+  import { toastNotifications } from '@/composables/toastNotifications'
+  import appLogo from '@/assets/images/Inspexly_logo.jpg'
+  import { useAuthStore } from '@/stores/auth'
+  import { useRouter } from 'vue-router'
 
   const role = ref('realtor');
   const userRole = readonly(role);
   const loginError = ref('');
 
-  const {  loading, data, error, execute } = useApi(loginUser, false)
+  const { loading: btnLoading, data, execute } = useApi(loginUser, false)
 
   const schema = toTypedSchema( yup.object({
     email: yup
@@ -131,10 +133,68 @@
     meta: passwordMeta
   } = useField('password');
 
+  const authStore = useAuthStore()
+  const { showToast } = toastNotifications()
+  const router = useRouter()
+
   const submitLoginUser = handleSubmit(async (formData) => {
-    execute(formData)
+    const response = await execute(formData)
+
+    if(response.success === true){
+      authStore.setUserData(data.value.user)
+      authStore.setToken(data.value.token.text, data.value.token.expires_at)
+      showToast('success', 'Logged in successfully!')
+      router.push( '/realtor/dashboard' )
+    } else{
+      // handle any case if concerned error data
+    }
   })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+  .login-card-group{
+    box-shadow: 6px 15px 35px 8px rgba(0,0,0,0.11);
+    -webkit-box-shadow: 6px 15px 35px 8px rgba(0,0,0,0.11);
+    -moz-box-shadow: 6px 15px 35px 8px rgba(0,0,0,0.11);
+  }
+
+  .bg-wrapper {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bg-image {
+    position: absolute;
+    inset: 0;
+    background-image: url('@/assets/images/bg/login-overlay-img1.jpg');
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+  }
+
+  .bg-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: var(--self-color-primary);
+    opacity: 0.9;
+    z-index: 2;
+  }
+
+  .overlay-content {
+    z-index: 99;
+    position: relative;
+  }
+
+  .overlay-content p {
+    color: #d4f6ff;
+  }
+
+  .overlay-content .house-icon{
+    color: #ffffff;
+    border: 3px solid #06c8ff;
+    border-radius: 10%;
+    padding: 3px
+  }
 </style>
