@@ -2,8 +2,54 @@
   $enable-deprecation-messages: false
 );
 
+/* variables */
+:root {
+  --self-color-primary: #02aad3;
+  --self-color-secondary: #0380dc;
+  --self-color-tertiary: #f4f4f4;
+  --self-color-light-dark: #202020;
+}
+
 html[data-coreui-theme='light'] body {
   background-color: #f4f4fd;
+}
+
+body{
+  font-family: 'Inter', sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6{
+  font-family: 'Roboto', sans-serif !important;
+}
+
+.self-button{
+  background-color: var(--self-color-primary) !important;
+  color: var(--self-color-tertiary) !important;
+  border-color: var(--self-color-primary) !important;
+}
+
+.self-bg-primary{
+  background-color: var(--self-color-primary) !important;
+}
+
+.self-bg-secondary{
+  background-color: var(--self-color-secondary) !important;
+}
+
+.self-bg-light-dark{
+  background-color: var(--self-color-light-dark) !important;
+}
+
+.self-color-primary{
+  color: var(--self-color-primary) !important;
+}
+
+.self-color-secondary{
+  color: var(--self-color-secondary) !important;
+}
+
+.self-color-tertiary{
+  color: var(--self-color-tertiary) !important;
 }
 
 .wrapper {
@@ -125,8 +171,14 @@ html[data-coreui-theme='light'] body {
 }
 
 /*** Form CSS ***/
+input.form-control{
+  font-size: 15px;
+}
+label.form-label{
+    font-size: 14px;
+}
 .form-label{
-  font-size: 0.98rem;
+  font-size: 0.89rem;
   color: #747474;
 }
 
