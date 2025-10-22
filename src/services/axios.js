@@ -66,7 +66,7 @@ axiosInstance.interceptors.response.use(
                 break
             
             case 429:
-                // Handle on pages for now
+                showToast('error', 'Too many attempts. Try again later.')
                 break
 
             case 500:

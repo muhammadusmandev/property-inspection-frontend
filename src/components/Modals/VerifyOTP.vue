@@ -49,7 +49,7 @@
 
 <script setup>
     import { ref, watch, nextTick } from 'vue'
-    import { useRouter } from 'vue-router'
+    import { useRouter, useRoute } from 'vue-router'
     import { verifyOtp } from '@/services/api'
     import { useApi } from '@/composables/useApi'
     import appLogo from '@/assets/images/icons/verification_otp.png'
@@ -73,6 +73,7 @@
     const isOtpDisabled = ref(false)
 
     const router = useRouter()
+    const route = useRoute()
     const { showToast } = toastNotifications()
     const { loading: btnLoading, data, execute } = useApi(verifyOtp, false)
 
@@ -146,9 +147,17 @@
                     break;
                 
                 case "verified":
-                    showToast('success', 'Account verified successfully!')
-                    console.log(response.data)
-                    router.push( '/realtor/login' )
+                    if (route.path === '/realtor/auth/login') {
+                        // Todo: In future save user token if verified for first time from login page
+                        isOtpDisabled.value = true
+                        showToast('success', 'Thanks for verification! Account verified. Just now login again. Wait redirecting...')
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 5000)
+                    } else{
+                        showToast('success', 'Account verified successfully!')
+                        router.push( '/realtor/auth/login' )
+                    }
                     break;
             
                 default:

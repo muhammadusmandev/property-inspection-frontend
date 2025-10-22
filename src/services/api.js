@@ -7,6 +7,7 @@ export const logoutUser = () => axiosInstance.delete('/auth/logout')
 
 // Verifications
 export const verifyOtp = (data) => axiosInstance.post('/otp/verify', data)
+export const resendOtp = (data) => axiosInstance.post('/otp/resend', data)
 
 // Properties
 export const addProperty = (data) => axiosInstance.post('/properties/add', data)

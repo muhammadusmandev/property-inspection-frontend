@@ -83,24 +83,28 @@
       </CRow>
     </CContainer>
   </div>
+  <VerifyOTP :visibility="showVerifyOTPModal" :identifierValue="identifierValue" />
 </template>
 
 <script setup>
   import { ref, readonly } from 'vue'
   import { useForm, useField } from 'vee-validate'
   import * as yup from 'yup'
-  import { toTypedSchema } from '@vee-validate/yup';
-  import { loginUser } from '@/services/api'
+  import { toTypedSchema } from '@vee-validate/yup'
+  import { loginUser, resendOtp } from '@/services/api'
   import { useApi } from '@/composables/useApi'
+  import VerifyOTP from '@/components/Modals/VerifyOTP.vue'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
   import appLogo from '@/assets/images/Inspexly_logo.jpg'
   import { useAuthStore } from '@/stores/auth'
   import { useRouter } from 'vue-router'
 
-  const role = ref('realtor');
-  const userRole = readonly(role);
-  const loginError = ref('');
+  const role = ref('realtor')
+  const userRole = readonly(role)
+  const loginError = ref('')
+  const showVerifyOTPModal = ref(false)
+  const identifierValue = ref(null)
 
   const { loading: btnLoading, data, execute } = useApi(loginUser, false)
 
@@ -146,7 +150,23 @@
       showToast('success', 'Logged in successfully!')
       router.push( '/realtor/dashboard' )
     } else{
-      // handle any case if concerned error data
+      if(response.status === 403){
+          if(response.data?.errors?.flag === 'email_non_verified'){
+            // send otp now first
+            const { execute: execute1 } = useApi(resendOtp, false)
+            const response1 = await execute1({ identifier: 'email', email: formData.email })
+
+            if(response1.success === true){
+              // display verification modal
+              showVerifyOTPModal.value = true
+              identifierValue.value = formData.email
+            } else{
+              showToast('error', 'Oops! Something went wrong. Failed to generate OTP.')
+            }
+          } else if(response.data?.errors?.flag === 'inactive'){
+            showToast('warning', 'Your account has been deactivated. Contact support for further assistance.')
+          }
+      }
     }
   })
 </script>
