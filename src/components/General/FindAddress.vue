@@ -48,14 +48,14 @@
                 </div>
             </CCol>
             <CCol xs="12">
-                <CFormLabel for="address2">Address 2</CFormLabel>
+                <CFormLabel for="address_2">Address 2</CFormLabel>
                 <div class="input-group">
                     <span class="input-group-text">
                         <CIcon icon="cilLocationPin" class="text-info" />
                     </span>
                     <CFormInput 
                         placeholder="Apartment, Floor etc."
-                        v-model="address2"
+                        v-model="address_2"
                         @blur="address2Meta.touched = true; address2Validate()"
                     />
                 </div>
@@ -96,19 +96,19 @@
                 </div>
             </CCol>
             <CCol md="6">
-                <CFormLabel for="zipCode" class="form-label-required">Zip Code</CFormLabel>
+                <CFormLabel for="postal_code" class="form-label-required">Zip Code</CFormLabel>
                 <div class="input-group">
                     <span class="input-group-text">
                         <CIcon icon="cilChevronRight" class="text-info" />
                     </span>
                     <CFormInput 
                         placeholder="10005" 
-                        v-model="zipCode"
-                        @blur="zipCodeMeta.touched = true; zipCodeValidate()"
+                        v-model="postal_code"
+                        @blur="postalCodeMeta.touched = true; postalCodeValidate()"
                     />
                 </div>
-                <div class="flex form-field-error d-inline-block mt-2" v-if="zipCodeMeta.touched && zipCodeError">
-                    <span>* {{ zipCodeError }}</span>
+                <div class="flex form-field-error d-inline-block mt-2" v-if="postalCodeMeta.touched && postalCodeError">
+                    <span>* {{ postalCodeError }}</span>
                 </div>
             </CCol>
             <CCol md="6">
@@ -122,7 +122,8 @@
                         @blur="countryMeta.touched = true; countryValidate()"
                     >
                         <option value="">Choose...</option>
-                        <option value="US">United States</option>
+                        <option :value="country.name" v-for="(country, idx) in CountriesData" :key="idx">{{country.name}}</option>
+
                     </CFormSelect>
                 </div>
                 <div class="flex form-field-error d-inline-block mt-2" v-if="countryMeta.touched && countryError">
@@ -135,8 +136,17 @@
 </template>
 
 <script setup>
-    import { ref, watch } from 'vue'
+    import { ref, watch, onMounted } from 'vue'
     import { useField } from 'vee-validate'
+    import { getCountriesList } from '@/services/api'
+    import { useApi } from '@/composables/useApi'
+
+    const {data: CountriesData, execute } = useApi(getCountriesList, false)
+
+    onMounted(async () => {
+    await execute()
+    console.log(CountriesData);
+  })
 
     const props = defineProps({
         inputLabel: String,
@@ -181,11 +191,11 @@
     } = useField('address');
 
     const { 
-        value: address2, 
+        value: address_2, 
         errorMessage: address2Error,
         validate: address2Validate,
         meta: address2Meta
-    } = useField('address2');
+    } = useField('address_2');
 
     const { 
         value: city, 
@@ -202,11 +212,11 @@
     } = useField('state');
 
     const { 
-        value: zipCode, 
-        errorMessage: zipCodeError,
-        validate: zipCodeValidate,
-        meta: zipCodeMeta
-    } = useField('zipCode');
+        value: postal_code, 
+        errorMessage: postalCodeError,
+        validate: postalCodeValidate,
+        meta: postalCodeMeta
+    } = useField('postal_code');
 
     const { 
         value: country, 

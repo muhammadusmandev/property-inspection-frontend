@@ -15,6 +15,45 @@
 
         <div class="row g-3 mt-0">
             <CCol md="6">
+                <CFormLabel :for="client" class="form-label-required">Name</CFormLabel>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <CIcon icon="cilLocationPin" class="text-info" />
+                    </span>
+                    <CFormInput 
+                        placeholder="Western side house"
+                        v-model="name"
+                        @blur="nameMeta.touched = true; nameValidate()"
+                    />
+                </div>
+                
+                <div class="flex form-field-error d-inline-block mt-2" v-if="nameMeta.touched && nameError">
+                    <span>* {{ nameError }}</span>
+                </div>
+            </CCol>
+            <CCol md="6">
+                <CFormLabel :for="branch" class="form-label-required">Property Type</CFormLabel>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <CIcon icon="cibTreehouse" class="text-info" />
+                    </span>
+                    <CFormSelect
+                        v-model="type"
+                        @blur="typeMeta.touched = true; typeValidate()"
+                    >
+                        <option value="">Choose ...</option>
+                        <option value="residential">Residential</option>
+                        <option value="commercial">Commercial</option>
+                    </CFormSelect>
+                </div>
+                <div class="flex form-field-error d-inline-block mt-2" v-if="typeMeta.touched && typeError">
+                    <span>* {{ typeError }}</span>
+                </div>
+            </CCol>
+        </div>
+
+        <div class="row g-3 mt-0">
+            <CCol md="6">
                 <CFormLabel :for="client">Client</CFormLabel>
                 <div class="input-group">
                     <span class="input-group-text">
@@ -23,9 +62,10 @@
                     <CFormSelect
                         v-model="client"
                         @blur="clientMeta.touched = true; clientValidate()"
-                    >
+                    >                    
                         <option value="">Choose...</option>
-                        <option value="John">John</option>
+                        <option :value="client.id" v-for="(client, idx) in clientsData" :key="idx">{{client.name}}</option>
+
                     </CFormSelect>
                 </div>
                 
@@ -44,7 +84,8 @@
                         @blur="branchMeta.touched = true; branchValidate()"
                     >
                         <option value="">Choose Branch...</option>
-                        <option value="-">-</option>
+                        <option :value="branch.id" v-for="(branch, idx) in branchesData" :key="idx">{{branch.name}}</option>
+
                     </CFormSelect>
                 </div>
                 <div class="flex form-field-error d-inline-block mt-2" v-if="branchMeta.touched && branchError">
@@ -63,19 +104,32 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive } from 'vue'
+  import { ref, reactive, watch, onMounted } from 'vue'
   import { useForm, useField } from 'vee-validate'
   import * as yup from 'yup'
   import { toTypedSchema } from '@vee-validate/yup'
   import FindAddress from '@/components/General/FindAddress.vue'
   import PageBodyHeader from '@/components/General/PageBodyHeader.vue'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
-  import { addProperty } from '@/services/api'
+  import { toastNotifications } from '@/composables/toastNotifications'
+  import { addProperty, getRealtorClients, getRealtorBranches } from '@/services/api'
+  import { useRouter } from 'vue-router'
   import { useApi } from '@/composables/useApi'
 
   const clearFormTrigger = ref(0)
 
-  const zipCodePatterns = {
+  const {data: clientsData, execute: execute1 } = useApi(getRealtorClients, false)
+  const {data: branchesData, execute: execute2 } = useApi(getRealtorBranches, false)
+
+  onMounted(async () => {
+    await execute1()
+    await execute2()
+  })
+
+  const { showToast } = toastNotifications()
+  const router = useRouter()
+
+  const postalCodePatterns = {
     US: /^\d{5}(-\d{4})?$/,
     CA: /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/,
     GB: /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i,
@@ -94,7 +148,7 @@
           .required('Must add address.')
           .min(5, 'Must be atleast 5 characters long')
           .max(100, 'Must be 100 characters long'),
-    address2: yup
+    address_2: yup
           .string()
           .max(100, 'Must be 100 characters long'),
     city: yup
@@ -105,11 +159,11 @@
     state: yup
           .string()
           .max(50, 'Must be 50 characters long'),
-    zipCode: yup
+    postal_code: yup
           .string()
           .required('Must add zip code.')
           .when('country', (country, schema) => { // temp 'US' else dynamic
-            const regex = zipCodePatterns[country]    
+            const regex = postalCodePatterns[country]    
             return regex
               ? schema.matches(regex, `ZIP code must be valid for ${country}`)
               : schema
@@ -117,6 +171,13 @@
     country: yup
           .string()
           .required('Must select country.'),
+    name: yup
+          .string()
+          .max(100, 'Must be 100 characters long')
+          .required('Name is required.'),
+    type: yup
+          .string()
+          .required('Type is required.'),
     client: yup
           .string(),
     branch: yup
@@ -141,15 +202,33 @@
     meta: branchMeta
   } = useField('branch');
 
+  const { 
+    value: name, 
+    errorMessage: nameError,
+    validate: nameValidate,
+    meta: nameMeta
+  } = useField('name');
+
+  const { 
+    value: type, 
+    errorMessage: typeError,
+    validate: typeValidate,
+    meta: typeMeta
+  } = useField('type');
+
   function clearForm() {
     resetForm()
     clearFormTrigger.value++
   }
 
-  const { btnLoading, data, error, execute } = useApi(addProperty, false)
+  const { loading: btnLoading, execute } = useApi(addProperty, false)
 
   const submitAddProperty = handleSubmit(async (formData) => {
-    console.log(formData)
-    execute(formData)
+    const response = await execute(formData)
+
+    if(response.success === true){
+      showToast('success', 'Property added successfully!')
+      router.push({ name: 'realtor.properties' })
+    } 
   })
 </script>

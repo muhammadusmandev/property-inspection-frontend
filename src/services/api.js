@@ -10,4 +10,13 @@ export const verifyOtp = (data) => axiosInstance.post('/otp/verify', data)
 export const resendOtp = (data) => axiosInstance.post('/otp/resend', data)
 
 // Properties
-export const addProperty = (data) => axiosInstance.post('/properties/add', data)
+export const addProperty = (data) => axiosInstance.post('/properties', data)
+
+// Clients
+export const getRealtorClients = () => axiosInstance.get('/clients')
+
+// Braches
+export const getRealtorBranches = () => axiosInstance.get('/branches')
+
+// Countries
+export const getCountriesList = () => axiosInstance.get('/countries/list')
