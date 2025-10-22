@@ -35,14 +35,14 @@
                   <h2 class="mt-4 fw-bold border-top pt-3 mb-0 text-center">Register</h2>
                   <p class="text-body-secondary text-center my-1 mb-4">Let's Get Ready For Creating Your First Report</p>
                   <CCol md="6">
-                    <CFormLabel :for="firstname" class="mb-1 form-label-required">First Name</CFormLabel>
+                    <CFormLabel :for="first_name" class="mb-1 form-label-required">First Name</CFormLabel>
                     <CInputGroup class="mb-1">
                       <CInputGroupText>
                         <CIcon icon="cil-user" />
                       </CInputGroupText>
                       <CFormInput 
                         placeholder="John" 
-                        autocomplete="firstname"
+                        autocomplete="first_name"
                         v-model="first_name"
                         @blur="firstnameMeta.touched = true; firstnameValidate()"
                       />
@@ -52,14 +52,14 @@
                     </div>
                   </CCol>
                   <CCol md="6">
-                    <CFormLabel :for="lastname" class="mb-1 form-label-required">Last Name</CFormLabel>
+                    <CFormLabel :for="last_name" class="mb-1 form-label-required">Last Name</CFormLabel>
                     <CInputGroup class="mb-1">
                       <CInputGroupText>
                         <CIcon icon="cil-user" />
                       </CInputGroupText>
                       <CFormInput 
                         placeholder="Doe" 
-                        autocomplete="lastname"
+                        autocomplete="last_name"
                         v-model="last_name"
                         @blur="lastnameMeta.touched = true; lastnameValidate()" 
                       />
@@ -69,14 +69,14 @@
                     </div>
                   </CCol>
                   <CCol md="6">
-                    <CFormLabel :for="phone" class="mb-1 form-label-required">Phone</CFormLabel>
+                    <CFormLabel :for="phone_number" class="mb-1 form-label-required">Phone</CFormLabel>
                     <CInputGroup class="mb-1">
                       <CInputGroupText>
                         <CIcon icon="cilScreenSmartphone" />
                       </CInputGroupText>
                       <CFormInput 
                         placeholder="+1 234-456-7890" 
-                        autocomplete="phone" 
+                        autocomplete="phone_number" 
                         v-model="phone_number"
                         @blur="phoneMeta.touched = true; phoneValidate()"
                       />
@@ -157,7 +157,7 @@
                     </div>
                   </CCol>
                   <CCol md="6">
-                    <CFormLabel :for="dob" class="mb-1 form-label-required">Date of Birth</CFormLabel>
+                    <CFormLabel :for="date_of_birth" class="mb-1 form-label-required">Date of Birth</CFormLabel>
                     <CInputGroup class="mb-1">
                       <CInputGroupText>
                         <CIcon icon="cil-calendar" />
@@ -193,6 +193,7 @@
       </CRow>
     </CContainer>
   </div>
+  <VerifyOTP :visibility="showVerifyOTPModal" :identifierValue="identifierValue" />
 </template>
 
 <script setup>
@@ -203,6 +204,7 @@
   import { registerUser } from '@/services/api'
   import { useApi } from '@/composables/useApi'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
+  import VerifyOTP from '@/components/Modals/VerifyOTP.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
   import appLogo from '@/assets/images/Inspexly_logo.jpg'
   import { useAuthStore } from '@/stores/auth'
@@ -211,7 +213,14 @@
   import '@vuepic/vue-datepicker/dist/main.css'
   import dateTimeToDateISO from '@/utils/datetimeFormatter'
 
+  const showVerifyOTPModal = ref(false)
+  const identifierValue = ref(null)
   const fifteenYearsAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 15))
+
+  const authStore = useAuthStore()
+  const { showToast } = toastNotifications()
+  const router = useRouter()
+  const { loading: btnLoading, data, execute } = useApi(registerUser, false)
 
   const schema = toTypedSchema( yup.object({
     first_name: yup
@@ -306,18 +315,15 @@
     meta: dobMeta
   } = useField('date_of_birth');
 
-  const { loading: btnLoading, data, execute } = useApi(registerUser, false)
-  const authStore = useAuthStore()
-  const { showToast } = toastNotifications()
-  const router = useRouter()
-
   const submitRegisterUser = handleSubmit(async (formData) => {
     formData.date_of_birth = dateTimeToDateISO(formData.date_of_birth)
     const response = await execute(formData)
 
     if(response.success === true){
-      showToast('success', 'Register successfully!')
-      router.push( '/realtor/dashboard' ) // Todo: redirect to verification code page
+      showToast('success', 'Register successfully! Please verify your account now.')
+      // display verification modal
+      showVerifyOTPModal.value = true
+      identifierValue.value = formData.email
     } else{
       // handle any case if concerned error data
     }

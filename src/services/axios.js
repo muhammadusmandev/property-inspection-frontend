@@ -64,6 +64,10 @@ axiosInstance.interceptors.response.use(
                     showToast('error', data?.message || 'Oops! Something went wrong.')
                 }
                 break
+            
+            case 429:
+                // Handle on pages for now
+                break
 
             case 500:
             case 501:
