@@ -1,16 +1,15 @@
 <template>
   <div class="add-property-form-container">
     <PageBodyHeader
-      heading="Add New Property"
-      description="Create new property for your client"
+      :heading="pageHeading"
+      :description="pageDescription"
     />
     <CRow>
-      <CForm class="row g-3 mt-0 w-75" @submit.prevent="submitAddProperty">
+      <CForm class="row g-3 mt-0 w-75" @submit.prevent="submitUpdateProperty">
         <FindAddress 
           inputLabel="Find Client Property" 
           inputPlaceHolder="Search property address on map" 
           inputId="findClientProperty"
-          :clearFormTrigger="clearFormTrigger"
         />
 
         <div class="row g-3 mt-0">
@@ -21,7 +20,7 @@
                         <CIcon icon="cilLocationPin" class="text-info" />
                     </span>
                     <CFormInput 
-                        placeholder="Western side house"
+                        placeholder="Western Side House"
                         v-model="name"
                         @blur="nameMeta.touched = true; nameValidate()"
                     />
@@ -95,8 +94,8 @@
         </div>
 
         <CCol xs="12">
-          <CButton color="info" class="text-white mt-3" type="submit"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Add New Property' }}</CButton>
-          <CButton color="danger" class="text-white mt-3 ms-2" type="button" @click="clearForm"><CIcon icon="cilClearAll" /> Clear Form</CButton>
+          <CButton color="info" class="text-white mt-3" type="submit"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Updating...' : 'Update Property' }}</CButton>
+          <CButton color="danger" class="text-white mt-3 ms-2" type="button"><CIcon icon="cilClearAll" /> Delete Property </CButton>
         </CCol>
       </CForm>
     </CRow>
@@ -104,30 +103,38 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive, watch, onMounted } from 'vue'
+  import { ref, reactive, onBeforeMount } from 'vue'
   import { useForm, useField } from 'vee-validate'
   import * as yup from 'yup'
   import { toTypedSchema } from '@vee-validate/yup'
+  import { useRoute } from 'vue-router'
   import FindAddress from '@/components/General/FindAddress.vue'
   import PageBodyHeader from '@/components/General/PageBodyHeader.vue'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
+  import { FullPageSpinnerLoader } from '@/components/General/Loader.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
-  import { addProperty, getRealtorClients, getRealtorBranches } from '@/services/api'
-  import { useRouter } from 'vue-router'
+  import { getProperty, updateProperty, getRealtorClients, getRealtorBranches } from '@/services/api'
   import { useApi } from '@/composables/useApi'
 
-  const clearFormTrigger = ref(0)
+  const pageHeading = ref('');
+  const pageDescription = ref('');
+  const pageLoading = ref(true)
 
-  const {data: clientsData, execute: execute1 } = useApi(getRealtorClients, false)
-  const {data: branchesData, execute: execute2 } = useApi(getRealtorBranches, false)
-
-  onMounted(async () => {
-    await execute1()
-    await execute2()
-  })
-
+  const route = useRoute()
+  const propertyId = route.params.id
   const { showToast } = toastNotifications()
-  const router = useRouter()
+
+  const { data: propertyData, execute: execute1 } = useApi(getProperty, false)
+  const { data: clientsData, execute: execute2 } = useApi(getRealtorClients, false)
+  const { data: branchesData, execute: execute3 } = useApi(getRealtorBranches, false)
+  const { loading: btnLoading, execute } = useApi(updateProperty, false)
+
+  onBeforeMount(async () => {
+    await execute1({ pathParams: [propertyId] })
+    await execute2()
+    await execute3()
+    setupPageFieldsData();
+  })
 
   const postalCodePatterns = {
     US: /^\d{5}(-\d{4})?$/,
@@ -162,7 +169,7 @@
     postal_code: yup
           .string()
           .required('Must add zip code.')
-          .when('country', (country, schema) => { // temp 'US' else dynamic
+          .when('country', (country, schema) => {
             const regex = postalCodePatterns[country]    
             return regex
               ? schema.matches(regex, `ZIP code must be valid for ${country}`)
@@ -179,12 +186,14 @@
           .string()
           .required('Type is required.'),
     client_id: yup
-          .string(),
+          .string()
+          .notRequired(),
     branch_id: yup
-          .string(),
+          .string()
+          .notRequired(),
   }))
 
-  const { handleSubmit, isSubmitting, resetForm } = useForm({
+  const { handleSubmit, isSubmitting, setFieldValue } = useForm({
     validationSchema: schema
   })
 
@@ -216,21 +225,31 @@
     meta: typeMeta
   } = useField('type');
 
-  function clearForm() {
-    resetForm()
-    clearFormTrigger.value++
+  function setupPageFieldsData(){
+    // set page heading data
+    pageHeading.value = propertyData.value.name
+    pageDescription.value = [propertyData.value.address, propertyData.value.address_2, propertyData.value.city, propertyData.value.state, propertyData.value.postal_code]
+        .filter(Boolean)
+        .join(', ')
+
+    // set form data
+    setFieldValue('address', propertyData.value.address)
+    setFieldValue('address_2', propertyData.value.address_2)
+    setFieldValue('city', propertyData.value.city)
+    setFieldValue('state', propertyData.value.state)
+    setFieldValue('postal_code', propertyData.value.postal_code)
+    setFieldValue('country', propertyData.value.country)
+    setFieldValue('name', propertyData.value.name)
+    setFieldValue('type', propertyData.value.type)
+    setFieldValue('client_id', propertyData.value.client_id)
+    setFieldValue('branch_id', propertyData.value.branch_id)
   }
 
-  const { loading: btnLoading, execute } = useApi(addProperty, false)
-
-  const submitAddProperty = handleSubmit(async (formData) => {
-    // mutate fields before push
-    formData.formData = formData.vendor === '' ? null : formData.vendor 
-    const response = await execute(formData)
+  const submitUpdateProperty = handleSubmit(async (formData) => {
+    const response = await execute({ pathParams: [propertyId], payload: formData})
 
     if(response.success === true){
-      showToast('success', 'Property added successfully!')
-      router.push({ name: 'realtor.properties' })
+      showToast('success', 'Property updated successfully!')
     } 
   })
 </script>

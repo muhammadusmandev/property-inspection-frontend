@@ -11,6 +11,8 @@ export const resendOtp = (data) => axiosInstance.post('/otp/resend', data)
 
 // Properties
 export const addProperty = (data) => axiosInstance.post('/properties', data)
+export const updateProperty = (id, data) => axiosInstance.put(`/properties/${id}`, data)
+export const getProperty = (id) => axiosInstance.get(`/properties/${id}`)
 
 // Clients
 export const getRealtorClients = () => axiosInstance.get('/clients')

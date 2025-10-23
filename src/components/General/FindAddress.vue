@@ -160,6 +160,7 @@
         },
         clearFormTrigger: {
             type: Number,
+            default: 0,
         },
         modelValue: {
             type: String,
