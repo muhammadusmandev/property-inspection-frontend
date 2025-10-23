@@ -95,11 +95,12 @@
 
         <CCol xs="12">
           <CButton color="info" class="text-white mt-3" type="submit"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Updating...' : 'Update Property' }}</CButton>
-          <CButton color="danger" class="text-white mt-3 ms-2" type="button"><CIcon icon="cilClearAll" /> Delete Property </CButton>
+          <CButton color="danger" class="text-white mt-3 ms-2" type="button" @click="handleShowDeleteModal"><CIcon icon="cilClearAll" /> Delete Property </CButton>
         </CCol>
       </CForm>
     </CRow>
   </div>
+  <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDelete" />
 </template>
 
 <script setup lang="ts">
@@ -107,20 +108,24 @@
   import { useForm, useField } from 'vee-validate'
   import * as yup from 'yup'
   import { toTypedSchema } from '@vee-validate/yup'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import FindAddress from '@/components/General/FindAddress.vue'
   import PageBodyHeader from '@/components/General/PageBodyHeader.vue'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
   import { FullPageSpinnerLoader } from '@/components/General/Loader.vue'
+  import DeleteWarningModal from '@/components/Modals/DeleteWarningModal.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
-  import { getProperty, updateProperty, getRealtorClients, getRealtorBranches } from '@/services/api'
+  import { getProperty, updateProperty, getRealtorClients, getRealtorBranches, deleteProperty } from '@/services/api'
   import { useApi } from '@/composables/useApi'
 
   const pageHeading = ref('');
-  const pageDescription = ref('');
+  const pageDescription = ref('')
   const pageLoading = ref(true)
+  const showDeleteModal = ref(false)
+  const deleteBtnLoading = ref(false)
 
   const route = useRoute()
+  const router = useRouter()
   const propertyId = route.params.id
   const { showToast } = toastNotifications()
 
@@ -128,6 +133,7 @@
   const { data: clientsData, execute: execute2 } = useApi(getRealtorClients, false)
   const { data: branchesData, execute: execute3 } = useApi(getRealtorBranches, false)
   const { loading: btnLoading, execute } = useApi(updateProperty, false)
+  const { execute: execute4 } = useApi(deleteProperty, false)
 
   onBeforeMount(async () => {
     await execute1({ pathParams: [propertyId] })
@@ -245,6 +251,10 @@
     setFieldValue('branch_id', propertyData.value.branch_id)
   }
 
+  function handleShowDeleteModal() {
+     showDeleteModal.value = true
+  }
+
   const submitUpdateProperty = handleSubmit(async (formData) => {
     const response = await execute({ pathParams: [propertyId], payload: formData})
 
@@ -252,4 +262,18 @@
       showToast('success', 'Property updated successfully!')
     } 
   })
+
+  async function handleDelete(){
+    deleteBtnLoading.value = true
+    const response = await execute4({ pathParams: [propertyId]})
+
+    if(response.success === true){
+      showToast('success', 'Property deleted successfully!')
+      router.push({ name: 'realtor.properties' })
+    } else{
+        deleteBtnLoading.value = false
+        showDeleteModal.value = false
+        showToast('error', 'Oops! Something went wrong!')
+    }
+  }
 </script>
