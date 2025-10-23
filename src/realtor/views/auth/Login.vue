@@ -142,7 +142,7 @@
   const router = useRouter()
 
   const submitLoginUser = handleSubmit(async (formData) => {
-    const response = await execute(formData)
+    const response = await execute({ payload: formData })
 
     if(response.success === true){
       authStore.setUserData(data.value.user)
@@ -154,7 +154,7 @@
           if(response.data?.errors?.flag === 'email_non_verified'){
             // send otp now first
             const { execute: execute1 } = useApi(resendOtp, false)
-            const response1 = await execute1({ identifier: 'email', email: formData.email })
+            const response1 = await execute1({ payload: { identifier: 'email', email: formData.email } })
 
             if(response1.success === true){
               // display verification modal

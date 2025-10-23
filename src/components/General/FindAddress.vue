@@ -145,7 +145,6 @@
 
     onMounted(async () => {
     await execute()
-    console.log(CountriesData);
   })
 
     const props = defineProps({
@@ -229,7 +228,6 @@
     function handleShowManualAddress() {
         manualAddressClicked.value = true
         showManualAddressFields.value = true
-        console.log('show manual')
     }
 
     watch(() => props.clearFormTrigger, () => {

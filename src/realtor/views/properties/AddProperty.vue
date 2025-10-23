@@ -225,8 +225,7 @@
 
   const submitAddProperty = handleSubmit(async (formData) => {
     // mutate fields before push
-    formData.formData = formData.vendor === '' ? null : formData.vendor 
-    const response = await execute(formData)
+    const response = await execute({ payload: formData })
 
     if(response.success === true){
       showToast('success', 'Property added successfully!')
