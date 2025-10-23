@@ -35,7 +35,7 @@
                 <CFormLabel :for="type" class="form-label-required">Property Type</CFormLabel>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <CIcon icon="cibTreehouse" class="text-info" />
+                        <CIcon icon="cilHouse" class="text-info" />
                     </span>
                     <CFormSelect
                         v-model="type"

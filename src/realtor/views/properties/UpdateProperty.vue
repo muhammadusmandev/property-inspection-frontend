@@ -34,7 +34,7 @@
                 <CFormLabel :for="type" class="form-label-required">Property Type</CFormLabel>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <CIcon icon="cibTreehouse" class="text-info" />
+                        <CIcon icon="cilHouse" class="text-info" />
                     </span>
                     <CFormSelect
                         v-model="type"
@@ -91,6 +91,41 @@
                     <span>* {{ branchError }}</span>
                 </div>
             </CCol>
+              <CCol md="12">
+                  <CFormLabel :for="reference">Reference</CFormLabel>
+                  <div class="input-group">
+                      <span class="input-group-text">
+                          <CIcon icon="cilColorBorder" class="text-info" />
+                      </span>
+                      <CFormInput
+                          placeholder="Add property #023123"
+                          v-model="reference"
+                          @blur="referenceMeta.touched = true; referenceValidate()"
+                      />
+                  </div>
+                  <div class="flex form-field-error d-inline-block mt-2" v-if="referenceMeta.touched && referenceError">
+                      <span>* {{ referenceError }}</span>
+                  </div>
+              </CCol>
+
+              <CCol md="12">
+                  <CFormLabel :for="notes">Additional Notes</CFormLabel>
+                  <div class="input-group">
+                      <span class="input-group-text">
+                          <CIcon icon="cilShortText" class="text-info" />
+                      </span>
+                      <CFormTextarea
+                          placeholder="Add additional information..."
+                          rows="4"
+                          v-model="notes"
+                          @blur="notesMeta.touched = true; notesValidate()"
+                      ></CFormTextarea>
+                  </div>
+                  
+                  <div class="flex form-field-error d-inline-block mt-2" v-if="notesMeta.touched && notesError">
+                      <span>* {{ notesError }}</span>
+                  </div>
+              </CCol>
         </div>
 
         <CCol xs="12">
@@ -163,7 +198,8 @@
           .max(100, 'Must be 100 characters long'),
     address_2: yup
           .string()
-          .max(100, 'Must be 100 characters long'),
+          .max(100, 'Must be 100 characters long')
+          .notRequired(),
     city: yup
           .string()
           .required('Must add city.')
@@ -196,6 +232,14 @@
           .notRequired(),
     branch_id: yup
           .string()
+          .notRequired(),
+    reference: yup
+          .string()
+          .max(100, 'Must be 100 characters long')
+          .notRequired(),
+    notes: yup
+          .string()
+          .max(500, 'Must be 500 characters long')
           .notRequired(),
   }))
 
@@ -231,6 +275,20 @@
     meta: typeMeta
   } = useField('type');
 
+  const { 
+    value: reference, 
+    errorMessage: referenceError,
+    validate: referenceValidate,
+    meta: referenceMeta
+  } = useField('reference');
+
+  const { 
+    value: notes, 
+    errorMessage: notesError,
+    validate: notesValidate,
+    meta: notesMeta
+  } = useField('notes');
+
   function setupPageFieldsData(){
     // set page heading data
     pageHeading.value = propertyData.value.name
@@ -249,6 +307,8 @@
     setFieldValue('type', propertyData.value.type)
     setFieldValue('client_id', propertyData.value.client_id)
     setFieldValue('branch_id', propertyData.value.branch_id)
+    setFieldValue('reference', propertyData.value.reference)
+    setFieldValue('notes', propertyData.value.notes)
   }
 
   function handleShowDeleteModal() {
@@ -256,6 +316,7 @@
   }
 
   const submitUpdateProperty = handleSubmit(async (formData) => {
+    console.log(formData)
     const response = await execute({ pathParams: [propertyId], payload: formData})
 
     if(response.success === true){
