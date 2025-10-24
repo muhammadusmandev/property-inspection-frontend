@@ -8,12 +8,14 @@ export const logoutUser = () => axiosInstance.delete('/auth/logout')
 // Verifications
 export const verifyOtp = (data) => axiosInstance.post('/otp/verify', data)
 export const resendOtp = (data) => axiosInstance.post('/otp/resend', data)
+export const resetPassword = (data) => axiosInstance.post('/forgot-password/reset-password', data)
 
 // Properties
 export const addProperty = (data) => axiosInstance.post('/properties', data)
 export const updateProperty = (data, id) => axiosInstance.put(`/properties/${id}`, data)
 export const getProperty = ({}, id) => axiosInstance.get(`/properties/${id}`)
 export const deleteProperty = ({}, id) => axiosInstance.delete(`/properties/${id}`)
+export const getProperties = ({}, params) => axiosInstance.get(`/properties/${params}`)
 
 // Clients
 export const getRealtorClients = () => axiosInstance.get('/clients')

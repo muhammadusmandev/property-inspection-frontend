@@ -48,7 +48,7 @@
                       <CButton color="primary" class="px-4 self-button" type="submit"> <CIcon icon="cilLockUnlocked" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Login' }} </CButton>
                     </CCol>
                     <CCol :xs="6" class="text-end">
-                      <CButton color="link" class="px-0 self-color-primary">
+                      <CButton color="link" @click="showResetPasswordModal" class="px-0 self-color-primary">
                         Forgot password?
                       </CButton>
                     </CCol>
@@ -83,7 +83,9 @@
       </CRow>
     </CContainer>
   </div>
-  <VerifyOTP :visibility="showVerifyOTPModal" :identifierValue="identifierValue" />
+  <VerifyOTP :visibility="showVerifyOTPModal" :identifierValue="identifierValue" :otpVerificationType="otpVerificationType" @otpVerified="handleOtpVerified" />
+  <NewPassword :visibility="showNewPasswordModal" :identifierValue="identifierValue" :otpVerificationToken="otpVerificationToken" />
+  <PasswordReset :visibility="showPasswordReset" @otpSent="handleOtpSent(email)" />
 </template>
 
 <script setup>
@@ -94,6 +96,8 @@
   import { loginUser, resendOtp } from '@/services/api'
   import { useApi } from '@/composables/useApi'
   import VerifyOTP from '@/components/Modals/VerifyOTP.vue'
+  import PasswordReset from '@/components/Modals/PasswordReset.vue'
+  import NewPassword from '@/components/Modals/NewPassword.vue'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
   import appLogo from '@/assets/images/Inspexly_logo.jpg'
@@ -104,7 +108,11 @@
   const userRole = readonly(role)
   const loginError = ref('')
   const showVerifyOTPModal = ref(false)
-  const identifierValue = ref(null)
+  const showNewPasswordModal = ref(false)
+  const otpVerificationToken = ref('')
+  const showPasswordReset = ref(false)
+  const identifierValue = ref('')
+  const otpVerificationType = ref('')
 
   const { loading: btnLoading, data, execute } = useApi(loginUser, false)
 
@@ -169,6 +177,27 @@
       }
     }
   })
+
+  function showResetPasswordModal() {
+    // display reset password modal
+    showPasswordReset.value = true
+  }
+
+  function handleOtpSent(email) {
+    showPasswordReset.value = false
+    // display verify otp modal
+    showVerifyOTPModal.value = true
+    identifierValue.value = email
+    otpVerificationType.value = 'reset-password'
+  }
+
+  function handleOtpVerified(payload){
+    showVerifyOTPModal.value = false
+    // display new password modal
+    showNewPasswordModal.value = true
+    identifierValue.value = payload.email
+    otpVerificationToken.value = payload.token
+  }
 </script>
 
 <style scoped>

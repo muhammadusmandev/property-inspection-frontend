@@ -55,7 +55,7 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
           {
             path: '/realtor/properties/list',
             name: 'realtor.properties.list',
-            component: () => import('@/realtor/views/properties/List.vue'),
+            component: () => import('@/realtor/views/properties/ListProperties.vue'),
           }
         ]
       },

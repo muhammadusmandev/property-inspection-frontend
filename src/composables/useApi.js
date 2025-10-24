@@ -6,7 +6,7 @@ export function useApi(apiFn, immediate = true, ...args){
 
     const execute = async ({ pathParams = '', payload = {}, queryParameters = {} } = {}) => {
         loading.value = true
-        console.log(args)
+        
         try {
             const pathParamsStr = Array.isArray(pathParams) ? pathParams.join('/') : pathParams  // create path parameters
 

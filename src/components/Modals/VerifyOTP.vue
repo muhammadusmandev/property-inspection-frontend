@@ -40,7 +40,7 @@
                 </CCol>
                 <div class="d-grid mt-5">
                     <CButton color="primary" class="px-4 py-2 self-button w-75 mx-auto mt-1" type="submit" :disabled="enableSubmit"> <CIcon icon="cilUserPlus" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Verify OTP' }}</CButton>
-                    <p class="term-condition-text mt-3 text-body-secondary text-center" v-if="!isOtpDisabled">Don't receive code? Try new one <span class="fw-bold self-color-primary text-decoration-underline">Resend</span></p>
+                    <p class="term-condition-text mt-3 text-body-secondary text-center" v-if="!isOtpDisabled">Don't receive code? Try new one <CButton @click="resendCode" class=" p-0 text-decoration-underline fs-6"> Resend </CButton></p>
                 </div>
             </CForm>
         </CModalBody>
@@ -50,7 +50,7 @@
 <script setup>
     import { ref, watch, nextTick } from 'vue'
     import { useRouter, useRoute } from 'vue-router'
-    import { verifyOtp } from '@/services/api'
+    import { verifyOtp, resendOtp } from '@/services/api'
     import { useApi } from '@/composables/useApi'
     import appLogo from '@/assets/images/icons/verification_otp.png'
     import { ButtonSpinner } from '@/components/General/Spinner.vue'
@@ -61,7 +61,11 @@
         identifierValue: {
             type: String,
             default: ''
-        }
+        },
+        otpVerificationType: {
+            type: String,
+            default: ''
+        },
     })
 
     const otpDigits = ref(Array(6).fill(''))
@@ -71,6 +75,7 @@
     const enableSubmit = ref(true)
     const tooManyAttempts = ref(false)
     const isOtpDisabled = ref(false)
+    const emit = defineEmits(['otpSent', 'otpVerified'])
 
     const router = useRouter()
     const route = useRoute()
@@ -148,12 +153,17 @@
                 
                 case "verified":
                     if (route.path === '/realtor/auth/login') {
-                        // Todo: In future save user token if verified for first time from login page
-                        isOtpDisabled.value = true
-                        showToast('success', 'Thanks for verification! Account verified. Just now login again. Wait redirecting...')
-                        setTimeout(() => {
-                            window.location.reload()
-                        }, 5000)
+                        if(props.otpVerificationType === "reset-password"){
+                            showToast('success', 'Thanks for verification! Please set your new password.')
+                            emit('otpVerified', {email: props.identifierValue, token: response.data.otp_session_token})
+                        } else{
+                            // Todo: In future save user token if verified for first time from login page
+                            isOtpDisabled.value = true
+                            showToast('success', 'Thanks for verification! Account verified. Just now login again. Wait redirecting...')
+                            setTimeout(() => {
+                                window.location.reload()
+                            }, 5000)
+                        }
                     } else{
                         showToast('success', 'Account verified successfully!')
                         router.push( '/realtor/auth/login' )
@@ -178,6 +188,17 @@
             maskedidentifierValue.value = maskEmail(newVal)
         },
     )
+
+    async function resendCode(params) {
+        const { execute: execute1 } = useApi(resendOtp, false)
+        const response1 = await execute1({ payload: { identifier: 'email', email: props.identifierValue } })
+
+        if(response1.success === true){
+            showToast('success', 'OTP resend successfully!')
+        } else{
+            showToast('error', 'Oops! Something went wrong. Failed to generate OTP.')
+        }
+    }
 </script>
 
 <style scoped>
