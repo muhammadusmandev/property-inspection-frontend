@@ -13,7 +13,7 @@ export default [
     component: 'CNavGroup',
     name: 'Properties',
     to: '/#',
-    icon: 'cil-cursor',
+    icon: 'cil-house',
     items: [
       {
         component: 'CNavItem',
@@ -22,8 +22,62 @@ export default [
       },
       {
         component: 'CNavItem',
-        name: 'List Property',
+        name: 'List Properties',
         to: '/realtor/properties/list',
+      },
+    ],
+  },
+  {
+    component: 'CNavGroup',
+    name: 'Reports',
+    to: '/#',
+    icon: 'cil-description',
+    items: [
+      {
+        component: 'CNavItem',
+        name: 'Add Report',
+        to: '/realtor/reports/#',
+      },
+      {
+        component: 'CNavItem',
+        name: 'List Reports',
+        to: '/realtor/reports/#',
+      },
+    ],
+  },
+  {
+    component: 'CNavGroup',
+    name: 'Clients/Landlords',
+    to: '/#',
+    icon: 'cil-group',
+    items: [
+      {
+        component: 'CNavItem',
+        name: 'Add Client',
+        to: '/realtor/clients/#',
+      },
+      {
+        component: 'CNavItem',
+        name: 'List Clients',
+        to: '/realtor/clients/#',
+      },
+    ],
+  },
+   {
+    component: 'CNavGroup',
+    name: 'Branches',
+    to: '/#',
+    icon: 'cil-vector',
+    items: [
+      {
+        component: 'CNavItem',
+        name: 'Add Branch',
+        to: '/realtor/branches/#',
+      },
+      {
+        component: 'CNavItem',
+        name: 'List Branches',
+        to: '/realtor/branches/#',
       },
     ],
   },
