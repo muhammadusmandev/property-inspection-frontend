@@ -31,15 +31,20 @@
   export default defineComponent({
     components: { FullPageSpinnerLoader, AppHeader, AppFooter, AppSidebar, AppBreadcrumb, CContainer },
     setup() {
+      // Todo: Create composable for delay variants according to page rendering
       const loader = ref(null);
+
+      function hideWithDelay() {
+        setTimeout(() => {
+          loader.value?.hideLoader()
+        }, 2000)
+      }
 
       onMounted(() => {
         if (document.readyState === 'complete') {
-          loader.value?.hideLoader();
+          hideWithDelay()
         } else {
-          window.addEventListener('load', () => {
-            loader.value?.hideLoader();
-          });
+          window.addEventListener('load', () => hideWithDelay());
         }
       });
 

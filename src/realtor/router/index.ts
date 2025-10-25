@@ -48,9 +48,14 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
             component: () => import('@/realtor/views/properties/AddProperty.vue'),
           },
           {
+            path: '/realtor/properties/property/:id',
+            name: 'realtor.properties.update',
+            component: () => import('@/realtor/views/properties/UpdateProperty.vue'),
+          },
+          {
             path: '/realtor/properties/list',
             name: 'realtor.properties.list',
-            component: () => import('@/realtor/views/properties/List.vue'),
+            component: () => import('@/realtor/views/properties/ListProperties.vue'),
           }
         ]
       },

@@ -48,7 +48,7 @@
                       <CButton color="primary" class="px-4 self-button" type="submit"> <CIcon icon="cilLockUnlocked" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Login' }} </CButton>
                     </CCol>
                     <CCol :xs="6" class="text-end">
-                      <CButton color="link" class="px-0 self-color-primary">
+                      <CButton color="link" @click="showResetPasswordModal" class="px-0 self-color-primary">
                         Forgot password?
                       </CButton>
                     </CCol>
@@ -72,7 +72,7 @@
                   <p class="mb-1">
                     <CIcon icon="cilArrowThickRight" /> Client & Team Collaboration Tools
                   </p>
-                  <CButton as="a" href="/realtor/auth/register" class="mt-4 px-4 self-bg-light-dark self-color-tertiary fs-6">
+                  <CButton as="a" href="/realtor/properties/register" class="mt-4 px-4 self-bg-light-dark self-color-tertiary fs-6">
                     <CIcon icon="cilUserPlus" /> Create Your Free Account
                   </CButton>
                 </div>
@@ -83,7 +83,9 @@
       </CRow>
     </CContainer>
   </div>
-  <VerifyOTP :visibility="showVerifyOTPModal" :identifierValue="identifierValue" />
+  <VerifyOTP :visibility="showVerifyOTPModal" :identifierValue="identifierValue" :otpVerificationType="otpVerificationType" @otpVerified="handleOtpVerified" />
+  <NewPassword :visibility="showNewPasswordModal" :identifierValue="identifierValue" :otpVerificationToken="otpVerificationToken" />
+  <PasswordReset :visibility="showPasswordReset" @otpSent="handleOtpSent(email)" />
 </template>
 
 <script setup>
@@ -94,6 +96,8 @@
   import { loginUser, resendOtp } from '@/services/api'
   import { useApi } from '@/composables/useApi'
   import VerifyOTP from '@/components/Modals/VerifyOTP.vue'
+  import PasswordReset from '@/components/Modals/PasswordReset.vue'
+  import NewPassword from '@/components/Modals/NewPassword.vue'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
   import appLogo from '@/assets/images/Inspexly_logo.jpg'
@@ -104,7 +108,11 @@
   const userRole = readonly(role)
   const loginError = ref('')
   const showVerifyOTPModal = ref(false)
-  const identifierValue = ref(null)
+  const showNewPasswordModal = ref(false)
+  const otpVerificationToken = ref('')
+  const showPasswordReset = ref(false)
+  const identifierValue = ref('')
+  const otpVerificationType = ref('')
 
   const { loading: btnLoading, data, execute } = useApi(loginUser, false)
 
@@ -142,7 +150,7 @@
   const router = useRouter()
 
   const submitLoginUser = handleSubmit(async (formData) => {
-    const response = await execute(formData)
+    const response = await execute({ payload: formData })
 
     if(response.success === true){
       authStore.setUserData(data.value.user)
@@ -154,7 +162,7 @@
           if(response.data?.errors?.flag === 'email_non_verified'){
             // send otp now first
             const { execute: execute1 } = useApi(resendOtp, false)
-            const response1 = await execute1({ identifier: 'email', email: formData.email })
+            const response1 = await execute1({ payload: { identifier: 'email', email: formData.email } })
 
             if(response1.success === true){
               // display verification modal
@@ -169,6 +177,27 @@
       }
     }
   })
+
+  function showResetPasswordModal() {
+    // display reset password modal
+    showPasswordReset.value = true
+  }
+
+  function handleOtpSent(email) {
+    showPasswordReset.value = false
+    // display verify otp modal
+    showVerifyOTPModal.value = true
+    identifierValue.value = email
+    otpVerificationType.value = 'reset-password'
+  }
+
+  function handleOtpVerified(payload){
+    showVerifyOTPModal.value = false
+    // display new password modal
+    showNewPasswordModal.value = true
+    identifierValue.value = payload.email
+    otpVerificationToken.value = payload.token
+  }
 </script>
 
 <style scoped>

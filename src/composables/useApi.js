@@ -4,12 +4,18 @@ export function useApi(apiFn, immediate = true, ...args){
     const loading = ref(false)
     const data = ref(null)
 
-    const execute = async (...payload) => {
+    const execute = async ({ pathParams = '', payload = {}, queryParameters = {} } = {}) => {
         loading.value = true
-
+        
         try {
-            const response = await apiFn(
-                                ...(payload.length ? payload : args)
+            const pathParamsStr = Array.isArray(pathParams) ? pathParams.join('/') : pathParams  // create path parameters
+
+            const queryString = new URLSearchParams(queryParameters).toString() // create query string
+            const fullUrl = queryString ? `${pathParamsStr}?${queryString}` : pathParamsStr
+
+            const response = await apiFn( 
+                                payload,
+                                fullUrl
                             )
             data.value = response?.data.data
             

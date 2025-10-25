@@ -156,6 +156,28 @@ h1, h2, h3, h4, h5, h6{
   font-size: 1.04rem !important;
 }
 
+.p-datatable-table-container{
+  border: 1px solid #e9e7e7;
+  box-shadow: 0 10px 12px 0 rgba(218, 218, 253, 0.65), 0 2px 5px 0 rgba(206, 206, 238, 0.6);
+  margin-bottom: 22px;
+}
+
+th.p-datatable-header-cell {
+    background: #f1f4f9;
+}
+
+.p-datatable .p-paginator{
+  justify-content: space-between !important;
+  padding-top: 20px; 
+  padding-bottom: 20px; 
+  margin-top: 10px;
+}
+
+.p-datatable-tbody > tr > td{
+  color: #828282;
+  font-size: 0.95rem;
+}
+
 .footer {
   min-height: calc(3rem + 1px);
 }

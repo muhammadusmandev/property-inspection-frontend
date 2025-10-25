@@ -317,7 +317,7 @@
 
   const submitRegisterUser = handleSubmit(async (formData) => {
     formData.date_of_birth = dateTimeToDateISO(formData.date_of_birth)
-    const response = await execute(formData)
+    const response = await execute({ payload: formData })
 
     if(response.success === true){
       showToast('success', 'Register successfully! Please verify your account now.')
