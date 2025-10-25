@@ -72,7 +72,7 @@
                   <p class="mb-1">
                     <CIcon icon="cilArrowThickRight" /> Client & Team Collaboration Tools
                   </p>
-                  <CButton as="a" href="/realtor/auth/register" class="mt-4 px-4 self-bg-light-dark self-color-tertiary fs-6">
+                  <CButton as="a" href="/realtor/properties/register" class="mt-4 px-4 self-bg-light-dark self-color-tertiary fs-6">
                     <CIcon icon="cilUserPlus" /> Create Your Free Account
                   </CButton>
                 </div>

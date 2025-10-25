@@ -207,7 +207,8 @@
           .max(50, 'Must be 50 characters long'),
     state: yup
           .string()
-          .max(50, 'Must be 50 characters long'),
+          .max(50, 'Must be 50 characters long')
+          .notRequired(),
     postal_code: yup
           .string()
           .required('Must add zip code.')

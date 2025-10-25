@@ -69,6 +69,9 @@ import {
   cilDelete,
   cilShortText,
   cilColorBorder,
+  cilReload,
+  cilPlus,
+  cilZoom,
   cilMediaPlay,
   cilMenu,
   cilMoon,
@@ -91,6 +94,7 @@ import {
   cilHouse,
   cilClearAll,
   cilCaretRight,
+  cilCaretLeft,
   cilChevronRight,
 } from '@coreui/icons'
 
@@ -139,6 +143,9 @@ export const iconsSet = Object.assign(
     cilDelete,
     cilShortText,
     cilColorBorder,
+    cilReload,
+    cilPlus,
+    cilZoom,
     cilMediaPlay,
     cilMenu,
     cilMoon,
@@ -161,6 +168,7 @@ export const iconsSet = Object.assign(
     cilHouse,
     cilClearAll,
     cilCaretRight,
+    cilCaretLeft,
     cilChevronRight,
   },
   {
