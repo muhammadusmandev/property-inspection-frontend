@@ -72,7 +72,7 @@ export default [
       {
         component: 'CNavItem',
         name: 'Add Branch',
-        to: '/realtor/branches/#',
+        to: '/realtor/branches/add_branch',
       },
       {
         component: 'CNavItem',

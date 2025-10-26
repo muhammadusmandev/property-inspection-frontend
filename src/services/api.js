@@ -22,6 +22,7 @@ export const getRealtorClients = () => axiosInstance.get('/clients')
 
 // Braches
 export const getRealtorBranches = () => axiosInstance.get('/branches')
+export const addRealtorBranch = (data) => axiosInstance.post('/branches', data)
 
 // Countries
 export const getCountriesList = () => axiosInstance.get('/countries/list')
