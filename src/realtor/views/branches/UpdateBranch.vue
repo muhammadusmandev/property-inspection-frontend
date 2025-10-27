@@ -55,10 +55,12 @@
 
         <CCol xs="12">
           <CButton color="info" class="text-white mt-3" type="submit"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Updating...' : 'Update Property' }}</CButton>
+          <CButton color="danger" class="text-white mt-3 ms-2" type="button" @click="handleShowDeleteModal"><CIcon icon="cilClearAll" /> Delete Branch </CButton>        
         </CCol>
       </CForm>
     </CRow>
   </div>
+  <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDelete" />
 </template>
 
 <script setup lang="ts">
@@ -71,13 +73,16 @@
   import PageBodyHeader from '@/components/General/PageBodyHeader.vue'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
   import { FullPageSpinnerLoader } from '@/components/General/Loader.vue'
+  import DeleteWarningModal from '@/components/Modals/DeleteWarningModal.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
-  import { getBranch, updateBranch, getProperties } from '@/services/api'
+  import { getBranch, updateBranch, getProperties, deleteBranch } from '@/services/api'
   import { useApi } from '@/composables/useApi'
 
   const pageHeading = ref('');
   const pageDescription = ref('')
   const pageLoading = ref(true)
+  const showDeleteModal = ref(false)
+  const deleteBtnLoading = ref(false)
   const propertiesData1 = ref([])
 
   const route = useRoute()
@@ -88,6 +93,7 @@
   const { data: branchData, execute: execute1 } = useApi(getBranch, false)
   const { data: propertiesData, execute: execute2 } = useApi(getProperties, false)
   const { loading: btnLoading, execute } = useApi(updateBranch, false)
+  const { execute: execute3 } = useApi(deleteBranch, false)
 
   onBeforeMount(async () => {
     await execute1({ pathParams: [branchId] })
@@ -186,6 +192,10 @@
     setFieldValue('associated_property_id', branchData.value.associated_property_id)
   }
 
+  function handleShowDeleteModal() {
+     showDeleteModal.value = true
+  }
+
   const submitUpdateBranch = handleSubmit(async (formData) => {
     const response = await execute({ pathParams: [branchId], payload: formData})
 
@@ -193,4 +203,18 @@
       showToast('success', 'Branch updated successfully!')
     } 
   })
+
+   async function handleDelete(){
+    deleteBtnLoading.value = true
+    const response = await execute3({ pathParams: [branchId]})
+
+    if(response.success === true){
+      showToast('success', 'Branch deleted successfully!')
+      router.push({ name: 'realtor.branches' })
+    } else{
+        deleteBtnLoading.value = false
+        showDeleteModal.value = false
+        showToast('error', 'Oops! Something went wrong!')
+    }
+  }
 </script>
