@@ -59,7 +59,7 @@ export default [
       {
         component: 'CNavItem',
         name: 'List Clients',
-        to: '/realtor/clients/#',
+        to: '/realtor/clients/list',
       },
     ],
   },
@@ -77,7 +77,7 @@ export default [
       {
         component: 'CNavItem',
         name: 'List Branches',
-        to: '/realtor/branches/#',
+        to: '/realtor/branches/list',
       },
     ],
   },

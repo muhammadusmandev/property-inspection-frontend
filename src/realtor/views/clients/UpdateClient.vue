@@ -1,11 +1,11 @@
 <template>
   <div class="add-client-form-container">
     <PageBodyHeader
-      heading="Add New Client / Landlord"
-      description="Create new Client / Landlord for properties"
+      :heading="pageHeading"
+      :description="pageDescription"
     />
     <CRow>
-      <CForm class="row g-3 mt-0 w-75" @submit.prevent="submitAddClient">
+      <CForm class="row g-3 mt-0 w-75" @submit.prevent="submitUpdateClient">
         <div class="row g-3 mt-0">
             <CCol md="6">
               <CFormLabel :for="first_name" class="mb-1 form-label-required">First Name</CFormLabel>
@@ -99,29 +99,47 @@
 
         <CCol xs="12">
           <CButton color="info" class="text-white mt-3" type="submit"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Add New Client / LandLord' }}</CButton>
-          <CButton color="danger" class="text-white mt-3 ms-2" type="button" @click="clearForm"><CIcon icon="cilClearAll" /> Clear Form</CButton>
+          <CButton color="danger" class="text-white mt-3 ms-2" type="button" @click="handleShowDeleteModal"><CIcon icon="cilClearAll" /> Delete Client / Landlord </CButton>  
         </CCol>
       </CForm>
     </CRow>
   </div>
+  <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDelete" />
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive, watch, onMounted } from 'vue'
+  import { ref, onBeforeMount } from 'vue'
   import { useForm, useField } from 'vee-validate'
   import * as yup from 'yup'
   import { toTypedSchema } from '@vee-validate/yup'
+  import { useRoute, useRouter } from 'vue-router'
   import PageBodyHeader from '@/components/General/PageBodyHeader.vue'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
+  import { FullPageSpinnerLoader } from '@/components/General/Loader.vue'
+  import DeleteWarningModal from '@/components/Modals/DeleteWarningModal.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
-  import { addClient } from '@/services/api'
-  import { useRouter } from 'vue-router'
+  import { getClient, updateClient, deleteClient } from '@/services/api'
   import { useApi } from '@/composables/useApi'
 
-  const clearFormTrigger = ref(0)
+  const pageHeading = ref('');
+  const pageDescription = ref('')
+  const pageLoading = ref(true)
+  const showDeleteModal = ref(false)
+  const deleteBtnLoading = ref(false)
 
-  const { showToast } = toastNotifications()
+  const route = useRoute()
   const router = useRouter()
+  const clientId = route.params.id
+  const { showToast } = toastNotifications()
+
+  const { data: clientData, execute: execute1 } = useApi(getClient, false)
+  const { loading: btnLoading, execute } = useApi(updateClient, false)
+  const { execute: execute2 } = useApi(deleteClient, false)
+
+  onBeforeMount(async () => {
+    await execute1({ pathParams: [clientId] })
+    setupPageFieldsData();
+  })
 
   const schema = toTypedSchema( yup.object({
     first_name: yup
@@ -143,7 +161,7 @@
           .required('Gender is required'),
   }))
 
-  const { handleSubmit, isSubmitting, resetForm } = useForm({
+  const { handleSubmit, isSubmitting, setFieldValue } = useForm({
     validationSchema: schema
   })
 
@@ -182,19 +200,49 @@
     meta: genderMeta
   } = useField('gender');
 
-  function clearForm() {
-    resetForm()
-    clearFormTrigger.value++
+  function setupPageFieldsData(){
+    // set page heading data
+    pageHeading.value = clientData.value.name
+    pageDescription.value = [clientData.value.email]
+        .filter(Boolean)
+        .join(', ')
+    
+    const fullName = clientData.value.name.trim().split(/\s+/);
+
+    const firstName = fullName.shift();
+    const lastName = fullName.pop() || '';
+
+    // set form data
+    setFieldValue('first_name', firstName)
+    setFieldValue('last_name', lastName)
+    setFieldValue('email', clientData.value.email)
+    setFieldValue('phone_number', clientData.value.phone_number)
+    setFieldValue('gender', clientData.value.gender)
   }
 
-  const { loading: btnLoading, execute } = useApi(addClient, false)
+  function handleShowDeleteModal() {
+     showDeleteModal.value = true
+  }
 
-  const submitAddClient = handleSubmit(async (formData) => {
-    const response = await execute({ payload: formData })
+  const submitUpdateClient = handleSubmit(async (formData) => {
+    const response = await execute({ pathParams: [clientId], payload: formData})
 
     if(response.success === true){
-      showToast('success', 'Client / Landlord added successfully!')
-      router.push({ name: 'realtor.clients' })
+      showToast('success', 'Client updated successfully!')
     } 
   })
+
+  async function handleDelete(){
+    deleteBtnLoading.value = true
+    const response = await execute2({ pathParams: [clientId]})
+
+    if(response.success === true){
+      showToast('success', 'Client deleted successfully!')
+      router.push({ name: 'realtor.clients' })
+    } else{
+        deleteBtnLoading.value = false
+        showDeleteModal.value = false
+        showToast('error', 'Oops! Something went wrong!')
+    }
+  }
 </script>
