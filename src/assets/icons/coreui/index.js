@@ -99,6 +99,9 @@ import {
   cilVector,
   cilGroup,
   cilDescription,
+  cilAt,
+  cilLink,
+  cilLinkBroken,
 } from '@coreui/icons'
 
 export const iconsSet = Object.assign(
@@ -176,6 +179,9 @@ export const iconsSet = Object.assign(
     cilVector,
     cilGroup,
     cilDescription,
+    cilAt,
+    cilLink,
+    cilLinkBroken,
   },
   {
     cifUs,

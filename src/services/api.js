@@ -18,8 +18,13 @@ export const deleteProperty = ({}, id) => axiosInstance.delete(`/properties/${id
 export const getProperties = ({}, params) => axiosInstance.get(`/properties/${params}`)
 
 // Clients
-export const getRealtorClients = () => axiosInstance.get('/clients')
-
+export const addClient = (data) => axiosInstance.post('/clients', data)
+export const updateClient = (data, id) => axiosInstance.put(`/clients/${id}`, data)
+export const getClient = ({}, id) => axiosInstance.get(`/clients/${id}`)
+export const deleteClient = ({}, id) => axiosInstance.delete(`/clients/${id}`)
+export const getRealtorClients = ({}, params) => axiosInstance.get(`/clients/${params}`)
+export const getClientProperties = ({}, id) => axiosInstance.get(`/clients/properties/${id}`)
+export const associateProperty = (data) => axiosInstance.post('/clients/associate-property', data)
 // Branches
 export const addRealtorBranch = (data) => axiosInstance.post('/branches', data)
 export const updateBranch = (data, id) => axiosInstance.put(`/branches/${id}`, data)

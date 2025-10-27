@@ -82,6 +82,33 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
           }
         ]
       },
+      {
+        name: 'realtor.clients',
+        path: '/realtor/clients',
+        redirect: {name: 'realtor.clients.list'},
+        children: [
+          {
+            path: '/realtor/clients/add_client',
+            name: 'realtor.clients.add',
+            component: () => import('@/realtor/views/clients/AddClient.vue'),
+          },
+          {
+            path: '/realtor/clients/client/:id',
+            name: 'realtor.clients.update',
+            component: () => import('@/realtor/views/clients/UpdateClient.vue'),
+          },
+          {
+            path: '/realtor/clients/list',
+            name: 'realtor.clients.list',
+            component: () => import('@/realtor/views/clients/ListClients.vue'),
+          },
+          {
+            path: '/realtor/clients/properties/list/:id',
+            name: 'realtor.clients.properties.list',
+            component: () => import('@/realtor/views/clients/ListProperties.vue'),
+          }
+        ]
+      },
     ]
   },
 ]

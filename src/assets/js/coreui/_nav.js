@@ -53,13 +53,13 @@ export default [
     items: [
       {
         component: 'CNavItem',
-        name: 'Add Client',
-        to: '/realtor/clients/#',
+        name: 'Add Client/Landloard',
+        to: '/realtor/clients/add_client',
       },
       {
         component: 'CNavItem',
         name: 'List Clients',
-        to: '/realtor/clients/#',
+        to: '/realtor/clients/list',
       },
     ],
   },
@@ -77,7 +77,7 @@ export default [
       {
         component: 'CNavItem',
         name: 'List Branches',
-        to: '/realtor/branches/#',
+        to: '/realtor/branches/list',
       },
     ],
   },
