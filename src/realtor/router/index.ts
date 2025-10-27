@@ -101,6 +101,11 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
             path: '/realtor/clients/list',
             name: 'realtor.clients.list',
             component: () => import('@/realtor/views/clients/ListClients.vue'),
+          },
+          {
+            path: '/realtor/clients/properties/list/:id',
+            name: 'realtor.clients.properties.list',
+            component: () => import('@/realtor/views/clients/ListProperties.vue'),
           }
         ]
       },
