@@ -18,6 +18,8 @@ export const deleteProperty = ({}, id) => axiosInstance.delete(`/properties/${id
 export const getProperties = ({}, params) => axiosInstance.get(`/properties/${params}`)
 
 // Clients
+export const addClient = (data) => axiosInstance.post('/clients', data)
+export const updateClient = (data, id) => axiosInstance.put(`/clients/${id}`, data)
 export const getRealtorClients = () => axiosInstance.get('/clients')
 
 // Branches

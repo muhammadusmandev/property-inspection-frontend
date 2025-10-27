@@ -53,8 +53,8 @@ export default [
     items: [
       {
         component: 'CNavItem',
-        name: 'Add Client',
-        to: '/realtor/clients/#',
+        name: 'Add Client/Landloard',
+        to: '/realtor/clients/add_client',
       },
       {
         component: 'CNavItem',

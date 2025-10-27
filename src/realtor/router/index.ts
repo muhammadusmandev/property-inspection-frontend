@@ -82,6 +82,17 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
           }
         ]
       },
+      {
+        name: 'realtor.clients',
+        path: '/realtor/clients',
+        children: [
+          {
+            path: '/realtor/clients/add_client',
+            name: 'realtor.clients.add',
+            component: () => import('@/realtor/views/clients/AddClient.vue'),
+          },
+        ]
+      },
     ]
   },
 ]
