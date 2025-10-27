@@ -67,7 +67,12 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
             path: '/realtor/branches/add_branch',
             name: 'realtor.branches.add',
             component: () => import('@/realtor/views/branches/AddBranch.vue'),
-          }
+          },
+          {
+            path: '/realtor/branches/branch/:id',
+            name: 'realtor.branches.update',
+            component: () => import('@/realtor/views/branches/UpdateBranch.vue'),
+          },
         ]
       },
     ]
