@@ -1,7 +1,7 @@
-/* Inter */
+/* Noto Sans */
 @font-face {
   font-family: 'Noto Sans';
-  src: url('@/assets/fonts/Inter/NotoSans-VariableFont_wdth,wght.ttf') format('truetype');
+  src: url('@/assets/fonts/Noto_Sans/NotoSans-VariableFont_wdth,wght.ttf') format('truetype');
   font-weight: 100 900;
   font-stretch: 75% 100%;
   font-style: normal;
@@ -9,7 +9,24 @@
 
 @font-face {
   font-family: 'Noto Sans';
-  src: url('@/assets/fonts/Inter/NotoSans-Italic-VariableFont_wdth,wght.ttf') format('truetype');
+  src: url('@/assets/fonts/Noto_Sans/NotoSans-Italic-VariableFont_wdth,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-stretch: 75% 100%;
+  font-style: italic;
+}
+
+/* Inter */
+@font-face {
+  font-family: 'Inter';
+  src: url('@/assets/fonts/Inter/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-stretch: 75% 100%;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('@/assets/fonts/Inter/Inter-Italic-VariableFont_opsz,wght.ttf') format('truetype');
   font-weight: 100 900;
   font-stretch: 75% 100%;
   font-style: italic;
@@ -18,7 +35,7 @@
 /* Roboto */
 @font-face {
   font-family: 'Roboto';
-  src: url('@/assets/fonts/Inter/Roboto-VariableFont_wdth,wght.ttf') format('truetype');
+  src: url('@/assets/fonts/Roboto/Roboto-VariableFont_wdth,wght.ttf') format('truetype');
   font-weight: 100 900;
   font-stretch: 75% 100%;
   font-style: normal;
