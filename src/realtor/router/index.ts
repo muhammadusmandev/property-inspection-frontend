@@ -41,6 +41,7 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
       {
         name: 'realtor.properties',
         path: '/realtor/properties',
+        redirect: {name: 'realtor.properties.list'},
         children: [
           {
             path: '/realtor/properties/add_property',
@@ -56,6 +57,28 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
             path: '/realtor/properties/list',
             name: 'realtor.properties.list',
             component: () => import('@/realtor/views/properties/ListProperties.vue'),
+          }
+        ]
+      },
+      {
+        name: 'realtor.branches',
+        path: '/realtor/branches',
+        redirect: {name: 'realtor.branches.list'},
+        children: [
+          {
+            path: '/realtor/branches/add_branch',
+            name: 'realtor.branches.add',
+            component: () => import('@/realtor/views/branches/AddBranch.vue'),
+          },
+          {
+            path: '/realtor/branches/branch/:id',
+            name: 'realtor.branches.update',
+            component: () => import('@/realtor/views/branches/UpdateBranch.vue'),
+          },
+          {
+            path: '/realtor/branches/list',
+            name: 'realtor.branches.list',
+            component: () => import('@/realtor/views/branches/ListBranches.vue'),
           }
         ]
       },

@@ -20,8 +20,12 @@ export const getProperties = ({}, params) => axiosInstance.get(`/properties/${pa
 // Clients
 export const getRealtorClients = () => axiosInstance.get('/clients')
 
-// Braches
-export const getRealtorBranches = () => axiosInstance.get('/branches')
+// Branches
+export const addRealtorBranch = (data) => axiosInstance.post('/branches', data)
+export const updateBranch = (data, id) => axiosInstance.put(`/branches/${id}`, data)
+export const getBranch = ({}, id) => axiosInstance.get(`/branches/${id}`)
+export const deleteBranch = ({}, id) => axiosInstance.delete(`/branches/${id}`)
+export const getRealtorBranches = ({}, params) => axiosInstance.get(`/branches/${params}`)
 
 // Countries
 export const getCountriesList = () => axiosInstance.get('/countries/list')
