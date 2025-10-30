@@ -25,6 +25,7 @@ export const deleteClient = ({}, id) => axiosInstance.delete(`/clients/${id}`)
 export const getRealtorClients = ({}, params) => axiosInstance.get(`/clients/${params}`)
 export const getClientProperties = ({}, id) => axiosInstance.get(`/clients/properties/${id}`)
 export const associateProperty = (data) => axiosInstance.post('/clients/associate-property', data)
+
 // Branches
 export const addRealtorBranch = (data) => axiosInstance.post('/branches', data)
 export const updateBranch = (data, id) => axiosInstance.put(`/branches/${id}`, data)
@@ -34,3 +35,10 @@ export const getRealtorBranches = ({}, params) => axiosInstance.get(`/branches/$
 
 // Countries
 export const getCountriesList = () => axiosInstance.get('/countries/list')
+
+// Inspection Areas
+export const getInspectionAreas = ({}, params) => axiosInstance.get(`/inspection-areas/${params}`)
+export const addInspectionArea = (data) => axiosInstance.post('/inspection-areas', data)
+
+// Inspection Areas
+export const getInspectionAreaItemsList = () => axiosInstance.get(`/inspection-area-items`)

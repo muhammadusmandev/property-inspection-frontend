@@ -109,6 +109,18 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
           }
         ]
       },
+      {
+        name: 'realtor.inspection_areas',
+        path: '/realtor/inspection_areas',
+        redirect: {name: 'realtor.inspection_areas.list'},
+        children: [
+          {
+            path: '/realtor/inspection_areas/list',
+            name: 'realtor.inspection_areas.list',
+            component: () => import('@/realtor/views/inspection_areas/ListInspectionAreas.vue'),
+          }
+        ]
+      },
     ]
   },
 ]
