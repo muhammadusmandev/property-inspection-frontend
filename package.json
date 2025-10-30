@@ -25,6 +25,7 @@
     "@vee-validate/rules": "^4.15.1",
     "@vee-validate/yup": "^4.15.1",
     "@voomap/map": "^0.1.1",
+    "@vueform/multiselect": "^2.6.11",
     "@vuepic/vue-datepicker": "^11.0.3",
     "axios": "^1.12.2",
     "pinia": "^3.0.3",
