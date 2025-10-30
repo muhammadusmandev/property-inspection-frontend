@@ -40,5 +40,9 @@ export const getCountriesList = () => axiosInstance.get('/countries/list')
 export const getInspectionAreas = ({}, params) => axiosInstance.get(`/inspection-areas/${params}`)
 export const addInspectionArea = (data) => axiosInstance.post('/inspection-areas', data)
 
-// Inspection Areas
+// Inspection Area Items
 export const getInspectionAreaItemsList = () => axiosInstance.get(`/inspection-area-items`)
+
+// Templates
+export const getTemplates = ({}, params) => axiosInstance.get(`/templates/${params}`)
+export const addTemplate = (data) => axiosInstance.post('/templates', data)

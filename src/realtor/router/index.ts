@@ -121,6 +121,18 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
           }
         ]
       },
+      {
+        name: 'realtor.templates',
+        path: '/realtor/templates',
+        redirect: {name: 'realtor.templates.list'},
+        children: [
+          {
+            path: '/realtor/templates/list',
+            name: 'realtor.templates.list',
+            component: () => import('@/realtor/views/templates/ListTemplates.vue'),
+          }
+        ]
+      },
     ]
   },
 ]
