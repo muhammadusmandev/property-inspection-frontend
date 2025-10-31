@@ -103,6 +103,7 @@
           <Column header="Action" style="height: 44px">
             <template #body="{ data }">
               <div class="d-flex gap-1">
+                <span class="badge bg-dark" v-if="data.is_default == 0" @click="handleShowUpdateModal(data.id)"><CIcon icon="cil-pen" /></span>
                 <span class="badge bg-danger" v-if="data.is_default == 0" @click="handleShowDeleteModal(data.id)"><CIcon icon="cil-x" /></span>
               </div>
             </template>
@@ -110,6 +111,7 @@
       </DataTable>
   </div>
   <AddInspectionArea v-model:visibility="showAddInspectionArea" />
+  <UpdateInspectionArea v-model:visibility="showUpdateArea" :areaId="updateAreaId" />
   <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDeleteArea" />
 </template>
 
@@ -122,6 +124,7 @@
   import { toTypedSchema } from '@vee-validate/yup'
   import { useApi } from '@/composables/useApi'
   import DeleteWarningModal from '@/components/Modals/DeleteWarningModal.vue'
+  import UpdateInspectionArea from '@/components/Modals/UpdateInspectionArea.vue'
   import AddInspectionArea from '@/components/Modals/AddInspectionArea.vue'
   import { getInspectionAreas, deleteInspectionArea } from '@/services/api'
   import { toastNotifications } from '@/composables/toastNotifications'
@@ -133,6 +136,8 @@
   const btnLoading = ref(false)
   const btnLoading1 = ref(false)
   const showDeleteModal = ref(false)
+  const showUpdateArea = ref(false)
+  const updateAreaId = ref(0)
   const deleteBtnLoading = ref(false)
   const deleteAreaId = ref(null)
   const showAddInspectionArea = ref(false)
@@ -206,6 +211,11 @@
   function handleShowDeleteModal(areaId) {
     deleteAreaId.value = areaId
     showDeleteModal.value = true
+  }
+
+  function handleShowUpdateModal(areaId){
+    showUpdateArea.value = true
+    updateAreaId.value = areaId
   }
   
   function showItems(data){
