@@ -46,6 +46,16 @@
                                 @blur="areasMeta.touched = true; areasValidate()"
                             />
                         </CInputGroup>
+                        <div v-if="selectedItemObjects.length > 0">
+                            <span 
+                                v-for="(item, idx) in selectedItemObjects" 
+                                :key="item.id" 
+                                class="selected-items-badge"
+                            >
+                                {{ item.name }}
+                                <span class="selected-items-remove-btn" @click="removeSelectedItem(item.id)">x</span>
+                            </span>
+                        </div>
                         <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="areasMeta.touched && areasError">
                             <span>* {{ areasError }}</span>
                         </div>
@@ -61,7 +71,7 @@
 </template>
 
 <script setup>
-    import { ref, onBeforeMount } from 'vue'
+    import { ref, onBeforeMount, computed } from 'vue'
     import { useForm, useField } from 'vee-validate'
     import * as yup from 'yup'
     import { toTypedSchema } from '@vee-validate/yup'
@@ -120,6 +130,14 @@
 
     const emit = defineEmits(['update:visibility'])
 
+    const selectedItemObjects = computed(() =>
+        areasList.value?.filter((item) => areas.value?.includes(item.id))
+    );
+
+    function removeSelectedItem(id) {
+      areas.value = areas.value.filter((itemId) => itemId !== id);
+    }
+
     const newTemplate = handleSubmit(async (formData) => {
         const response = await execute1({ payload: formData })
 
@@ -137,3 +155,30 @@
         emit('update:visibility', false)
     }
 </script>
+
+<style scoped>
+    .selected-items-badge {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 10px;
+        margin-bottom: 7px;
+        padding: 9px 20px;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        background: #f5f5f5;
+        color: #181818;
+        border: 1px solid #e2e2e2;
+    }
+
+    .selected-items-remove-btn {
+        background: #dedede;
+        border: none;
+        padding: 3px 7px;
+        color: #333;
+        margin-left: 12px;
+        cursor: pointer;
+        font-size: 0.87rem;
+        line-height: 1;
+        border-radius: 50%;
+    }
+</style>
