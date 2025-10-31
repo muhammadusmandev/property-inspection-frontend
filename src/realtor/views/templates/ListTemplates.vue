@@ -103,7 +103,7 @@
           <Column header="Action" style="height: 44px">
             <template #body="{ data }">
               <div class="d-flex gap-1">
-                <span class="badge bg-dark" v-if="data.is_default == 0"><CIcon icon="cil-pen" /></span>
+                <span class="badge bg-dark" v-if="data.is_default == 0" @click="handleShowUpdateModal(data.id)"><CIcon icon="cil-pen" /></span>
                 <span class="badge bg-danger" v-if="data.is_default == 0" @click="handleShowDeleteModal(data.id)"><CIcon icon="cil-x" /></span>
               </div>
             </template>
@@ -111,6 +111,7 @@
       </DataTable>
   </div>
   <AddTemplate v-model:visibility="showAddTemplate" />
+  <UpdateTemplate v-model:visibility="showUpdateTemplate" :templateId="updateTemplateId" />
   <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDeleteTemplate" />
 </template>
 
@@ -123,6 +124,7 @@
   import { toTypedSchema } from '@vee-validate/yup'
   import { useApi } from '@/composables/useApi'
   import AddTemplate from '@/components/Modals/AddTemplate.vue'
+  import UpdateTemplate from '@/components/Modals/UpdateTemplate.vue'
   import DeleteWarningModal from '@/components/Modals/DeleteWarningModal.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
   import { getTemplates, deleteTemplate } from '@/services/api'
@@ -134,6 +136,8 @@
   const btnLoading = ref(false)
   const btnLoading1 = ref(false)
   const showAddTemplate = ref(false)
+  const showUpdateTemplate = ref(false)
+  const updateTemplateId = ref(0)
   const showDeleteModal = ref(false)
   const deleteBtnLoading = ref(false)
   const deleteTemplateId = ref(null)
@@ -210,6 +214,11 @@
 
   function visibleAddTemplate() {
     showAddTemplate.value = true
+  }
+
+  function handleShowUpdateModal(templateId){
+    showUpdateTemplate.value = true
+    updateTemplateId.value = templateId
   }
 
   function handleShowDeleteModal(templateId) {
