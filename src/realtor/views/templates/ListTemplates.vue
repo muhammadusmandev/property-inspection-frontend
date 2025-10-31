@@ -104,13 +104,14 @@
             <template #body="{ data }">
               <div class="d-flex gap-1">
                 <span class="badge bg-dark" v-if="data.is_default == 0"><CIcon icon="cil-pen" /></span>
-                <span class="badge bg-danger" v-if="data.is_default == 0"><CIcon icon="cil-x" /></span>
+                <span class="badge bg-danger" v-if="data.is_default == 0" @click="handleShowDeleteModal(data.id)"><CIcon icon="cil-x" /></span>
               </div>
             </template>
           </Column>
       </DataTable>
   </div>
   <AddTemplate v-model:visibility="showAddTemplate" />
+  <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDeleteTemplate" />
 </template>
 
 <script setup>
@@ -122,7 +123,9 @@
   import { toTypedSchema } from '@vee-validate/yup'
   import { useApi } from '@/composables/useApi'
   import AddTemplate from '@/components/Modals/AddTemplate.vue'
-  import { getTemplates } from '@/services/api'
+  import DeleteWarningModal from '@/components/Modals/DeleteWarningModal.vue'
+  import { toastNotifications } from '@/composables/toastNotifications'
+  import { getTemplates, deleteTemplate } from '@/services/api'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
 
   const perPage = ref(20)
@@ -131,6 +134,10 @@
   const btnLoading = ref(false)
   const btnLoading1 = ref(false)
   const showAddTemplate = ref(false)
+  const showDeleteModal = ref(false)
+  const deleteBtnLoading = ref(false)
+  const deleteTemplateId = ref(null)
+  const { showToast } = toastNotifications()
 
   const schema = toTypedSchema( yup.object({
     searchByColumn: yup
@@ -160,6 +167,7 @@
   } = useField('columnName');
 
   const { loading, data, execute } = useApi(getTemplates, false)
+  const { execute: execute1 } = useApi(deleteTemplate, false)
 
   onBeforeMount(async () => {
     await loadLazyTemplates({ first: 0, rows: perPage.value })
@@ -202,6 +210,27 @@
 
   function visibleAddTemplate() {
     showAddTemplate.value = true
+  }
+
+  function handleShowDeleteModal(templateId) {
+    deleteTemplateId.value = templateId
+    showDeleteModal.value = true
+  }
+
+  async function handleDeleteTemplate(){
+    deleteBtnLoading.value = true
+    const response = await execute1({ pathParams: [deleteTemplateId.value]})
+
+    if(response.success === true){
+      showToast('success', 'Template deleted successfully! Wait redirecting...')
+      setTimeout(() => {
+        window.location.reload()
+      }, 2000)
+    } else{
+      deleteTemplateId.value = null
+      deleteBtnLoading.value = false
+      showToast('error', 'Oops! Something went wrong!')
+    }
   }
 </script>
 

@@ -46,3 +46,4 @@ export const getInspectionAreaItemsList = () => axiosInstance.get(`/inspection-a
 // Templates
 export const getTemplates = ({}, params) => axiosInstance.get(`/templates/${params}`)
 export const addTemplate = (data) => axiosInstance.post('/templates', data)
+export const deleteTemplate = ({}, id) => axiosInstance.delete(`/templates/${id}`)
