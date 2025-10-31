@@ -100,9 +100,17 @@
               <span class="badge bg-info">{{ data.is_default == true ? 'Default' : 'Added By You' }}</span>
             </template>
           </Column>
+          <Column header="Action" style="height: 44px">
+            <template #body="{ data }">
+              <div class="d-flex gap-1">
+                <span class="badge bg-danger" v-if="data.is_default == 0" @click="handleShowDeleteModal(data.id)"><CIcon icon="cil-x" /></span>
+              </div>
+            </template>
+          </Column>
       </DataTable>
   </div>
   <AddInspectionArea v-model:visibility="showAddInspectionArea" />
+  <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDeleteArea" />
 </template>
 
 <script setup>
@@ -113,8 +121,10 @@
   import * as yup from 'yup'
   import { toTypedSchema } from '@vee-validate/yup'
   import { useApi } from '@/composables/useApi'
+  import DeleteWarningModal from '@/components/Modals/DeleteWarningModal.vue'
   import AddInspectionArea from '@/components/Modals/AddInspectionArea.vue'
-  import { getInspectionAreas } from '@/services/api'
+  import { getInspectionAreas, deleteInspectionArea } from '@/services/api'
+  import { toastNotifications } from '@/composables/toastNotifications'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
 
   const perPage = ref(20)
@@ -122,7 +132,11 @@
   const areas = ref([])
   const btnLoading = ref(false)
   const btnLoading1 = ref(false)
+  const showDeleteModal = ref(false)
+  const deleteBtnLoading = ref(false)
+  const deleteAreaId = ref(null)
   const showAddInspectionArea = ref(false)
+  const { showToast } = toastNotifications()
 
   const schema = toTypedSchema( yup.object({
     searchByColumn: yup
@@ -152,6 +166,7 @@
   } = useField('columnName');
 
   const { loading, data, execute } = useApi(getInspectionAreas, false)
+  const { execute: execute1 } = useApi(deleteInspectionArea, false)
 
   onBeforeMount(async () => {
     await loadLazyAreas({ first: 0, rows: perPage.value })
@@ -187,6 +202,11 @@
     )
     btnLoading.value = false
   }
+
+  function handleShowDeleteModal(areaId) {
+    deleteAreaId.value = areaId
+    showDeleteModal.value = true
+  }
   
   function showItems(data){
     return data.map(item => item.name).join(', ');
@@ -194,6 +214,22 @@
 
   function visibleAddInspectionArea() {
     showAddInspectionArea.value = true
+  }
+
+  async function handleDeleteArea(){
+    deleteBtnLoading.value = true
+    const response = await execute1({ pathParams: [deleteAreaId.value]})
+
+    if(response.success === true){
+      showToast('success', 'Inspection area deleted successfully! Wait redirecting...')
+      setTimeout(() => {
+        window.location.reload()
+      }, 2000)
+    } else{
+      deleteAreaId.value = null
+      deleteBtnLoading.value = false
+      showToast('error', 'Oops! Something went wrong!')
+    }
   }
 </script>
 

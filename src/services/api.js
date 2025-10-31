@@ -39,6 +39,7 @@ export const getCountriesList = () => axiosInstance.get('/countries/list')
 // Inspection Areas
 export const getInspectionAreas = ({}, params) => axiosInstance.get(`/inspection-areas/${params}`)
 export const addInspectionArea = (data) => axiosInstance.post('/inspection-areas', data)
+export const deleteInspectionArea = ({}, id) => axiosInstance.delete(`/inspection-areas/${id}`)
 
 // Inspection Area Items
 export const getInspectionAreaItemsList = () => axiosInstance.get(`/inspection-area-items`)
