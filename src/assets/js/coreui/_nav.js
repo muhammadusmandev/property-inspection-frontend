@@ -63,7 +63,7 @@ export default [
       },
     ],
   },
-   {
+  {
     component: 'CNavGroup',
     name: 'Branches',
     to: '/#',
@@ -80,6 +80,18 @@ export default [
         to: '/realtor/branches/list',
       },
     ],
+  },
+  {
+    component: 'CNavItem',
+    name: 'Templates',
+    to: '/realtor/templates/list',
+    icon: 'cil-text-square',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Inspection Areas',
+    to: '/realtor/inspection_areas/list',
+    icon: 'cil-search',
   },
   {
     component: 'CNavItem',
