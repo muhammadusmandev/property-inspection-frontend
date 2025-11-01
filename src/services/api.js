@@ -52,3 +52,6 @@ export const getTemplate = ({}, id) => axiosInstance.get(`/templates/${id}`)
 export const addTemplate = (data) => axiosInstance.post('/templates', data)
 export const updateTemplate = (data, id) => axiosInstance.put(`/templates/${id}`, data)
 export const deleteTemplate = ({}, id) => axiosInstance.delete(`/templates/${id}`)
+
+// Reports
+export const addReport = (data) => axiosInstance.post('/reports', data)
