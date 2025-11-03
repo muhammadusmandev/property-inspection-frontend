@@ -3,20 +3,40 @@
         alignment="center"
         scrollable
         :visible="visibility"
+        backdrop="static"
+        :keyboard="false"
+        size="lg"
     >
         <CModalBody>
             <CForm class="row g-2 mt-0" @submit.prevent="newReport">
                 <CCol xs="12">
-                    <h2 class="mt-4 fw-bold mb-0 text-center">New Report</h2>
+                    <h2 class="mt-3 fw-bold mb-0 text-center">New Report</h2>
                     <p class="text-body-secondary text-center my-1 mb-4 w-75 mx-auto">Create new report for any property</p>
                     <CCol xs="10" class="mx-auto mt-2">
-                        <CFormLabel :for="property" class="text-start mb-2 form-label-required">Property</CFormLabel>
+                        <CFormLabel :for="title" class="text-start mb-2 form-label-required">Title</CFormLabel>
                         <CInputGroup class="mb-3">
                             <CInputGroupText>
-                            <CIcon icon="cil-user" />
+                                <CIcon icon="cil-text" />
+                            </CInputGroupText>
+                            <CFormInput
+                                placeholder="First Report For Western Side Property..."
+                                type="text"
+                                v-model="title"
+                                @blur="titleMeta.touched = true; titleValidate()"
+                            />
+                        </CInputGroup>
+                        <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="titleMeta.touched && titleError">
+                            <span>* {{ titleError }}</span>
+                        </div>
+                    </CCol>
+                    <CCol xs="10" class="mx-auto mt-2">
+                        <CFormLabel :for="property_id" class="text-start mb-2 form-label-required">Property</CFormLabel>
+                        <CInputGroup class="mb-3">
+                            <CInputGroupText>
+                            <CIcon icon="cil-house" />
                             </CInputGroupText>
                             <CFormSelect
-                                v-model="property"
+                                v-model="property_id"
                                 @blur="propertyMeta.touched = true; propertyValidate()"
                             >
                                 <option value="">Choose ...</option>
@@ -27,31 +47,52 @@
                             <span>* {{ propertyError }}</span>
                         </div>
                     </CCol>
+                    <CRow class="col-10 mx-auto justify-content-between">
+                        <CCol xs="6" class="mx-auto mt-2 ps-0">
+                            <CFormLabel :for="type" class="text-start mb-2 form-label-required">Report Type</CFormLabel>
+                            <CInputGroup class="mb-3">
+                                <CInputGroupText>
+                                <CIcon icon="cil-tag" />
+                                </CInputGroupText>
+                                <CFormSelect
+                                    v-model="type"
+                                    @blur="typeMeta.touched = true; typeValidate()"
+                                >
+                                    <option value="">Choose ...</option>
+                                    <option value="inspection">Inspection</option>
+                                    <option value="inventory">Inventory</option>
+                                    <option value="check-out">Check Out</option>
+                                    <option value="check-in">Check In</option>
+                                </CFormSelect>
+                            </CInputGroup>
+                            <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="typeMeta.touched && typeError">
+                                <span>* {{ typeError }}</span>
+                            </div>
+                        </CCol>
+                        <CCol xs="6" class="mx-auto mt-2 pe-0">
+                            <CFormLabel :for="template_id" class="text-start mb-2 form-label-required">Report Template</CFormLabel>
+                            <CInputGroup class="mb-3">
+                                <CInputGroupText>
+                                <CIcon icon="cil-layers" />
+                                </CInputGroupText>
+                                <CFormSelect
+                                    v-model="template_id"
+                                    @blur="templateMeta.touched = true; templateValidate()"
+                                >
+                                    <option value="">Choose ...</option>
+                                    <option :value="item.id" v-for="(item, idx) in templates">{{ item.name }}</option>
+                                </CFormSelect>
+                            </CInputGroup>
+                            <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="templateMeta.touched && templateError">
+                                <span>* {{ templateError }}</span>
+                            </div>
+                        </CCol>
+                    </CRow>
                     <CCol xs="10" class="mx-auto mt-2">
-                        <CFormLabel :for="type" class="text-start mb-2 form-label-required">Report Type</CFormLabel>
+                        <CFormLabel :for="report_date" class="text-start mb-2 form-label-required">Report Date</CFormLabel>
                         <CInputGroup class="mb-3">
                             <CInputGroupText>
-                            <CIcon icon="cil-user" />
-                            </CInputGroupText>
-                            <CFormSelect
-                                v-model="type"
-                                @blur="typeMeta.touched = true; typeValidate()"
-                            >
-                                <option value="">Choose ...</option>
-                                <option value="inspection">Inspection</option>
-                                <option value="inventory">Inventory</option>
-                                <option value="checkoutout">Check Out</option>
-                            </CFormSelect>
-                        </CInputGroup>
-                        <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="typeMeta.touched && typeError">
-                            <span>* {{ typeError }}</span>
-                        </div>
-                    </CCol>
-                    <CCol xs="10" class="mx-auto mt-2">
-                        <CFormLabel :for="createDate" class="text-start mb-2 form-label-required">Report Date</CFormLabel>
-                        <CInputGroup class="mb-3">
-                            <CInputGroupText>
-                            <CIcon icon="cil-user" />
+                            <CIcon icon="cil-calendar" />
                             </CInputGroupText>
                             <Datepicker
                                 class="form-control p-0 border-0"
@@ -59,30 +100,12 @@
                                 :enable-time-picker="false"
                                 :hide-input-icon="true"
                                 :min-date="new Date(2024, 1, 1)"
-                                v-model="createDate"
-                                @blur="createDateMeta.touched = true; createDateValidate()"
+                                v-model="report_date"
+                                @blur="reportDateMeta.touched = true; reportDateValidate()"
                             />
                         </CInputGroup>
-                        <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="createDateMeta.touched && createDateError">
-                            <span>* {{ createDateError }}</span>
-                        </div>
-                    </CCol>
-                    <CCol xs="10" class="mx-auto mt-2">
-                        <CFormLabel :for="template" class="text-start mb-2 form-label-required">Report Template</CFormLabel>
-                        <CInputGroup class="mb-3">
-                            <CInputGroupText>
-                            <CIcon icon="cil-user" />
-                            </CInputGroupText>
-                            <CFormSelect
-                                v-model="template"
-                                @blur="templateMeta.touched = true; templateValidate()"
-                            >
-                                <option value="">Choose ...</option>
-                                <option :value="item.id" v-for="(item, idx) in templates">{{ item.name }}</option>
-                            </CFormSelect>
-                        </CInputGroup>
-                        <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="templateMeta.touched && templateError">
-                            <span>* {{ templateError }}</span>
+                        <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="reportDateMeta.touched && reportDateError">
+                            <span>* {{ reportDateError }}</span>
                         </div>
                     </CCol>
                 </CCol>
@@ -106,12 +129,14 @@
     import { toastNotifications } from '@/composables/toastNotifications'
     import Datepicker from '@vuepic/vue-datepicker'
     import '@vuepic/vue-datepicker/dist/main.css'
-    import { useRouter } from 'vue-router'
+    import dateTimeToDateISO from '@/utils/datetimeFormatter'
+    import { useRouter, useRoute } from 'vue-router'
     
     const props = defineProps({
         visibility: Boolean
     })
     const router = useRouter()
+    const route = useRoute()
 
     const { showToast } = toastNotifications()
 
@@ -120,18 +145,26 @@
     const { data: templates, execute: execute2 } = useApi(getTemplates, false)
 
     const schema = toTypedSchema( yup.object({
-        property: yup
+        title: yup
             .string()
+            .max(150, 'Max 150 characters allowed')
+            .required('Title is required'),
+        property_id: yup
+            .number()
+            .typeError('Property must be a number')
+            .integer('Property must be an integer')
             .required('Property is required'),
         type: yup
             .string()
             .required('Type is required'),
-        createDate: yup
+        report_date: yup
             .date()
             .typeError('Date must be valid')
             .required('Date is required'),
-        template: yup
-            .string()
+        template_id: yup
+            .number()
+            .typeError('Template must be a number')
+            .integer('Template must be an integer')
             .required('Template is required'),
     }))
 
@@ -147,11 +180,18 @@
     })
 
     const { 
-        value: property, 
+        value: title, 
+        errorMessage: titleError,
+        validate: titleValidate,
+        meta: titleMeta
+    } = useField('title');
+
+    const { 
+        value: property_id, 
         errorMessage: propertyError,
         validate: propertyValidate,
         meta: propertyMeta
-    } = useField('property');
+    } = useField('property_id');
 
     const { 
         value: type, 
@@ -161,29 +201,34 @@
     } = useField('type');
 
     const { 
-        value: createDate, 
-        errorMessage: createDateError,
-        validate: createDateValidate,
-        meta: createDateMeta
-    } = useField('createDate');
+        value: report_date, 
+        errorMessage: reportDateError,
+        validate: reportDateValidate,
+        meta: reportDateMeta
+    } = useField('report_date');
 
     const { 
-        value: template, 
+        value: template_id, 
         errorMessage: templateError,
         validate: templateValidate,
         meta: templateMeta
-    } = useField('template');
+    } = useField('template_id');
 
     const emit = defineEmits(['update:visibility'])
 
     const newReport = handleSubmit(async (formData) => {
+        formData.report_date = dateTimeToDateISO(formData.report_date)
         const response = await execute1({ payload: formData })
 
         if(response.success === true){
             showToast('success', 'Report created successfully! Wait redirecting...')
-            setTimeout(() => {
-                window.location.reload()
-            }, 2000)
+            if (route.name === 'realtor.reports.list') {
+                setTimeout(() => {
+                    window.location.reload()
+                }, 2000)
+            } else {
+                router.push({ name: 'realtor.reports' })
+            }
         } else{
             showToast('error', 'Oops! Something went wrong. Failed to create report.')
         }
