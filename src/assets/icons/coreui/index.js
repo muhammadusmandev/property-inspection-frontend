@@ -106,6 +106,8 @@ import {
   cilX,
   cilTextSquare,
   cilSearch,
+  cilText,
+  cilTag,
 } from '@coreui/icons'
 
 export const iconsSet = Object.assign(
@@ -190,6 +192,8 @@ export const iconsSet = Object.assign(
     cilX,
     cilTextSquare,
     cilSearch,
+    cilText,
+    cilTag,
   },
   {
     cifUs,

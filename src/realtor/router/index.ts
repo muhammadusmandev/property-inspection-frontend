@@ -39,6 +39,18 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
         component: () => import('@/realtor/views/dashboard/Dashboard.vue')
       },
       {
+        name: 'realtor.reports',
+        path: '/realtor/reports',
+        redirect: {name: 'realtor.reports.list'},
+        children: [
+          {
+            path: '/realtor/reports/list',
+            name: 'realtor.reports.list',
+            component: () => import('@/realtor/views/reports/ListReports.vue'),
+          }
+        ]
+      },
+      {
         name: 'realtor.properties',
         path: '/realtor/properties',
         redirect: {name: 'realtor.properties.list'},
