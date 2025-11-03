@@ -135,6 +135,12 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
       },
     ]
   },
+  {
+    path: '/realtor/billing',
+    name: 'realtor.billing',
+    component: () => import('@/realtor/views/billing/billing.vue'),
+    meta: { requireAuth: true },
+  },
 ]
 
 export default realtorRoutes
