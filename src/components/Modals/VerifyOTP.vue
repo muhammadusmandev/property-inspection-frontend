@@ -139,7 +139,7 @@
 
     async function submitOTPVerification(otp){
         otpError.value = ''
-        const response = await execute({ payload: { identifier: 'email', email: props.identifierValue, otp: otp } })
+        const response = await execute({ payload: { identifier: 'email', email: props.identifierValue, otp: otp, intent: props.otpVerificationType } })
 
         if(response.success === true){
             switch (response.data.status) {
