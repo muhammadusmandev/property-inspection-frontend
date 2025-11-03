@@ -55,3 +55,6 @@ export const deleteTemplate = ({}, id) => axiosInstance.delete(`/templates/${id}
 
 // Reports
 export const addReport = (data) => axiosInstance.post('/reports', data)
+
+// Billings
+export const getShowBillingsList = () => axiosInstance.get('/billings/show-billing-data')

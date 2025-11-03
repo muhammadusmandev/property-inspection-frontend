@@ -13,8 +13,8 @@
         <CCol :md="6" class="py-5">
             <div class="billing-top-headings">
                 <h2 class="text-capitalize">Checkout to start your free 7-days trial</h2>
-                <p class="text-body-secondary fs-6 my-1">
-                    You're currently logged in as Muhammad Usman (musmanpk444@gmail.com)
+                <p class="text-body-secondary fs-6 my-1" v-if="billingsData?.user">
+                    You're currently logged in as {{ billingsData.user?.name ?? '' }} ({{ billingsData.user?.email ?? 'N/A' }})
                 </p>
             </div>
             <CForm class="row g-2 mt-0" @submit.prevent="">
@@ -159,7 +159,7 @@
                     <CImage :src="pm5" alt="Payment Method" width="35" height="25" />
                     <CImage :src="pm6" alt="Payment Method" width="35" height="25" />
                 </div>
-                <p class="text-body-secondary mt-3" style="font-size: 0.9rem"><CIcon icon="cil-lock-locked" /> Payments are handled by secure platform <span class="text-decoration-underline fw-bold">Stripe</span></p>
+                <p class="text-body-secondary mt-3" style="font-size: 0.9rem"><CIcon icon="cil-lock-locked" /> Payments are handled by secure platform <a href="https://stripe.com/" class="text-dark"><span class="text-decoration-underline fw-bold">Stripe</span></a></p>
                 <div class="pt-2 border-top">
                     <p class="text-body-secondary" style="font-size: 0.8rem">By providing your billing and card information, You allow Inspexly to charge your card for future payment in accordance with their terms</p>
                 </div>
@@ -175,44 +175,27 @@
                     Select the best plan that suit your need
                 </p>
             </div>
-            <CButtonGroup class="mt-4 border-top pt-3 plans-btns-group">
-                <CButton href="#" class="py-4">
-                    <div class="plan-title text-body-secondary fs-6">Solo</div>
-                    <div class="plan-description fw-bold fs-6">$100/month</div>
-                </CButton>
-                <CButton href="#" class="plan-btn-active py-4" active>
-                    <div class="plan-title fs-6">Pro</div>
-                    <div class="plan-description fw-bold fs-6">$200/month</div>
-                    <span class="selected-plan-indicator"><CIcon icon="cil-check-circle" /> Selected</span>
-                </CButton>
-                <CButton href="#" class="py-4">
-                    <div class="plan-title text-body-secondary fs-6">Enterprise</div>
-                    <div class="plan-description fw-bold fs-6">$400/month</div>
+            <CButtonGroup class="mt-4 border-top pt-3 plans-btns-group" v-if="billingsData?.plans">
+                <CButton 
+                    href="#" 
+                    class="py-4" 
+                    v-for="(plan, index) in billingsData.plans" 
+                    :key="plan.id"
+                    :class="{ 'plan-btn-active': activePlan === index }"
+                    @click.prevent="setActivePlan(index)"
+                >
+                    <div class="plan-title text-body-secondary fs-6">{{ plan.name }}</div>
+                    <div class="plan-description fw-bold fs-6">${{ plan.monthly_price }}/month</div>
+                    <span class="selected-plan-indicator" v-if="activePlan === index"><CIcon icon="cil-check-circle" /> Selected</span>
                 </CButton>
             </CButtonGroup>
             <h5 class="mt-4 fw-bold border-top pt-4">Plan Details</h5>
-            <div class="plans-tab-content">
+            <div class="plans-tab-content" v-if="billingsData?.plans && billingsData?.plans.length">
                 <table class="my-4">
                     <tbody>
-                        <tr class="d-flex gap-2">
+                        <tr class="d-flex gap-2 mb-1" v-for="(feature, idx) in billingsData.plans[activePlan].features" :key="feature.id">
                             <td><CIcon icon="cil-check-alt" class="feature-check-icon" /></td>
-                            <td class="text-body-secondary"> here is the feature 1</td>
-                        </tr>
-                        <tr class="d-flex gap-2">
-                            <td><CIcon icon="cil-check-alt" class="feature-check-icon" /></td>
-                            <td class="text-body-secondary"> here is the feature 2</td>
-                        </tr>
-                        <tr class="d-flex gap-2">
-                            <td><CIcon icon="cil-check-alt" class="feature-check-icon" /></td>
-                            <td class="text-body-secondary"> here is the feature 3</td>
-                        </tr>
-                        <tr class="d-flex gap-2">
-                            <td><CIcon icon="cil-check-alt" class="feature-check-icon" /></td>
-                            <td class="text-body-secondary"> here is the feature 4</td>
-                        </tr>
-                        <tr class="d-flex gap-2">
-                            <td><CIcon icon="cil-check-alt" class="feature-check-icon" /></td>
-                            <td class="text-body-secondary"> here is the feature 5</td>
+                            <td class="text-body-secondary"> <span class="feature-value fw-bold">{{ feature.value }}</span> <span class="feature-name">{{ feature.name }}</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -226,14 +209,14 @@
                 </div>
                 <div class="d-flex justify-content-between py-3">
                     <div class="text-body-secondary">
-                        Pro (Monthly)
+                        {{ billingsData?.plans[activePlan]?.name + ' (Monthly)' }}
                     </div>
                     <div class="text-body-secondary">
-                        $200
+                        ${{ billingsData?.plans[activePlan]?.monthly_price }}
                     </div>
                 </div>
                 <p class="text-body-secondary next-billed-text">
-                    Billed on <b>May 25, 2025</b> after free trial ($200/month)
+                    Billed on <b>{{ sevenDaysFromNow }}</b> after free trial (${{ billingsData?.plans[activePlan]?.monthly_price }}/month)
                 </p>
                 <div class="d-flex justify-content-between border-top py-3 px-3 mt-4 due-today-row">
                     <div class="fw-bold">
@@ -251,7 +234,7 @@
 </template>
 
 <script setup>
-  import { ref, onMounted } from 'vue'
+  import { ref, onBeforeMount, onMounted, computed } from 'vue'
   import { useForm, useField } from 'vee-validate'
   import * as yup from 'yup'
   import { toTypedSchema } from '@vee-validate/yup'
@@ -262,10 +245,11 @@
   import pm4 from '@/assets/icons/payment_methods/4.png'
   import pm5 from '@/assets/icons/payment_methods/5.png'
   import pm6 from '@/assets/icons/payment_methods/6.png'
-  import { getCountriesList } from '@/services/api'
+  import { getCountriesList, getShowBillingsList } from '@/services/api'
   import { useApi } from '@/composables/useApi'
   import { loadStripe } from "@stripe/stripe-js"
 
+  const activePlan = ref(1)
   const postalCodePatterns = {
     US: /^\d{5}(-\d{4})?$/,
     CA: /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/,
@@ -375,16 +359,36 @@
     } = useField('country');
 
     const {data: CountriesData, execute } = useApi(getCountriesList, false)
+    const {data: billingsData, execute: execute1 } = useApi(getShowBillingsList, false)
 
     let cardElement = null
     let stripe = null
+
+    onBeforeMount(async () => {
+        await execute1()
+        await execute()
+    })
 
     onMounted(async () => {
         stripe = await loadStripe(import.meta.env.VITE_STRIPE_SECRET_KEY)
         const elements = stripe.elements()
         cardElement = elements.create("card")
         cardElement.mount("#card-element")
-        await execute()
+    })
+
+    function setActivePlan(index) {
+        activePlan.value = index
+    }
+
+    const sevenDaysFromNow = computed(() => {
+        const date = new Date()
+        date.setDate(date.getDate() + 7)
+        return date.toLocaleDateString('en-US', {
+            month: 'long',
+            weekday: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        })
     })
 </script>
 
