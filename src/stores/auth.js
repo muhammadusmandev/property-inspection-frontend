@@ -1,8 +1,10 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { toastNotifications } from '@/composables/toastNotifications'
+import { useSubscriptionStore } from '@/stores/subscription'
 
 export const useAuthStore = defineStore('auth', () => {
+    const subscriptionStore = useSubscriptionStore()
     const user = ref(null)
     const checkAuth = ref(false)
     const token = ref(null)
@@ -30,6 +32,8 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
         localStorage.removeItem('token_expiry')
+
+        subscriptionStore.clearSubscription()
     }
 
     function clearUserData() {

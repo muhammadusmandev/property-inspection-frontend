@@ -17,7 +17,7 @@
                     You're currently logged in as {{ billingsData.user?.name ?? '' }} ({{ billingsData.user?.email ?? 'N/A' }})
                 </p>
             </div>
-            <CForm class="row g-2 mt-0" @submit.prevent="">
+            <CForm class="row g-2 mt-0" @submit.prevent="submitNewSubscription">
                 <h5 class="mt-4 fw-bold border-top pt-3 mb-1">Billing Details</h5>
                 <CFormLabel :for="name" class="text-start mb-0 form-label-required">Full Name</CFormLabel>
                 <CInputGroup>
@@ -31,7 +31,7 @@
                         @blur="nameMeta.touched = true; nameValidate()"
                     />
                 </CInputGroup>
-                <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="nameMeta.touched && nameError">
+                <div class="form-field-error d-inline-block mt-2 mx-2 w-auto" v-if="nameMeta.touched && nameError">
                     <span>* {{ nameError }}</span>
                 </div>
                 <CFormLabel :for="email" class="text-start mb-0 form-label-required">Email</CFormLabel>
@@ -46,108 +46,115 @@
                         @blur="emailMeta.touched = true; emailValidate()"
                     />
                 </CInputGroup>
-                <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="emailMeta.touched && emailError">
+                <div class="form-field-error d-inline-block mt-2 mx-2 w-auto" v-if="emailMeta.touched && emailError">
                     <span>* {{ emailError }}</span>
                 </div>
-                <CCol xs="6">
-                    <CFormLabel for="address">Address (optional)</CFormLabel>
-                    <div class="input-group">
-                        <CInputGroupText>
-                            <CIcon icon="cilLocationPin" />
-                        </CInputGroupText>
-                        <CFormInput 
-                            placeholder="8787 Main Street etc.." 
-                            v-model="address"
-                            @blur="addressMeta.touched = true; addressValidate()"
-                        />
-                    </div>
-                    <div class="flex form-field-error d-inline-block mt-2" v-if="addressMeta.touched && addressError">
-                        <span>* {{ addressError }}</span>
-                    </div>
-                </CCol>
-                <CCol xs="6">
-                    <CFormLabel for="address_2">Address 2 (optional)</CFormLabel>
-                    <div class="input-group">
-                        <CInputGroupText>
-                            <CIcon icon="cilLocationPin" />
-                        </CInputGroupText>
-                        <CFormInput 
-                            placeholder="Apartment, Floor etc."
-                            v-model="address_2"
-                            @blur="address2Meta.touched = true; address2Validate()"
-                        />
-                    </div>
-                    <div class="flex form-field-error d-inline-block mt-2" v-if="address2Meta.touched && address2Error">
-                        <span>* {{ address2Error }}</span>
-                    </div>
-                </CCol>
-                <CCol md="6">
-                    <CFormLabel for="city">City (optional)</CFormLabel>
-                    <div class="input-group">
-                        <CInputGroupText>
-                            <CIcon icon="cilChevronRight" />
-                        </CInputGroupText>
-                        <CFormInput
-                            placeholder="New York" 
-                            v-model="city"
-                            @blur="cityMeta.touched = true; cityValidate()"
-                        />
-                    </div>
-                    <div class="flex form-field-error d-inline-block mt-2" v-if="cityMeta.touched && cityError">
-                        <span>* {{ cityError }}</span>
-                    </div>
-                </CCol>
-                <CCol md="6">
-                    <CFormLabel for="state">State (optional)</CFormLabel>
-                    <div class="input-group">
-                        <CInputGroupText>
-                            <CIcon icon="cilChevronRight" />
-                        </CInputGroupText>
-                        <CFormInput
-                            placeholder="New York" 
-                            v-model="state"
-                            @blur="stateMeta.touched = true; stateValidate()"
-                        />
-                    </div>
-                    <div class="flex form-field-error d-inline-block mt-2" v-if="stateMeta.touched && stateError">
-                        <span>* {{ stateError }}</span>
-                    </div>
-                </CCol>
-                <CCol md="6">
-                    <CFormLabel for="postal_code" class="form-label-required">Zip Code</CFormLabel>
-                    <div class="input-group">
-                        <CInputGroupText>
-                            <CIcon icon="cilChevronRight" />
-                        </CInputGroupText>
-                        <CFormInput 
-                            placeholder="10005" 
-                            v-model="postal_code"
-                            @blur="postalCodeMeta.touched = true; postalCodeValidate()"
-                        />
-                    </div>
-                    <div class="flex form-field-error d-inline-block mt-2" v-if="postalCodeMeta.touched && postalCodeError">
-                        <span>* {{ postalCodeError }}</span>
-                    </div>
-                </CCol>
-                <CCol md="6">
-                    <CFormLabel for="country" class="form-label-required">Country</CFormLabel>
-                    <div class="input-group">
-                        <CInputGroupText>
-                            <CIcon icon="cilGlobeAlt" />
-                        </CInputGroupText>
-                        <CFormSelect
-                            v-model="country"
-                            @blur="countryMeta.touched = true; countryValidate()"
-                        >
-                            <option value="">Choose...</option>
-                            <option :value="country.name" v-for="(country, idx) in CountriesData" :key="idx">{{country.name}}</option>
+                <CRow class="mx-0 px-0 mt-2">
+                    <CCol xs="6" class="ps-1">
+                        <CFormLabel for="address">Address (optional)</CFormLabel>
+                        <div class="input-group">
+                            <CInputGroupText>
+                                <CIcon icon="cilLocationPin" />
+                            </CInputGroupText>
+                            <CFormInput 
+                                placeholder="8787 Main Street etc.." 
+                                v-model="address"
+                                @blur="addressMeta.touched = true; addressValidate()"
+                            />
+                        </div>
+                        <div class="flex form-field-error d-inline-block mt-2" v-if="addressMeta.touched && addressError">
+                            <span>* {{ addressError }}</span>
+                        </div>
+                    </CCol>
+                    <CCol xs="6" class="pe-1">
+                        <CFormLabel for="address_2">Address 2 (optional)</CFormLabel>
+                        <div class="input-group">
+                            <CInputGroupText>
+                                <CIcon icon="cilLocationPin" />
+                            </CInputGroupText>
+                            <CFormInput 
+                                placeholder="Apartment, Floor etc."
+                                v-model="address_2"
+                                @blur="address2Meta.touched = true; address2Validate()"
+                            />
+                        </div>
+                        <div class="flex form-field-error d-inline-block mt-2" v-if="address2Meta.touched && address2Error">
+                            <span>* {{ address2Error }}</span>
+                        </div>
+                    </CCol>
+                </CRow>
 
-                        </CFormSelect>
-                    </div>
-                    <div class="flex form-field-error d-inline-block mt-2" v-if="countryMeta.touched && countryError">
-                        <span>* {{ countryError }}</span>
-                    </div>
-                </CCol>
+                <CRow class="mx-0 px-0 mt-2">
+                    <CCol md="6" class="ps-1">
+                        <CFormLabel for="city">City (optional)</CFormLabel>
+                        <div class="input-group">
+                            <CInputGroupText>
+                                <CIcon icon="cilChevronRight" />
+                            </CInputGroupText>
+                            <CFormInput
+                                placeholder="New York" 
+                                v-model="city"
+                                @blur="cityMeta.touched = true; cityValidate()"
+                            />
+                        </div>
+                        <div class="flex form-field-error d-inline-block mt-2" v-if="cityMeta.touched && cityError">
+                            <span>* {{ cityError }}</span>
+                        </div>
+                    </CCol>
+                    <CCol xs="6" class="pe-1">
+                        <CFormLabel for="state">State (optional)</CFormLabel>
+                        <div class="input-group">
+                            <CInputGroupText>
+                                <CIcon icon="cilChevronRight" />
+                            </CInputGroupText>
+                            <CFormInput
+                                placeholder="New York" 
+                                v-model="state"
+                                @blur="stateMeta.touched = true; stateValidate()"
+                            />
+                        </div>
+                        <div class="flex form-field-error d-inline-block mt-2" v-if="stateMeta.touched && stateError">
+                            <span>* {{ stateError }}</span>
+                        </div>
+                    </CCol>
+                </CRow>
+                <CRow class="mx-0 px-0 mt-2">
+                    <CCol xs="6" class="ps-1">
+                        <CFormLabel for="postal_code" class="form-label-required">Zip Code</CFormLabel>
+                        <div class="input-group">
+                            <CInputGroupText>
+                                <CIcon icon="cilChevronRight" />
+                            </CInputGroupText>
+                            <CFormInput 
+                                placeholder="10005" 
+                                v-model="postal_code"
+                                @blur="postalCodeMeta.touched = true; postalCodeValidate()"
+                            />
+                        </div>
+                        <div class="flex form-field-error d-inline-block mt-2" v-if="postalCodeMeta.touched && postalCodeError">
+                            <span>* {{ postalCodeError }}</span>
+                        </div>
+                    </CCol>
+                    <CCol xs="6" class="pe-1">
+                        <CFormLabel for="country" class="form-label-required">Country</CFormLabel>
+                        <div class="input-group">
+                            <CInputGroupText>
+                                <CIcon icon="cilGlobeAlt" />
+                            </CInputGroupText>
+                            <CFormSelect
+                                v-model="country"
+                                @blur="countryMeta.touched = true; countryValidate()"
+                            >
+                                <option value="">Choose...</option>
+                                <option :value="country.code" v-for="(country, idx) in CountriesData" :key="idx">{{country.name}}</option>
+
+                            </CFormSelect>
+                        </div>
+                        <div class="flex form-field-error d-inline-block mt-2" v-if="countryMeta.touched && countryError">
+                            <span>* {{ countryError }}</span>
+                        </div>
+                    </CCol>
+                </CRow>
                 <h5 class="mt-4 fw-bold border-top pt-3 mb-1">Pay With</h5>
                 <CFormLabel :for="email" class="text-start mb-0 form-label-required">Debit or Credit Card</CFormLabel>
                 <div id="card-element" class="card-element"></div>
@@ -164,7 +171,7 @@
                     <p class="text-body-secondary" style="font-size: 0.8rem">By providing your billing and card information, You allow Inspexly to charge your card for future payment in accordance with their terms</p>
                 </div>
                 <div class="mt-4">
-                    <CButton color="primary" class="px-4 self-button" type="submit"><CIcon icon="cil-send" /> Start Free Trial Now </CButton>
+                    <CButton color="primary" class="px-4 self-button" :disabled="btnLoading" type="submit"><CIcon icon="cil-send" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Subscribing...' : 'Start Free Trial Now' }} </CButton>
                 </div>
             </CForm>
         </CCol>
@@ -181,19 +188,19 @@
                     class="py-4" 
                     v-for="(plan, index) in billingsData.plans" 
                     :key="plan.id"
-                    :class="{ 'plan-btn-active': activePlan === index }"
-                    @click.prevent="setActivePlan(index)"
+                    :class="{ 'plan-btn-active': activePlanIdx === index }"
+                    @click.prevent="setActivePlan(index, plan)"
                 >
                     <div class="plan-title text-body-secondary fs-6">{{ plan.name }}</div>
                     <div class="plan-description fw-bold fs-6">${{ plan.monthly_price }}/month</div>
-                    <span class="selected-plan-indicator" v-if="activePlan === index"><CIcon icon="cil-check-circle" /> Selected</span>
+                    <span class="selected-plan-indicator" v-if="activePlanIdx === index"><CIcon icon="cil-check-circle" /> Selected</span>
                 </CButton>
             </CButtonGroup>
             <h5 class="mt-4 fw-bold border-top pt-4">Plan Details</h5>
             <div class="plans-tab-content" v-if="billingsData?.plans && billingsData?.plans.length">
                 <table class="my-4">
                     <tbody>
-                        <tr class="d-flex gap-2 mb-1" v-for="(feature, idx) in billingsData.plans[activePlan].features" :key="feature.id">
+                        <tr class="d-flex gap-2 mb-1" v-for="(feature, idx) in billingsData.plans[activePlanIdx].features" :key="feature.id">
                             <td><CIcon icon="cil-check-alt" class="feature-check-icon" /></td>
                             <td class="text-body-secondary"> <span class="feature-value fw-bold">{{ feature.value }}</span> <span class="feature-name">{{ feature.name }}</span></td>
                         </tr>
@@ -209,14 +216,14 @@
                 </div>
                 <div class="d-flex justify-content-between py-3">
                     <div class="text-body-secondary">
-                        {{ billingsData?.plans[activePlan]?.name + ' (Monthly)' }}
+                        {{ billingsData?.plans[activePlanIdx]?.name + ' (Monthly)' }}
                     </div>
                     <div class="text-body-secondary">
-                        ${{ billingsData?.plans[activePlan]?.monthly_price }}
+                        ${{ billingsData?.plans[activePlanIdx]?.monthly_price }}
                     </div>
                 </div>
                 <p class="text-body-secondary next-billed-text">
-                    Billed on <b>{{ sevenDaysFromNow }}</b> after free trial (${{ billingsData?.plans[activePlan]?.monthly_price }}/month)
+                    Billed on <b>{{ sevenDaysFromNow }}</b> after free trial (${{ billingsData?.plans[activePlanIdx]?.monthly_price }}/month)
                 </p>
                 <div class="d-flex justify-content-between border-top py-3 px-3 mt-4 due-today-row">
                     <div class="fw-bold">
@@ -245,11 +252,20 @@
   import pm4 from '@/assets/icons/payment_methods/4.png'
   import pm5 from '@/assets/icons/payment_methods/5.png'
   import pm6 from '@/assets/icons/payment_methods/6.png'
-  import { getCountriesList, getShowBillingsList } from '@/services/api'
+  import { ButtonSpinner } from '@/components/General/Spinner.vue'
+  import { getCountriesList, getShowBillingsList, activateSubscription } from '@/services/api'
+  import { toastNotifications } from '@/composables/toastNotifications'
   import { useApi } from '@/composables/useApi'
-  import { loadStripe } from "@stripe/stripe-js"
+  import { loadStripe } from '@stripe/stripe-js'
+  import { useRouter } from 'vue-router'
 
-  const activePlan = ref(1)
+  const defaultActivePlanIdx = ref(0)  // values: 0, 1, 2
+  const activePlanIdx = ref(defaultActivePlanIdx.value)
+  const activePlan = ref(null)
+  const btnLoading = ref(false)
+  const { showToast } = toastNotifications()
+  const router = useRouter()
+
   const postalCodePatterns = {
     US: /^\d{5}(-\d{4})?$/,
     CA: /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/,
@@ -272,14 +288,12 @@
           .required('Name is required'),
     address: yup
           .string()
-          .min(5, 'Must be atleast 5 characters long')
           .max(100, 'Must be 100 characters long'),
     address_2: yup
           .string()
           .max(100, 'Must be 100 characters long'),
     city: yup
           .string()
-          .min(2, 'Must be atleast 2 characters long')
           .max(50, 'Must be 50 characters long'),
     state: yup
           .string()
@@ -360,6 +374,7 @@
 
     const {data: CountriesData, execute } = useApi(getCountriesList, false)
     const {data: billingsData, execute: execute1 } = useApi(getShowBillingsList, false)
+    const {loading, execute: execute2 } = useApi(activateSubscription, false)
 
     let cardElement = null
     let stripe = null
@@ -367,17 +382,22 @@
     onBeforeMount(async () => {
         await execute1()
         await execute()
+
+        if (billingsData.value.plans && billingsData.value.plans.length > 0) {
+            activePlan.value = billingsData.value.plans[defaultActivePlanIdx.value]
+        }
     })
 
     onMounted(async () => {
         stripe = await loadStripe(import.meta.env.VITE_STRIPE_SECRET_KEY)
         const elements = stripe.elements()
-        cardElement = elements.create("card")
+        cardElement = elements.create("card", { hidePostalCode: true })
         cardElement.mount("#card-element")
     })
 
-    function setActivePlan(index) {
-        activePlan.value = index
+    function setActivePlan(index, plan) {
+        activePlanIdx.value = index
+        activePlan.value = plan
     }
 
     const sevenDaysFromNow = computed(() => {
@@ -389,6 +409,53 @@
             day: 'numeric',
             year: 'numeric'
         })
+    })
+
+    const submitNewSubscription = handleSubmit(async (formData) => {
+        btnLoading.value = true
+        const setupIntentClientSecret = billingsData.value.stripe_client_secret
+
+        const { setupIntent, error } = await stripe.confirmCardSetup(
+            setupIntentClientSecret,
+            {
+                payment_method: {
+                    card: cardElement,
+                    billing_details: {
+                        name: billingsData.value.name,
+                        email: billingsData.value.email,
+                        address: {
+                            line1: billingsData.value.address,
+                            line2: billingsData.value.address_2,
+                            city: billingsData.value.city,
+                            state: billingsData.value.state,
+                            postal_code: billingsData.value.postal_code,
+                            country: billingsData.value.country, // ISO 3166-1 (e.g. 'US', 'CA')
+                        },
+
+                    },
+                },
+            }
+        );
+
+        if (error) {
+            showToast('error', 'Error while processing payment: ' + error.message);
+            btnLoading.value = false
+            return;
+        }
+
+        formData.stripe_payment_method = setupIntent.payment_method;
+        formData.stripe_plan_price_id = activePlan.value.stripe_monthly_price_id;
+
+        const response = await execute2({ payload: formData })
+
+        if(response.success === true){
+            showToast('success', 'Great! Trial activated successfully! Wait redirecting...')
+            setTimeout(() => {
+                router.push({ name: 'realtor.dashboard' })
+            }, 5000)
+        } else{
+            btnLoading.value = false
+        }
     })
 </script>
 

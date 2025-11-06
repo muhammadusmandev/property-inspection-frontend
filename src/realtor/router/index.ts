@@ -31,7 +31,7 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
     name: 'home',
     component: AppLayout,
     redirect: {name: 'realtor.dashboard'},
-    meta: { requireAuth: true },
+    meta: { requireAuth: true, requiresSubscription: true },
     children: [
       {
         name: 'realtor.dashboard',
@@ -138,7 +138,7 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
   {
     path: '/realtor/billing',
     name: 'realtor.billing',
-    component: () => import('@/realtor/views/billing/billing.vue'),
+    component: () => import('@/realtor/views/billing/TrialBilling.vue'),
     meta: { requireAuth: true },
   },
 ]
