@@ -3,10 +3,10 @@
       <div class="row align-items-center justify-between">
           <div class="page-heading col-6">
             <h2>Reports</h2>
-            <p>Full control and manage all your reports in one place</p>
+            <p>Full control and manage all your Reports in one place</p>
           </div>
           <div class="text-end pb-4 col-6">
-            <CButton class="px-4 self-bg-primary self-color-tertiary fs-6" @click="showAddReport = true">
+            <CButton class="px-4 self-bg-primary self-color-tertiary fs-6" @click="visibleAddReport()">
               <CIcon icon="cil-plus" /> Add New Report
             </CButton>
             <CButton class="ms-2 px-4 self-bg-light-dark self-color-tertiary fs-6" @click="refreshDT"><CIcon icon="cil-reload" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Refreshing...' : 'Refresh' }} </CButton>
@@ -18,7 +18,7 @@
           <div class="col-9">
               <div class="d-flex gap-4 mt-0">
                 <CCol xs="7">
-                  <CFormLabel :for="searchByColumn" class="text-start mb-1 form-label-required">Search Report Title</CFormLabel>
+                  <CFormLabel :for="searchByColumn" class="text-start mb-1 form-label-required">Search Report</CFormLabel>
                   <CInputGroup class="mb-3">
                       <CInputGroupText>
                       <CIcon icon="cil-user" />
@@ -89,31 +89,22 @@
                   {{ slotProps.index + 1 }}
               </template>
           </Column>
-          <Column field="title" header="Title" style="height: 44px">
-          </Column>
-          <Column header="Property" style="height: 44px">
+          <Column field="title" header="Title" style="height: 44px"></Column>
+          <Column field="property.name" header="Property Name" style="height: 44px"></Column>
+          <Column field="report_date" header="Report Date" style="height: 44px"></Column>
+          <Column header="Report type" style="height: 44px">
             <template #body="{ data }">
-              {{ data.property.name }}
+              {{ 
+                data.type == 'inspection' ? 'Inspection' : 
+                data.type == 'inventory' ? 'Inventory' :
+                data.type == 'check-out' ? 'Check out' :
+                data.type == 'check-in' ? 'Check In' :  'N/A'
+              }}
             </template>
           </Column>
-          <Column header="Template" style="height: 44px">
+          <Column header="Report Status" style="height: 44px">
             <template #body="{ data }">
-              {{ data.template.name }}
-            </template>
-          </Column>
-          <Column header="Report Date" style="height: 44px">
-            <template #body="{ data }">
-              {{ localeAwareLongDateFormat(data.report_date) }}
-            </template>
-          </Column>
-          <Column header="Type" style="height: 44px">
-            <template #body="{ data }">
-              {{ data.type }}
-            </template>
-          </Column>
-          <Column header="Status" style="height: 44px">
-            <template #body="{ data }">
-              <span class="badge bg-info">{{ data.status }}</span>
+              <span class="badge bg-info text-capitalize">{{ data.status ? data.status :  'N/A' }}</span>
             </template>
           </Column>
           <Column header="Action" style="height: 44px">
@@ -125,24 +116,22 @@
           </Column>
       </DataTable>
   </div>
-
   <CreateReport v-model:visibility="showAddReport" />
   <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDeleteReport" />
 </template>
 
 <script setup>
-  import { ref, onBeforeMount } from 'vue';
+  import { ref, onBeforeMount, watch } from 'vue';
   import DataTable from 'primevue/datatable'
   import Column from 'primevue/column'
   import { useForm, useField } from 'vee-validate'
   import * as yup from 'yup'
   import { toTypedSchema } from '@vee-validate/yup'
   import { useApi } from '@/composables/useApi'
-  import CreateReport from '@/components/Modals/CreateReport.vue'
+  import AddReport from '@/components/Modals/CreateReport.vue'
   import DeleteWarningModal from '@/components/Modals/DeleteWarningModal.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
   import { getReports, deleteReport } from '@/services/api'
-  import { localeAwareLongDateFormat } from '@/utils/datetimeFormatter'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
 
   const perPage = ref(20)
@@ -200,6 +189,7 @@
     const response = await execute({ queryParameters: queryParameters})
     
     reports.value = response.data.data
+    console.log(reports.value)
     totalRecords.value = response.data.meta.total
   }
 
@@ -219,6 +209,14 @@
       {first: 0, rows: perPage.value}
     )
     btnLoading.value = false
+  }
+  
+  function showAreas(data){
+    return data.map(area => area.name).join(', ');
+  }
+
+  function visibleAddReport() {
+    showAddReport.value = true
   }
 
   function handleShowDeleteModal(reportId) {

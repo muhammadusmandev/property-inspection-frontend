@@ -31,7 +31,7 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
     name: 'home',
     component: AppLayout,
     redirect: {name: 'realtor.dashboard'},
-    meta: { requireAuth: true, requiresSubscription: true },
+    meta: { requireAuth: true },
     children: [
       {
         name: 'realtor.dashboard',

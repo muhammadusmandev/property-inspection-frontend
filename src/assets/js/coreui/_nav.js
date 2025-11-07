@@ -35,8 +35,13 @@ export default [
     items: [
       {
         component: 'CNavItem',
+        name: 'Add Report',
+        to: '/realtor/reports/#',
+      },
+      {
+        component: 'CNavItem',
         name: 'List Reports',
-        to: '/realtor/reports/list',
+        to: '/realtor/reports/#',
       },
     ],
   },
