@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useSubscriptionStore } from '@/stores/subscription'
 import realtorRoutes from '@/realtor/router'
 
 const routes = [
@@ -11,8 +12,9 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
+  const subscription = useSubscriptionStore()
   
   if (!authStore.checkAuth) {
     authStore.restoreAuthData()
@@ -26,6 +28,26 @@ router.beforeEach((to, from, next) => {
 
   if (to.meta.guest && authStore.checkAuth) {
     return next('/realtor/dashboard')
+  }
+
+  if (to.meta.requiresSubscription) {
+    await subscription.getStatus()
+
+    switch (subscription.status) {
+      case 'active':
+      case 'trial_active':
+        return next()
+    
+      case 'expired':
+      case 'cancelled':
+        return next('/realtor/dashboard') // Todo: need to redirect to upgrade page
+      
+      case 'non_subscribe':
+        return next('/realtor/billing')
+
+      default:
+        return next()
+    }
   }
 
   next()

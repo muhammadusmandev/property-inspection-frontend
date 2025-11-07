@@ -193,7 +193,7 @@
       </CRow>
     </CContainer>
   </div>
-  <VerifyOTP :visibility="showVerifyOTPModal" :identifierValue="identifierValue" />
+  <VerifyOTP :visibility="showVerifyOTPModal" :identifierValue="identifierValue" :otpVerificationType="otpVerificationType" />
 </template>
 
 <script setup>
@@ -215,6 +215,7 @@
 
   const showVerifyOTPModal = ref(false)
   const identifierValue = ref(null)
+  const otpVerificationType = ref('')
   const fifteenYearsAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 15))
 
   const authStore = useAuthStore()
@@ -324,6 +325,7 @@
       // display verification modal
       showVerifyOTPModal.value = true
       identifierValue.value = formData.email
+      otpVerificationType.value = 'registration'
     } else{
       // handle any case if concerned error data
     }

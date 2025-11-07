@@ -57,3 +57,10 @@ export const deleteTemplate = ({}, id) => axiosInstance.delete(`/templates/${id}
 export const getReports = ({}, params) => axiosInstance.get(`/reports/${params}`)
 export const addReport = (data) => axiosInstance.post('/reports', data)
 export const deleteReport = ({}, id) => axiosInstance.delete(`/reports/${id}`)
+
+// Billings
+export const getShowBillingsList = () => axiosInstance.get('/billings/show-billing-data')
+export const activateSubscription = (data) => axiosInstance.post('/billings/activate-subscription', data)
+
+// Subscriptions
+export const getSubscriptionData = () => axiosInstance.get('/subscriptions/status')
