@@ -75,7 +75,7 @@
     import { useForm, useField } from 'vee-validate'
     import * as yup from 'yup'
     import { toTypedSchema } from '@vee-validate/yup'
-    import { resetPassword, getInspectionAreaItemsList, addInspectionArea } from '@/services/api'
+    import { getInspectionAreaItemsList, addInspectionArea } from '@/services/api'
     import { useApi } from '@/composables/useApi'
     import Multiselect from '@vueform/multiselect'
     import '@vueform/multiselect/themes/default.css' 

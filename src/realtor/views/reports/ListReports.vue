@@ -110,6 +110,7 @@
           <Column header="Action" style="height: 44px">
             <template #body="{ data }">
               <div class="d-flex gap-1">
+                <span class="badge bg-dark" @click="handleShowUpdateModal(data.id)"><CIcon icon="cil-pen" /></span>
                 <span class="badge bg-danger" @click="handleShowDeleteModal(data.id)"><CIcon icon="cil-x" /></span>
               </div>
             </template>
@@ -128,10 +129,11 @@
   import * as yup from 'yup'
   import { toTypedSchema } from '@vee-validate/yup'
   import { useApi } from '@/composables/useApi'
-  import AddReport from '@/components/Modals/CreateReport.vue'
+  import CreateReport from '@/components/Modals/CreateReport.vue'
   import DeleteWarningModal from '@/components/Modals/DeleteWarningModal.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
   import { getReports, deleteReport } from '@/services/api'
+  import { useRouter } from 'vue-router'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
 
   const perPage = ref(20)
@@ -144,6 +146,7 @@
   const deleteBtnLoading = ref(false)
   const deleteReportId = ref(null)
   const { showToast } = toastNotifications()
+  const router = useRouter()
 
   const schema = toTypedSchema( yup.object({
     searchByColumn: yup
@@ -189,7 +192,6 @@
     const response = await execute({ queryParameters: queryParameters})
     
     reports.value = response.data.data
-    console.log(reports.value)
     totalRecords.value = response.data.meta.total
   }
 
@@ -222,6 +224,10 @@
   function handleShowDeleteModal(reportId) {
     deleteReportId.value = reportId
     showDeleteModal.value = true
+  }
+
+  function handleShowUpdateModal(reportId) {
+    router.push({ name: 'realtor.reports.update', params: { id: reportId } })
   }
 
   async function handleDeleteReport(){

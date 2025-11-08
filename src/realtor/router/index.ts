@@ -44,6 +44,11 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
         redirect: {name: 'realtor.reports.list'},
         children: [
           {
+            path: '/realtor/reports/report/:id',
+            name: 'realtor.reports.view',
+            component: () => import('@/realtor/views/reports/ViewReport.vue'),
+          },
+          {
             path: '/realtor/reports/list',
             name: 'realtor.reports.list',
             component: () => import('@/realtor/views/reports/ListReports.vue'),
