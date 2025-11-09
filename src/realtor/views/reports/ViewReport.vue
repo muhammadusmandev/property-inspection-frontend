@@ -4,79 +4,188 @@
       :heading="pageHeading"
       description="Manage your report including adding more inspection areas and defects"
     />
-    <CRow class="mt-4">
-      <div class="pb-4 col-6">
-        <CButton class="px-4 self-bg-primary self-color-tertiary fs-6" @click="visibleAddNewArea()">
-          <CIcon icon="cil-plus" /> Add New Inpsection Area
-        </CButton>
-      </div>
-      <h4 class="mb-3 text-self-primary">Inspection Areas</h4>
-
-      <CAccordion v-if="reportData?.areas.length > 0">
-        <CAccordionItem
-          v-for="area in reportData.areas"
-          :key="area.id"
-          :item-title="area.name"
-          class="mb-3"
-        >
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="mb-0">{{ area.name }}</h5>
-
-            <CDropdown variant="link" class="p-0">
-              <CDropdownToggle class="text-dark">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="currentColor"
-                >
-                  <circle cx="2" cy="8" r="2"/>
-                  <circle cx="8" cy="8" r="2"/>
-                  <circle cx="14" cy="8" r="2"/>
-                </svg>
-              </CDropdownToggle>
-              <CDropdownMenu placement="bottom-end">
-                <CDropdownItem @click="handleShowUpdateModal(area.id)">Edit</CDropdownItem>
-                <CDropdownItem @click="handleShowDeleteModal(area.id)">Delete</CDropdownItem>
-              </CDropdownMenu>
-            </CDropdown>
+    <div class="wizard-container">
+      <!-- Main Wizard Area -->
+      <div>
+        <!-- Header with Step Indicators -->
+        <div class="wizard-header">
+          <div class="steps-container">
+            <button
+              v-for="(step, i) in steps"
+              :key="i"
+              class="step-btn"
+              :class="{
+                active: currentStep === step.id,
+                completed: currentStep > step.id
+              }"
+              @click="goToStep(step.id)"
+            >
+              {{ step.id }}
+            </button>
           </div>
-          <CTable bordered hover responsive>
-            <CTableHead>
-              <CTableRow>
-                <CTableHeaderCell style="width: 15%;">Name</CTableHeaderCell>
-                <CTableHeaderCell style="width: 10%;">Condition</CTableHeaderCell>
-                <CTableHeaderCell style="width: 10%;">Cleanliness</CTableHeaderCell>
-                <CTableHeaderCell style="width: 25%;">Description</CTableHeaderCell>
-                <CTableHeaderCell style="width: 40%;">Items</CTableHeaderCell>
-              </CTableRow>
-            </CTableHead>
-            <CTableBody>
-              <CTableRow>
-                <CTableDataCell style="width: 15%;">
-                  General Overview
-                </CTableDataCell>
-                <CTableDataCell style="width: 10%;">
-                  <CBadge class="text-capitalize px-4 py-2" style="border-radius: 25px" :color="getStatusColor(area.condition)">
-                    {{ area.condition }}
-                  </CBadge>
-                </CTableDataCell>
-                <CTableDataCell style="width: 10%;">
-                  <CBadge class="text-capitalize px-4 py-2" style="border-radius: 25px" :color="getStatusColor(area.cleanliness)">
-                    {{ area.cleanliness }}
-                  </CBadge>
-                </CTableDataCell>
-                <CTableDataCell style="width: 25%;">{{ area.description || '-' }}</CTableDataCell>
-                <CTableDataCell style="width: 40%;">
-                  {{ area.items.map(item => item.name).join(', ') }}
-                </CTableDataCell>
-              </CTableRow>
-            </CTableBody>
-          </CTable>
-        </CAccordionItem>
-      </CAccordion>
-    </CRow>
+          <div class="step-labels">
+            <div
+              v-for="(step, i) in steps"
+              :key="i"
+              class="step-label"
+              :class="{ active: currentStep === step.id }"
+            >
+              {{ step.label }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="wizard-content">
+          <!-- Step 1 -->
+          <div v-if="currentStep === 1" class="content-step active">
+            
+            <CRow>
+              <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+                <div>
+                  <h3>Inspection Areas</h3>
+                  <p>Here is your selected template areas and custom inspection areas</p>
+                </div>
+                <div class="my-3 text-end">
+                  <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Next Step <CIcon icon="cil-arrow-right" /> </span>
+                  <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(2)">
+                    <CIcon icon="cil-pen-alt" /> Sign Off Report
+                  </CButton>
+                </div>
+              </div>
+              <div class="mb-4">
+                <CButton class="px-4 py-2 fs-8" style="color: #c8c8c8; background: #121111; border-radius: 25px;" @click="visibleAddNewArea()">
+                  <CIcon icon="cil-plus" /> Add Inpsection Area
+                </CButton>
+              </div>
+              
+              <CAccordion v-if="reportData?.areas.length > 0">
+                <CAccordionItem
+                  v-for="area in reportData.areas"
+                  :key="area.id"
+                  :item-title="area.name"
+                  class="mb-3"
+                >
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">{{ area.name }}</h5>
+
+                    <CDropdown variant="link" class="p-0">
+                      <CDropdownToggle class="text-dark">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          fill="currentColor"
+                        >
+                          <circle cx="2" cy="8" r="2"/>
+                          <circle cx="8" cy="8" r="2"/>
+                          <circle cx="14" cy="8" r="2"/>
+                        </svg>
+                      </CDropdownToggle>
+                      <CDropdownMenu placement="bottom-end">
+                        <CDropdownItem @click="handleShowUpdateModal(area.id)">Edit</CDropdownItem>
+                        <CDropdownItem @click="handleShowDeleteModal(area.id)">Delete</CDropdownItem>
+                      </CDropdownMenu>
+                    </CDropdown>
+                  </div>
+                  <CTable bordered hover responsive>
+                    <CTableHead>
+                      <CTableRow>
+                        <CTableHeaderCell style="width: 15%;">Name</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 10%;">Condition</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 10%;">Cleanliness</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 25%;">Description</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 40%;">Items</CTableHeaderCell>
+                      </CTableRow>
+                    </CTableHead>
+                    <CTableBody>
+                      <CTableRow>
+                        <CTableDataCell style="width: 15%;">
+                          General Overview
+                        </CTableDataCell>
+                        <CTableDataCell style="width: 10%;">
+                          <CBadge class="text-capitalize px-4 py-2" style="border-radius: 25px" :color="getStatusColor(area.condition)">
+                            {{ area.condition }}
+                          </CBadge>
+                        </CTableDataCell>
+                        <CTableDataCell style="width: 10%;">
+                          <CBadge class="text-capitalize px-4 py-2" style="border-radius: 25px" :color="getStatusColor(area.cleanliness)">
+                            {{ area.cleanliness }}
+                          </CBadge>
+                        </CTableDataCell>
+                        <CTableDataCell style="width: 25%;">{{ area.description || '-' }}</CTableDataCell>
+                        <CTableDataCell style="width: 40%;">
+                          {{ area.items.map(item => item.name).join(', ') }}
+                        </CTableDataCell>
+                      </CTableRow>
+                    </CTableBody>
+                  </CTable>
+                </CAccordionItem>
+              </CAccordion>
+            </CRow>
+          </div>
+
+          <!-- Step 2 -->
+          <div v-if="currentStep === 2" class="content-step active">
+            <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+              <div>
+                <h3>Sign Off Report</h3>
+                <p>Sign your report and lock it for download ready</p>
+              </div>
+              <div class="my-3 text-end">
+                <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Next Step <CIcon icon="cil-arrow-right" /> </span>
+                <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(3)">
+                  <CIcon icon="cil-pen-alt" /> Finalize Report
+                </CButton>
+              </div>
+            </div>
+            <div class="mt-5 py-5 border">
+              <CCol xs="12">
+                  <p class="mt-5 sign-important-note mb-0 text-center"><span class="fw-bold">Important Note:</span> I hereby acknowledge that submitting my signature will close this report, making it read-only and unchangeable.</p>
+                  <p class="text-body-secondary text-center my-1 mb-4 w-75 fs-7 mt-2 sign-certify-text mx-auto">I certify that the observations and remarks in this report are accurate to the best of my knowledge and reflect my honest evaluation of the property’s condition.</p>
+                  <div class="mx-0 px-4">
+                      <CFormInput 
+                          :placeholder="`Type Signature '${authUserName}' here`" 
+                          v-model="signatureName"
+                          class="fs-8 w-75 mx-auto py-2"
+                          required
+                      />
+                  </div>
+              </CCol>
+              <div class="d-grid mt-4 mb-3">
+                  <CButton color="info" class="px-4 py-2 text-white w-25 fs-8 mx-auto mt-1" @click="handleSignOff"><CIcon icon="cilPenAlt" v-if="!signBtnLoading" /> <ButtonSpinner v-if="signBtnLoading" size="small" bgColor="#000000" />{{ signBtnLoading ? 'Signing...' : 'Sign Report' }}</CButton>
+                  <CButton color="dark" class="px-4 py-2 w-25 fs-8 mx-auto mt-2" @click="goToStep(1)"><CIcon icon="cil-arrow-left" /> Go Back</CButton>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div v-if="currentStep === 3" class="content-step active">
+            <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+              <div>
+                <h3>Finalize Report</h3>
+                <p>Download your report!</p>
+              </div>
+              <div class="my-3 text-end">
+                <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Previous Step <CIcon icon="cil-arrow-right" /> </span>
+                <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(2)">
+                  <CIcon icon="cil-pen-alt" /> Sign Off Report
+                </CButton>
+              </div>
+            </div>
+            
+            <div style="padding: 15px; background: #d4edda; border-radius: 4px; color: #155724; margin: 15px 0; font-size: 13px;">
+              ✓ All steps completed successfully
+            </div>
+            <div class="button-group">
+              <button class="btn btn-primary">Download Report</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
   <AddReportInspectionArea v-model:visibility="showAddNewArea" />
   <UpdateReportInspectionArea v-model:visibility="showUpdateArea" :areaId="updateAreaId" />
   <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDeleteArea" />
@@ -84,11 +193,9 @@
 
 <script setup lang="ts">
   import { ref, onBeforeMount } from 'vue'
-  import { useForm, useField } from 'vee-validate'
-  import * as yup from 'yup'
   import { CAccordion, CAccordionItem, CTable, CTableHead, CTableBody, CTableRow, CTableHeaderCell, CTableDataCell, CBadge } from "@coreui/vue";
-  import { toTypedSchema } from '@vee-validate/yup'
   import { useRoute, useRouter } from 'vue-router'
+  import { useAuthStore } from '@/stores/auth'
   import PageBodyHeader from '@/components/General/PageBodyHeader.vue'
   import AddReportInspectionArea from '@/components/Modals/AddReportInspectionArea.vue'
   import UpdateReportInspectionArea from '@/components/Modals/UpdateReportInspectionArea.vue'
@@ -110,6 +217,8 @@
   const router = useRouter()
   const reportId = route.params.id
   const { showToast } = toastNotifications()
+  const authStore = useAuthStore()
+  const authUserName = authStore.user.name
 
   const { data: reportData, execute: execute1 } = useApi(getReport, false)
   const { loading: btnLoading, execute } = useApi(updateReport, false)
@@ -118,14 +227,6 @@
   onBeforeMount(async () => {
     await execute1({ pathParams: [reportId] })
     setupPageFieldsData();
-  })
-
-  const schema = toTypedSchema( yup.object({
-    
-  }))
-
-  const { handleSubmit, isSubmitting } = useForm({
-    validationSchema: schema
   })
 
   function setupPageFieldsData(){
@@ -176,6 +277,18 @@
       showToast('error', 'Oops! Something went wrong!')
     }
   }
+
+  const currentStep = ref(1);
+
+  const steps = [
+    { id: 1, label: "Inspection Area" },
+    { id: 2, label: "Sign Off Report" },
+    { id: 3, label: "Finalize Report" },
+  ];
+
+  const goToStep = (step) => {
+    currentStep.value = step;
+  };
 </script>
 
 <style scoped>
@@ -192,4 +305,134 @@
     color: #4f4f4f;
     font-size: 0.95rem;
   }
+
+    /* Horizontal Step Indicator */
+    .wizard-header {
+      background: white;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .steps-container {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 45px;
+    }
+
+    .step-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid #dee2e6;
+      background: white;
+      color: #6c757d;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .step-btn:hover {
+      border-color: #0c63e4;
+    }
+
+    .step-btn.active {
+      background: #02aad3;
+      color: white;
+      border-color: #02aad3;
+      box-shadow: 0 4px 12px rgb(118 118 118 / 30%);
+    }
+
+    .step-btn.completed {
+      background: #212631;
+      color: white;
+      border-color: #212631;
+    }
+
+    /* Connecting line between steps */
+    .steps-container::before {
+      content: '';
+      position: absolute;
+      left: 24px;
+      top: 22px;
+      width: calc(100% - 48px);
+      height: 2px;
+      background: #dee2e6;
+      z-index: 0;
+    }
+
+    .step-btn {
+      z-index: 1;
+    }
+
+    /* Step Labels */
+    .step-labels {
+      display: flex;
+      gap: 30px;
+      margin-top: 12px;
+      font-size: 12px;
+      color: #6c757d;
+    }
+
+    .step-label {
+      flex: 0 0 53px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .step-btn.active ~ .step-labels .step-label,
+    .step-label.active {
+      color: #212529;
+      font-weight: 600;
+    }
+
+    /* Content Area */
+    .wizard-content {
+      min-height: 300px;
+    }
+
+    .content-step {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .content-step.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Button Group */
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 30px;
+      justify-content: space-between;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .wizard-container {
+        grid-template-columns: 1fr;
+      }
+
+      .steps-container {
+        flex-wrap: wrap;
+      }
+    }
 </style>
