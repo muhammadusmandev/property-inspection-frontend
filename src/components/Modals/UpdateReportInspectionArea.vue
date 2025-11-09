@@ -85,7 +85,7 @@
                                 class="form-control p-0"
                                 :options="itemsList"
                                 :label="'name'"
-                                :valueProp="'id'" 
+                                :valueProp="'name'" 
                                 mode="multiple"
                                 placeholder="Select Items"
                                 @blur="itemsMeta.touched = true; itemsValidate()"
@@ -94,11 +94,11 @@
                         <div v-if="selectedItemObjects.length > 0">
                             <span 
                                 v-for="(item, idx) in selectedItemObjects" 
-                                :key="item.id" 
+                                :key="item.name" 
                                 class="selected-items-badge"
                             >
                                 {{ item.name }}
-                                <span class="selected-items-remove-btn" @click="removeSelectedItem(item.id)">x</span>
+                                <span class="selected-items-remove-btn" @click="removeSelectedItem(item.name)">x</span>
                             </span>
                         </div>
                         <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="itemsMeta.touched && itemsError">
@@ -128,7 +128,7 @@
     import { useForm, useField } from 'vee-validate'
     import * as yup from 'yup'
     import { toTypedSchema } from '@vee-validate/yup'
-    import { getInspectionAreaItemsList, updateInspectionArea, getInspectionArea } from '@/services/api'
+    import { getInspectionAreaItemsList, updateReportInspectionArea, getReportInspectionArea } from '@/services/api'
     import { useApi } from '@/composables/useApi'
     import Multiselect from '@vueform/multiselect'
     import '@vueform/multiselect/themes/default.css' 
@@ -142,11 +142,11 @@
 
     const { showToast } = toastNotifications()
 
-    const { data: areaData, execute } = useApi(getInspectionArea, false)
+    const { data: areaData, execute } = useApi(getReportInspectionArea, false)
     const { data: itemsList, execute: executeItems } = useApi(getInspectionAreaItemsList, false)
-    const { loading: btnLoading, execute: executeUpdate } = useApi(updateInspectionArea, false)
+    const { loading: btnLoading, execute: executeUpdate } = useApi(updateReportInspectionArea, false)
 
-    const conditionOptions = ['Excellent', 'Good', 'Fair', 'Poor', 'Unacceptable']
+    const conditionOptions = ['excellent', 'good', 'fair', 'poor', 'unacceptable']
 
     onBeforeMount(async () => {
         await executeItems()
@@ -179,17 +179,20 @@
 
     function setupPageFieldsData() {
         const data = areaData.value
+
         setFieldValue('name', data.name)
         setFieldValue('condition', data.condition)
         setFieldValue('cleanliness', data.cleanliness)
         setFieldValue('description', data.description)
-        setFieldValue('items', data.items.map(i => i.id))
+        setFieldValue('items', data.items.map(item => item.name))
     }
 
-    const selectedItemObjects = computed(() => itemsList.value.filter(item => items.value?.includes(item.id)))
+    const selectedItemObjects = computed(
+        () => itemsList.value?.filter((item) => items.value?.includes(item.name))
+    )
 
-    function removeSelectedItem(id) {
-        items.value = items.value.filter(itemId => itemId !== id)
+    function removeSelectedItem(name) {
+        items.value = items.value.filter((itemName) => itemName !== name)
     }
 
     const handleUpdateArea = handleSubmit(async (formData) => {

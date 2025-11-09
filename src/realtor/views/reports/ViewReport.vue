@@ -37,7 +37,7 @@
               </CDropdownToggle>
               <CDropdownMenu placement="bottom-end">
                 <CDropdownItem @click="handleShowUpdateModal(area.id)">Edit</CDropdownItem>
-                <CDropdownItem @click="">Delete</CDropdownItem>
+                <CDropdownItem @click="handleShowDeleteModal(area.id)">Delete</CDropdownItem>
               </CDropdownMenu>
             </CDropdown>
           </div>
@@ -66,7 +66,7 @@
                     {{ area.cleanliness }}
                   </CBadge>
                 </CTableDataCell>
-                <CTableDataCell style="width: 25%;">{{ area.descrption || '-' }}</CTableDataCell>
+                <CTableDataCell style="width: 25%;">{{ area.description || '-' }}</CTableDataCell>
                 <CTableDataCell style="width: 40%;">
                   {{ area.items.map(item => item.name).join(', ') }}
                 </CTableDataCell>
@@ -79,6 +79,7 @@
   </div>
   <AddReportInspectionArea v-model:visibility="showAddNewArea" />
   <UpdateReportInspectionArea v-model:visibility="showUpdateArea" :areaId="updateAreaId" />
+  <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDeleteArea" />
 </template>
 
 <script setup lang="ts">
@@ -95,13 +96,16 @@
   import { FullPageSpinnerLoader } from '@/components/General/Loader.vue'
   import DeleteWarningModal from '@/components/Modals/DeleteWarningModal.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
-  import { getReport, updateReport } from '@/services/api'
+  import { getReport, updateReport, deleteReportInspectionArea } from '@/services/api'
   import { useApi } from '@/composables/useApi'
 
   const pageHeading = ref('')
   const showAddNewArea = ref(false)
   const showUpdateArea = ref(false)
   const updateAreaId = ref(0)
+  const showDeleteModal = ref(false)
+  const deleteBtnLoading = ref(false)
+  const deleteAreaId = ref(null)
   const route = useRoute()
   const router = useRouter()
   const reportId = route.params.id
@@ -109,10 +113,10 @@
 
   const { data: reportData, execute: execute1 } = useApi(getReport, false)
   const { loading: btnLoading, execute } = useApi(updateReport, false)
+  const { execute: execute2 } = useApi(deleteReportInspectionArea, false)
 
   onBeforeMount(async () => {
     await execute1({ pathParams: [reportId] })
-    console.log(reportData.value.areas)
     setupPageFieldsData();
   })
 
@@ -120,18 +124,12 @@
     
   }))
 
-  const { handleSubmit, isSubmitting, setFieldValue } = useForm({
+  const { handleSubmit, isSubmitting } = useForm({
     validationSchema: schema
   })
 
   function setupPageFieldsData(){
     pageHeading.value = reportData.value.title + ' - ' + reportData.value.property.name
-    // set form data
-    // setFieldValue('address', reportData.value.address)
-  }
-
-  function submitUpdateReport(){
-
   }
 
   function getStatusColor(status) {
@@ -154,21 +152,26 @@
     updateAreaId.value = areaId
   }
 
+  function handleShowDeleteModal(areaId) {
+    deleteAreaId.value = areaId
+    showDeleteModal.value = true
+  }
+
   function visibleAddNewArea() {
     showAddNewArea.value = true
   }
 
-  async function handleDeleteReport(){
+  async function handleDeleteArea(){
     deleteBtnLoading.value = true
-    const response = await execute1({ pathParams: [deleteReportId.value]})
+    const response = await execute2({ pathParams: [deleteAreaId.value]})
 
     if(response.success === true){
-      showToast('success', 'Report deleted successfully! Wait redirecting...')
+      showToast('success', 'Inspection area deleted successfully! Wait redirecting...')
       setTimeout(() => {
         window.location.reload()
       }, 2000)
     } else{
-      deleteReportId.value = null
+      deleteAreaId.value = null
       deleteBtnLoading.value = false
       showToast('error', 'Oops! Something went wrong!')
     }

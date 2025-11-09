@@ -101,7 +101,7 @@
                               class="form-control p-0"
                               :options="itemsList"
                               :label="'name'"
-                              :valueProp="'id'" 
+                              :valueProp="'name'" 
                               mode="multiple"
                               placeholder="Select Area Items"
                               @blur="itemsMeta.touched = true; itemsValidate()"
@@ -110,11 +110,11 @@
                       <div v-if="selectedItemObjects.length > 0">
                           <span 
                               v-for="(item, idx) in selectedItemObjects" 
-                              :key="item.id" 
+                              :key="item.name" 
                               class="selected-items-badge"
                           >
                               {{ item.name }}
-                              <span class="selected-items-remove-btn" @click="removeSelectedItem(item.id)">x</span>
+                              <span class="selected-items-remove-btn" @click="removeSelectedItem(item.name)">x</span>
                           </span>
                       </div>
                       <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="itemsMeta.touched && itemsError">
@@ -224,17 +224,15 @@
     const { loading: btnLoading, execute: addArea } = useApi(addReportInspectionArea, false)
 
     const selectedItemObjects = computed(() =>
-        itemsList.value?.filter(item => items.value?.includes(item.id))
+        itemsList.value?.filter(item => items.value?.includes(item.name))
     )
 
-    function removeSelectedItem(id) {
-        items.value = items.value.filter(itemId => itemId !== id)
+    function removeSelectedItem(name) {
+        items.value = items.value.filter((itemName) => itemName !== name)
     }
 
     const handleAddReportInspectionArea = handleSubmit(async (formData) => {
         const payload = { ...formData, report_id: route.params.id }
-        console.log(formData)
-        return;
         const response = await addArea({ payload })
         
         if(response.success){
