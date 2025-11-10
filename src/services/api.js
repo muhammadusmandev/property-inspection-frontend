@@ -73,3 +73,6 @@ export const activateSubscription = (data) => axiosInstance.post('/billings/acti
 
 // Subscriptions
 export const getSubscriptionData = () => axiosInstance.get('/subscriptions/status')
+
+// Medias
+export const deleteMedia = ({}, id) => axiosInstance.delete(`/medias/${id}`)

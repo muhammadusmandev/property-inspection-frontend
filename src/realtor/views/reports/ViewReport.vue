@@ -100,8 +100,9 @@
                     <CTableHead>
                       <CTableRow>
                         <CTableHeaderCell style="width: 10%;">Quality</CTableHeaderCell>
-                        <CTableHeaderCell style="width: 40%;">Description</CTableHeaderCell>
-                        <CTableHeaderCell style="width: 40%;">Items</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 25%;">Description</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 30%;">Photos</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 35%;">Items</CTableHeaderCell>
                       </CTableRow>
                     </CTableHead>
                     <CTableBody>
@@ -114,8 +115,19 @@
                             Cleanliness - {{ area.cleanliness }}
                           </CBadge>
                         </CTableDataCell>
-                        <CTableDataCell style="width: 40%;">{{ area.description || '-' }}</CTableDataCell>
-                        <CTableDataCell style="width: 50%;" class="fs-8 text-secondary">
+                        <CTableDataCell style="width: 25%;">{{ area.description || '-' }}</CTableDataCell>
+                        <CTableDataCell style="width: 30%;" class="fs-8 text-secondary">
+                          <div class="d-flex flex-wrap gap-2" v-if="area.media.length">
+                            <div class="position-relative" v-for="(image, index) in area.media">
+                              <CImage class="area-img" :src="createServerImageURL(image.thumbnail_path ? image.thumbnail_path : image.file_path)" alt="Area Image" width="50" height="59" />
+                              <button class="remove-selected-img bg-dark text-white border-0 position-absolute" @click="deleteAreaImg(image.id)">×</button>
+                            </div>
+                          </div>
+                          <p class="fs-8" v-else>
+                            No Image Uploaded Yet
+                          </p>
+                        </CTableDataCell>
+                        <CTableDataCell style="width: 35%;" class="fs-8 text-secondary">
                           {{ area.items.map(item => item.name).join(', ') }}
                         </CTableDataCell>
                       </CTableRow>
@@ -205,7 +217,7 @@
   import MultipleImagesSelector from '@/components/Modals/MultipleImagesSelector.vue'
   import DeleteWarningModal from '@/components/Modals/DeleteWarningModal.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
-  import { getReport, updateReport, deleteReportInspectionArea, uploadReportInspectionAreaImages } from '@/services/api'
+  import { getReport, updateReport, deleteReportInspectionArea, uploadReportInspectionAreaImages,deleteMedia } from '@/services/api'
   import { useApi } from '@/composables/useApi'
 
   const pageHeading = ref('')
@@ -231,6 +243,7 @@
   const { loading: btnLoading, execute } = useApi(updateReport, false)
   const { execute: execute2 } = useApi(deleteReportInspectionArea, false)
   const { execute: executeUploadImages } = useApi(uploadReportInspectionAreaImages, false)
+  const { execute: executeDeleteMedia } = useApi(deleteMedia, false)
 
   onBeforeMount(async () => {
     await execute1({ pathParams: [reportId] })
@@ -316,6 +329,19 @@
     }
   }
 
+  async function deleteAreaImg(mediaId) {
+    const response = await executeDeleteMedia({ pathParams: [mediaId] })
+
+    if(response.success === true){
+      showToast('success', 'Inspection area photo deleted successfully! Wait redirecting...')
+      setTimeout(() => {
+        window.location.reload()
+      }, 2000)
+    } else{
+      showToast('error', 'Oops! Something went wrong!')
+    }
+  }
+
   function onImagesSelected({ refId, images }){
     selectedImages.value = images
   }
@@ -330,6 +356,11 @@
 
   const goToStep = (step) => {
     currentStep.value = step;
+  }
+
+  // Todo: create global helper method
+  function createServerImageURL(path){
+    return `http://127.0.0.1:8000/storage/` + path;
   }
 </script>
 
@@ -476,5 +507,22 @@
       .steps-container {
         flex-wrap: wrap;
       }
+    }
+
+    .area-img {
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+    }
+
+    .remove-selected-img {
+      top: -5px;
+      right: -5px;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      line-height: 10px;
+      cursor: pointer;
+      font-size: 13px;
     }
 </style>

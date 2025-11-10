@@ -165,7 +165,11 @@
             useWebWorker: true,
             initialQuality: 0.8,     // 0.8 = high quality
         }
-        const compressedFile = await imageCompression(file, options)
+        const compressed = await imageCompression(file, options)
+
+        // Ensure it's a File object
+        const compressedFile = new File([compressed], file.name, { type: file.type })
+
         return compressedFile
     }
 
