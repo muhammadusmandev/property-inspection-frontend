@@ -21,6 +21,10 @@ axiosInstance.interceptors.request.use(
         if (authToken) {
             config.headers.Authorization = `Bearer ${authToken}`
         }
+
+        if (config.isMultipart) {
+            delete config.headers['Content-Type']
+        }
         return config
     },
     (error) => Promise.reject(error)

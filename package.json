@@ -29,6 +29,7 @@
     "@vueform/multiselect": "^2.6.11",
     "@vuepic/vue-datepicker": "^11.0.3",
     "axios": "^1.12.2",
+    "browser-image-compression": "^2.0.2",
     "pinia": "^3.0.3",
     "primeicons": "^7.0.0",
     "primevue": "^4.4.1",

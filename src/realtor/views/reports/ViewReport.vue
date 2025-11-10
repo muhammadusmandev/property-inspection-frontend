@@ -44,18 +44,18 @@
               <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
                 <div>
                   <h3>Inspection Areas</h3>
-                  <p>Here is your selected template areas and custom inspection areas</p>
+                  <p class="text-secondary fs-7">Manage selected template areas and custom inspection areas</p>
                 </div>
                 <div class="my-3 text-end">
                   <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Next Step <CIcon icon="cil-arrow-right" /> </span>
                   <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(2)">
-                    <CIcon icon="cil-pen-alt" /> Sign Off Report
+                    <CIcon icon="cil-pen-alt" /> Sign Report
                   </CButton>
                 </div>
               </div>
               <div class="mb-4">
-                <CButton class="px-4 py-2 fs-8" style="color: #c8c8c8; background: #121111; border-radius: 25px;" @click="visibleAddNewArea()">
-                  <CIcon icon="cil-plus" /> Add Inpsection Area
+                <CButton class="px-3 py-2 bg-dark text-white" style="border-radius: 25px; font-size: 13px;" @click="visibleAddNewArea()">
+                  <CIcon icon="cil-plus" size="sm" /> Add Inpsection Area
                 </CButton>
               </div>
               
@@ -69,52 +69,53 @@
                   <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0">{{ area.name }}</h5>
 
-                    <CDropdown variant="link" class="p-0">
-                      <CDropdownToggle class="text-dark">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          fill="currentColor"
-                        >
-                          <circle cx="2" cy="8" r="2"/>
-                          <circle cx="8" cy="8" r="2"/>
-                          <circle cx="14" cy="8" r="2"/>
-                        </svg>
-                      </CDropdownToggle>
-                      <CDropdownMenu placement="bottom-end">
-                        <CDropdownItem @click="handleShowUpdateModal(area.id)">Edit</CDropdownItem>
-                        <CDropdownItem @click="handleShowDeleteModal(area.id)">Delete</CDropdownItem>
-                      </CDropdownMenu>
-                    </CDropdown>
+                    <div class="d-flex gap-2 align-items-center">
+                      <CBadge class="px-3 py-2 h-100" v-if="refAreaIdForImages === area.id && selectedImages.length > 0" style="border-radius: 25px; cursor: pointer" color="info" @click="uploadInpsectionAreaPhotos">
+                        <CIcon icon="cil-cloud-upload" v-if="!uploadBtnLoading" /> <ButtonSpinner v-if="uploadBtnLoading" size="small" bgColor="#000000" /> {{ uploadBtnLoading ? 'Uploading...' : 'Upload ' + selectedImages.length + ' Selected Photos' }} 
+                      </CBadge>
+                      <CBadge class="px-3 py-2 h-100" v-else style="border-radius: 25px; cursor: pointer" color="info" @click="visibleShowImagesUpload(area.id)">
+                        <CIcon icon="cil-camera" /> Attach Photos
+                      </CBadge>
+                      <CDropdown variant="link" class="p-0">
+                        <CDropdownToggle class="text-dark">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            fill="currentColor"
+                          >
+                            <circle cx="2" cy="8" r="2"/>
+                            <circle cx="8" cy="8" r="2"/>
+                            <circle cx="14" cy="8" r="2"/>
+                          </svg>
+                        </CDropdownToggle>
+                        <CDropdownMenu placement="bottom-end">
+                          <CDropdownItem @click="handleShowUpdateModal(area.id)">Edit</CDropdownItem>
+                          <CDropdownItem @click="handleShowDeleteModal(area.id)">Delete</CDropdownItem>
+                        </CDropdownMenu>
+                      </CDropdown>
+                    </div>
                   </div>
                   <CTable bordered hover responsive>
                     <CTableHead>
                       <CTableRow>
-                        <CTableHeaderCell style="width: 15%;">Name</CTableHeaderCell>
-                        <CTableHeaderCell style="width: 10%;">Condition</CTableHeaderCell>
-                        <CTableHeaderCell style="width: 10%;">Cleanliness</CTableHeaderCell>
-                        <CTableHeaderCell style="width: 25%;">Description</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 10%;">Quality</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 40%;">Description</CTableHeaderCell>
                         <CTableHeaderCell style="width: 40%;">Items</CTableHeaderCell>
                       </CTableRow>
                     </CTableHead>
                     <CTableBody>
                       <CTableRow>
-                        <CTableDataCell style="width: 15%;">
-                          General Overview
-                        </CTableDataCell>
                         <CTableDataCell style="width: 10%;">
-                          <CBadge class="text-capitalize px-4 py-2" style="border-radius: 25px" :color="getStatusColor(area.condition)">
-                            {{ area.condition }}
+                          <CBadge class="text-capitalize px-3 py-2" style="border-radius: 25px" :color="getStatusColor(area.condition)">
+                            Condition - {{ area.condition }}
+                          </CBadge>
+                          <CBadge class="text-capitalize px-3 py-2 mt-1" style="border-radius: 25px" :color="getStatusColor(area.condition)">
+                            Cleanliness - {{ area.cleanliness }}
                           </CBadge>
                         </CTableDataCell>
-                        <CTableDataCell style="width: 10%;">
-                          <CBadge class="text-capitalize px-4 py-2" style="border-radius: 25px" :color="getStatusColor(area.cleanliness)">
-                            {{ area.cleanliness }}
-                          </CBadge>
-                        </CTableDataCell>
-                        <CTableDataCell style="width: 25%;">{{ area.description || '-' }}</CTableDataCell>
-                        <CTableDataCell style="width: 40%;">
+                        <CTableDataCell style="width: 40%;">{{ area.description || '-' }}</CTableDataCell>
+                        <CTableDataCell style="width: 50%;" class="fs-8 text-secondary">
                           {{ area.items.map(item => item.name).join(', ') }}
                         </CTableDataCell>
                       </CTableRow>
@@ -129,13 +130,13 @@
           <div v-if="currentStep === 2" class="content-step active">
             <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
               <div>
-                <h3>Sign Off Report</h3>
+                <h3>Sign Report</h3>
                 <p>Sign your report and lock it for download ready</p>
               </div>
               <div class="my-3 text-end">
                 <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Next Step <CIcon icon="cil-arrow-right" /> </span>
                 <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(3)">
-                  <CIcon icon="cil-pen-alt" /> Finalize Report
+                  <CIcon icon="cil-pen-alt" /> Download Report
                 </CButton>
               </div>
             </div>
@@ -153,7 +154,7 @@
                   </div>
               </CCol>
               <div class="d-grid mt-4 mb-3">
-                  <CButton color="info" class="px-4 py-2 text-white w-25 fs-8 mx-auto mt-1" @click="handleSignOff"><CIcon icon="cilPenAlt" v-if="!signBtnLoading" /> <ButtonSpinner v-if="signBtnLoading" size="small" bgColor="#000000" />{{ signBtnLoading ? 'Signing...' : 'Sign Report' }}</CButton>
+                  <CButton color="info" class="px-4 py-2 text-white w-25 fs-8 mx-auto mt-1" @click="handleSignReport"><CIcon icon="cilPenAlt" v-if="!signBtnLoading" /> <ButtonSpinner v-if="signBtnLoading" size="small" bgColor="#000000" />{{ signBtnLoading ? 'Signing...' : 'Sign Report' }}</CButton>
                   <CButton color="dark" class="px-4 py-2 w-25 fs-8 mx-auto mt-2" @click="goToStep(1)"><CIcon icon="cil-arrow-left" /> Go Back</CButton>
               </div>
             </div>
@@ -163,13 +164,13 @@
           <div v-if="currentStep === 3" class="content-step active">
             <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
               <div>
-                <h3>Finalize Report</h3>
+                <h3>Download Report</h3>
                 <p>Download your report!</p>
               </div>
               <div class="my-3 text-end">
                 <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Previous Step <CIcon icon="cil-arrow-right" /> </span>
                 <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(2)">
-                  <CIcon icon="cil-pen-alt" /> Sign Off Report
+                  <CIcon icon="cil-pen-alt" /> Sign Report
                 </CButton>
               </div>
             </div>
@@ -189,11 +190,11 @@
   <AddReportInspectionArea v-model:visibility="showAddNewArea" />
   <UpdateReportInspectionArea v-model:visibility="showUpdateArea" :areaId="updateAreaId" />
   <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDeleteArea" />
+  <MultipleImagesSelector v-model:visibility="showImagesUpload" @images-selected="onImagesSelected" :refItemId="refAreaIdForImages" :resetImages="resetImages" />
 </template>
 
 <script setup lang="ts">
   import { ref, onBeforeMount } from 'vue'
-  import { CAccordion, CAccordionItem, CTable, CTableHead, CTableBody, CTableRow, CTableHeaderCell, CTableDataCell, CBadge } from "@coreui/vue";
   import { useRoute, useRouter } from 'vue-router'
   import { useAuthStore } from '@/stores/auth'
   import PageBodyHeader from '@/components/General/PageBodyHeader.vue'
@@ -201,18 +202,24 @@
   import UpdateReportInspectionArea from '@/components/Modals/UpdateReportInspectionArea.vue'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
   import { FullPageSpinnerLoader } from '@/components/General/Loader.vue'
+  import MultipleImagesSelector from '@/components/Modals/MultipleImagesSelector.vue'
   import DeleteWarningModal from '@/components/Modals/DeleteWarningModal.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
-  import { getReport, updateReport, deleteReportInspectionArea } from '@/services/api'
+  import { getReport, updateReport, deleteReportInspectionArea, uploadReportInspectionAreaImages } from '@/services/api'
   import { useApi } from '@/composables/useApi'
 
   const pageHeading = ref('')
   const showAddNewArea = ref(false)
   const showUpdateArea = ref(false)
+  const showImagesUpload = ref(false)
   const updateAreaId = ref(0)
   const showDeleteModal = ref(false)
   const deleteBtnLoading = ref(false)
+  const uploadBtnLoading = ref(false)
   const deleteAreaId = ref(null)
+  const selectedImages = ref([])
+  const resetImages = ref(0)
+  const refAreaIdForImages = ref('')
   const route = useRoute()
   const router = useRouter()
   const reportId = route.params.id
@@ -223,6 +230,7 @@
   const { data: reportData, execute: execute1 } = useApi(getReport, false)
   const { loading: btnLoading, execute } = useApi(updateReport, false)
   const { execute: execute2 } = useApi(deleteReportInspectionArea, false)
+  const { execute: executeUploadImages } = useApi(uploadReportInspectionAreaImages, false)
 
   onBeforeMount(async () => {
     await execute1({ pathParams: [reportId] })
@@ -262,6 +270,13 @@
     showAddNewArea.value = true
   }
 
+  function visibleShowImagesUpload(areaId) {
+    resetImages.value++
+    refAreaIdForImages.value = areaId
+    selectedImages.value = []
+    showImagesUpload.value = true
+  }
+
   async function handleDeleteArea(){
     deleteBtnLoading.value = true
     const response = await execute2({ pathParams: [deleteAreaId.value]})
@@ -278,17 +293,44 @@
     }
   }
 
-  const currentStep = ref(1);
+  async function uploadInpsectionAreaPhotos() {
+    uploadBtnLoading.value = true
+
+    const formData = new FormData()
+    selectedImages.value.forEach(image => {
+      formData.append('images[]', image)
+    })
+    formData.append('area_id', refAreaIdForImages.value)
+    
+    const response = await executeUploadImages({ payload: formData, config: { isMultipart: true } })
+
+    if(response.success === true){
+      showToast('success', 'Inspection area photos uploaded successfully! Wait redirecting...')
+      setTimeout(() => {
+        window.location.reload()
+      }, 2000)
+    } else{
+      refAreaIdForImages.value = null
+      uploadBtnLoading.value = false
+      showToast('error', 'Oops! Something went wrong!')
+    }
+  }
+
+  function onImagesSelected({ refId, images }){
+    selectedImages.value = images
+  }
+
+  const currentStep = ref(1)
 
   const steps = [
     { id: 1, label: "Inspection Area" },
-    { id: 2, label: "Sign Off Report" },
-    { id: 3, label: "Finalize Report" },
-  ];
+    { id: 2, label: "Sign Report" },
+    { id: 3, label: "Download Report" },
+  ]
 
   const goToStep = (step) => {
     currentStep.value = step;
-  };
+  }
 </script>
 
 <style scoped>

@@ -4,7 +4,7 @@ export function useApi(apiFn, immediate = true, ...args){
     const loading = ref(false)
     const data = ref(null)
 
-    const execute = async ({ pathParams = '', payload = {}, queryParameters = {} } = {}) => {
+    const execute = async ({ pathParams = '', payload = {}, queryParameters = {}, config = {}} = {}) => {
         loading.value = true
         
         try {
@@ -15,7 +15,8 @@ export function useApi(apiFn, immediate = true, ...args){
 
             const response = await apiFn( 
                                 payload,
-                                fullUrl
+                                fullUrl,
+                                config
                             )
             data.value = response?.data.data
             
