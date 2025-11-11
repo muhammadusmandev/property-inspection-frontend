@@ -40,7 +40,7 @@
           <!-- Step 1 -->
           <div v-if="currentStep === 1" class="content-step active">
             
-            <CRow>
+            <CRow v-if="!reportData?.locked_at">
               <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
                 <div>
                   <h3>Inspection Areas</h3>
@@ -136,65 +136,89 @@
                 </CAccordionItem>
               </CAccordion>
             </CRow>
+            <div class="mt-4" v-else>
+              <h3 class="mb-4 self-color-primary"><CIcon icon="cil-lock-locked" size="xl" /> Report Locked</h3>
+              <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto ms-4"  @click="goToStep(4)">
+                <CIcon icon="cil-cloud-download" /> Download Report
+              </CButton>
+            </div>
           </div>
 
           <!-- Step 2 -->
           <div v-if="currentStep === 2" class="content-step active">
-            <!-- Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
-              <div>
-                <h3>Inspection Checklist</h3>
-                <p class="text-secondary fs-7">Manage inspection checklist what item need to add</p>
+            <div v-if="!reportData?.locked_at">
+              <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+                <div>
+                  <h3>Inspection Checklist</h3>
+                  <p class="text-secondary fs-7">Manage inspection checklist what item need to add</p>
+                </div>
+                <div class="my-3 text-end">
+                  <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Next Step <CIcon icon="cil-arrow-right" /> </span>
+                  <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(3)">
+                    <CIcon icon="cil-pen-alt" /> Sign Report
+                  </CButton>
+                </div>
               </div>
-              <div class="my-3 text-end">
-                <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Next Step <CIcon icon="cil-arrow-right" /> </span>
-                <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(3)">
-                  <CIcon icon="cil-pen-alt" /> Sign Report
-                </CButton>
+
+              <!-- Checklist Items -->
+              <div class="mb-4 border py-3 px-4" v-for="(group, type) in groupedChecklist" :key="type">
+                <h5>{{ type }}</h5>
+                <div class="d-flex justify-content-between align-items-center py-1" v-for="item in group" :key="item.label">
+                  <span class="fs-8 text-secondary">{{ item.label }}</span>
+                  <CFormSwitch v-model="item.checked" @change="handleUpdateChecklistItem(item)"  />
+                </div>
               </div>
             </div>
-
-            <!-- Checklist Items -->
-            <div class="mb-4 border py-3 px-4" v-for="(group, type) in groupedChecklist" :key="type">
-              <h5>{{ type }}</h5>
-              <div class="d-flex justify-content-between align-items-center py-1" v-for="item in group" :key="item.label">
-                <span class="fs-8 text-secondary">{{ item.label }}</span>
-                <CFormSwitch v-model="item.checked" @change="handleUpdateChecklistItem(item)"  />
-              </div>
+            <div class="mt-4" v-else>
+              <h3 class="mb-4 self-color-primary"><CIcon icon="cil-lock-locked" size="xl" /> Report Locked</h3>
+              <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto ms-4"  @click="goToStep(4)">
+                <CIcon icon="cil-cloud-download" /> Download Report
+              </CButton>
             </div>
           </div>
 
           <!-- Step 3 -->
           <div v-if="currentStep === 3" class="content-step active">
-            <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
-              <div>
-                <h3>Sign Report</h3>
-                <p>Sign your report and lock it for download ready</p>
+            <div v-if="!reportData?.locked_at">
+              <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+                <div>
+                  <h3>Sign Report</h3>
+                  <p>Sign your report and lock it for download ready</p>
+                </div>
+                <div class="my-3 text-end">
+                  <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Next Step <CIcon icon="cil-arrow-right" /> </span>
+                  <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(4)">
+                    <CIcon icon="cil-pen-alt" /> Download Report
+                  </CButton>
+                </div>
               </div>
-              <div class="my-3 text-end">
-                <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Next Step <CIcon icon="cil-arrow-right" /> </span>
-                <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(4)">
-                  <CIcon icon="cil-pen-alt" /> Download Report
-                </CButton>
+              <div class="mt-5 py-5 border">
+                <CCol xs="12">
+                    <p class="mt-5 sign-important-note mb-0 text-center"><span class="fw-bold">Important Note:</span> I hereby acknowledge that submitting my signature will close this report, making it read-only and unchangeable.</p>
+                    <p class="text-body-secondary text-center my-1 mb-4 w-75 fs-7 mt-2 sign-certify-text mx-auto">I certify that the observations and remarks in this report are accurate to the best of my knowledge and reflect my honest evaluation of the property’s condition.</p>
+                    <div class="mx-0 px-4 w-75 mx-auto">
+                        <CFormInput 
+                            :placeholder="`Type Signature '${authUserName}' here`" 
+                            v-model="signatureName"
+                            class="fs-8 py-2"
+                            required
+                        />
+                        <div class="flex form-field-error d-inline-block mt-2" v-if="signErrorMessage">
+                          <span>* {{ signErrorMessage }}</span>
+                        </div>
+                    </div>
+                </CCol>
+                <div class="d-grid mt-4 mb-3">
+                    <CButton color="info" class="px-4 py-2 text-white w-25 fs-8 mx-auto mt-1" @click="handleSignReport"><CIcon icon="cilPenAlt" v-if="!signBtnLoading" /> <ButtonSpinner v-if="signBtnLoading" size="small" bgColor="#000000" />{{ signBtnLoading ? 'Signing...' : 'Sign Report' }}</CButton>
+                    <CButton color="dark" class="px-4 py-2 w-25 fs-8 mx-auto mt-2" @click="goToStep(2)"><CIcon icon="cil-arrow-left" /> Go Back</CButton>
+                </div>
               </div>
             </div>
-            <div class="mt-5 py-5 border">
-              <CCol xs="12">
-                  <p class="mt-5 sign-important-note mb-0 text-center"><span class="fw-bold">Important Note:</span> I hereby acknowledge that submitting my signature will close this report, making it read-only and unchangeable.</p>
-                  <p class="text-body-secondary text-center my-1 mb-4 w-75 fs-7 mt-2 sign-certify-text mx-auto">I certify that the observations and remarks in this report are accurate to the best of my knowledge and reflect my honest evaluation of the property’s condition.</p>
-                  <div class="mx-0 px-4">
-                      <CFormInput 
-                          :placeholder="`Type Signature '${authUserName}' here`" 
-                          v-model="signatureName"
-                          class="fs-8 w-75 mx-auto py-2"
-                          required
-                      />
-                  </div>
-              </CCol>
-              <div class="d-grid mt-4 mb-3">
-                  <CButton color="info" class="px-4 py-2 text-white w-25 fs-8 mx-auto mt-1" @click="handleSignReport"><CIcon icon="cilPenAlt" v-if="!signBtnLoading" /> <ButtonSpinner v-if="signBtnLoading" size="small" bgColor="#000000" />{{ signBtnLoading ? 'Signing...' : 'Sign Report' }}</CButton>
-                  <CButton color="dark" class="px-4 py-2 w-25 fs-8 mx-auto mt-2" @click="goToStep(2)"><CIcon icon="cil-arrow-left" /> Go Back</CButton>
-              </div>
+            <div class="mt-4" v-else>
+              <h3 class="mb-4 self-color-primary"><CIcon icon="cil-lock-locked" size="xl" /> Report Locked</h3>
+              <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto ms-4"  @click="goToStep(4)">
+                <CIcon icon="cil-cloud-download" /> Download Report
+              </CButton>
             </div>
           </div>
 
@@ -244,7 +268,15 @@
   import MultipleImagesSelector from '@/components/Modals/MultipleImagesSelector.vue'
   import DeleteWarningModal from '@/components/Modals/DeleteWarningModal.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
-  import { getReport, updateReport, deleteReportInspectionArea, uploadReportInspectionAreaImages, deleteMedia, updateChecklistItem } from '@/services/api'
+  import { 
+    getReport, 
+    updateReport, 
+    deleteReportInspectionArea, 
+    uploadReportInspectionAreaImages, 
+    deleteMedia, 
+    updateChecklistItem, 
+    markReportLocked 
+  } from '@/services/api'
   import { useApi } from '@/composables/useApi'
 
   const pageHeading = ref('')
@@ -259,6 +291,9 @@
   const selectedImages = ref([])
   const resetImages = ref(0)
   const refAreaIdForImages = ref('')
+  const signatureName = ref('')
+  const signErrorMessage = ref('')
+  const signBtnLoading = ref(false)
   const checklist = ref('')
   const route = useRoute()
   const router = useRouter()
@@ -273,6 +308,7 @@
   const { execute: executeUploadImages } = useApi(uploadReportInspectionAreaImages, false)
   const { execute: executeDeleteMedia } = useApi(deleteMedia, false)
   const { execute: executeUpdateChecklist } = useApi(updateChecklistItem, false)
+  const { execute: executeLockReport } = useApi(markReportLocked, false)
 
   onBeforeMount(async () => {
     await execute1({ pathParams: [reportId] })
@@ -399,6 +435,28 @@
       showToast('success', 'Item status changed successfully!')
     } else{
       showToast('error', 'Oops! Something went wrong while changing status!')
+    }
+  }
+
+  async function handleSignReport(item){
+    signBtnLoading.value = true
+
+    if (signatureName.value.trim() === authUserName) {
+      signErrorMessage.value = ''
+      const response = await executeLockReport({ pathParams: [reportId] })
+
+      if(response.success === true){
+        showToast('success', 'Report Locked successfully! Wait Redirecting...')
+        setTimeout(() => {
+          window.location.reload()
+        }, 2000)
+      } else{
+        showToast('error', 'Oops! Something went wrong while locking report!')
+        signBtnLoading.value = false
+      }
+    } else{
+      signErrorMessage.value = 'Must add valid signature of account holder name.'
+      signBtnLoading.value = false
     }
   }
 
