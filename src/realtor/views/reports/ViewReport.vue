@@ -49,7 +49,7 @@
                 <div class="my-3 text-end">
                   <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Next Step <CIcon icon="cil-arrow-right" /> </span>
                   <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(2)">
-                    <CIcon icon="cil-pen-alt" /> Sign Report
+                    <CIcon icon="cil-pen-alt" /> Checklist
                   </CButton>
                 </div>
               </div>
@@ -140,6 +140,32 @@
 
           <!-- Step 2 -->
           <div v-if="currentStep === 2" class="content-step active">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+              <div>
+                <h3>Inspection Checklist</h3>
+                <p class="text-secondary fs-7">Manage inspection checklist what item need to add</p>
+              </div>
+              <div class="my-3 text-end">
+                <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Next Step <CIcon icon="cil-arrow-right" /> </span>
+                <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(3)">
+                  <CIcon icon="cil-pen-alt" /> Sign Report
+                </CButton>
+              </div>
+            </div>
+
+            <!-- Checklist Items -->
+            <div class="mb-4 border py-3 px-4" v-for="(group, type) in groupedChecklist" :key="type">
+              <h5>{{ type }}</h5>
+              <div class="d-flex justify-content-between align-items-center py-1" v-for="item in group" :key="item.label">
+                <span class="fs-8 text-secondary">{{ item.label }}</span>
+                <CFormSwitch v-model="item.checked" @change="handleUpdateChecklistItem(item)"  />
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div v-if="currentStep === 3" class="content-step active">
             <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
               <div>
                 <h3>Sign Report</h3>
@@ -147,7 +173,7 @@
               </div>
               <div class="my-3 text-end">
                 <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Next Step <CIcon icon="cil-arrow-right" /> </span>
-                <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(3)">
+                <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(4)">
                   <CIcon icon="cil-pen-alt" /> Download Report
                 </CButton>
               </div>
@@ -167,13 +193,13 @@
               </CCol>
               <div class="d-grid mt-4 mb-3">
                   <CButton color="info" class="px-4 py-2 text-white w-25 fs-8 mx-auto mt-1" @click="handleSignReport"><CIcon icon="cilPenAlt" v-if="!signBtnLoading" /> <ButtonSpinner v-if="signBtnLoading" size="small" bgColor="#000000" />{{ signBtnLoading ? 'Signing...' : 'Sign Report' }}</CButton>
-                  <CButton color="dark" class="px-4 py-2 w-25 fs-8 mx-auto mt-2" @click="goToStep(1)"><CIcon icon="cil-arrow-left" /> Go Back</CButton>
+                  <CButton color="dark" class="px-4 py-2 w-25 fs-8 mx-auto mt-2" @click="goToStep(2)"><CIcon icon="cil-arrow-left" /> Go Back</CButton>
               </div>
             </div>
           </div>
 
-          <!-- Step 3 -->
-          <div v-if="currentStep === 3" class="content-step active">
+          <!-- Step 4 -->
+          <div v-if="currentStep === 4" class="content-step active">
             <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
               <div>
                 <h3>Download Report</h3>
@@ -181,7 +207,7 @@
               </div>
               <div class="my-3 text-end">
                 <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Previous Step <CIcon icon="cil-arrow-right" /> </span>
-                <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(2)">
+                <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto"  @click="goToStep(3)">
                   <CIcon icon="cil-pen-alt" /> Sign Report
                 </CButton>
               </div>
@@ -206,9 +232,10 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onBeforeMount } from 'vue'
+  import { ref, onBeforeMount, computed } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useAuthStore } from '@/stores/auth'
+  import { CFormSwitch } from '@coreui/vue'
   import PageBodyHeader from '@/components/General/PageBodyHeader.vue'
   import AddReportInspectionArea from '@/components/Modals/AddReportInspectionArea.vue'
   import UpdateReportInspectionArea from '@/components/Modals/UpdateReportInspectionArea.vue'
@@ -217,7 +244,7 @@
   import MultipleImagesSelector from '@/components/Modals/MultipleImagesSelector.vue'
   import DeleteWarningModal from '@/components/Modals/DeleteWarningModal.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
-  import { getReport, updateReport, deleteReportInspectionArea, uploadReportInspectionAreaImages,deleteMedia } from '@/services/api'
+  import { getReport, updateReport, deleteReportInspectionArea, uploadReportInspectionAreaImages, deleteMedia, updateChecklistItem } from '@/services/api'
   import { useApi } from '@/composables/useApi'
 
   const pageHeading = ref('')
@@ -232,6 +259,7 @@
   const selectedImages = ref([])
   const resetImages = ref(0)
   const refAreaIdForImages = ref('')
+  const checklist = ref('')
   const route = useRoute()
   const router = useRouter()
   const reportId = route.params.id
@@ -244,6 +272,7 @@
   const { execute: execute2 } = useApi(deleteReportInspectionArea, false)
   const { execute: executeUploadImages } = useApi(uploadReportInspectionAreaImages, false)
   const { execute: executeDeleteMedia } = useApi(deleteMedia, false)
+  const { execute: executeUpdateChecklist } = useApi(updateChecklistItem, false)
 
   onBeforeMount(async () => {
     await execute1({ pathParams: [reportId] })
@@ -252,6 +281,13 @@
 
   function setupPageFieldsData(){
     pageHeading.value = reportData.value.title + ' - ' + reportData.value.property.name
+
+    checklist.value = reportData.value.checklist.map(item => ({
+      id: item.id,
+      label: item.label,
+      checked: item.checked,
+      type: item.type,
+    }))
   }
 
   function getStatusColor(status) {
@@ -346,12 +382,33 @@
     selectedImages.value = images
   }
 
+  const groupedChecklist = computed(() => {
+    const groups = {}
+    checklist.value.forEach(item => {
+      const type = item.type || 'General'
+      if (!groups[type]) groups[type] = []
+      groups[type].push(item)
+    })
+    return groups
+  })
+
+  async function handleUpdateChecklistItem(item){
+    const response = await executeUpdateChecklist({ payload: {report_id: reportId, checklist_id: item.id, checked: !item.checked} })
+
+    if(response.success === true){
+      showToast('success', 'Item status changed successfully!')
+    } else{
+      showToast('error', 'Oops! Something went wrong while changing status!')
+    }
+  }
+
   const currentStep = ref(1)
 
   const steps = [
     { id: 1, label: "Inspection Area" },
-    { id: 2, label: "Sign Report" },
-    { id: 3, label: "Download Report" },
+    { id: 2, label: "Checklist" },
+    { id: 3, label: "Sign Report" },
+    { id: 4, label: "Download Report" },
   ]
 
   const goToStep = (step) => {
