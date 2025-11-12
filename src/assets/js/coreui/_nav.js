@@ -7,7 +7,7 @@ export default [
   },
   {
     component: 'CNavTitle',
-    name: 'Components',
+    name: 'Realty Management',
   },
   {
     component: 'CNavGroup',
@@ -92,6 +92,10 @@ export default [
     name: 'Inspection Areas',
     to: '/realtor/inspection_areas/list',
     icon: 'cil-search',
+  },
+  {
+    component: 'CNavTitle',
+    name: 'Account',
   },
   {
     component: 'CNavItem',

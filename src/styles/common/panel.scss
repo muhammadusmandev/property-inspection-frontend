@@ -113,7 +113,11 @@ h1, h2, h3, h4, h5, h6{
 
 .sidebar-nav .nav-link {
   color: #5f5f5f !important;
-  font-size: 0.97rem !important;
+  font-size: 0.88rem !important;
+}
+
+.sidebar-nav .nav-icon{
+  height: 1.18rem !important;
 }
 
 .sidebar-nav .nav-link:hover,
@@ -131,12 +135,21 @@ h1, h2, h3, h4, h5, h6{
 }
 
 .sidebar-nav .nav-title{
-  color: #b1b0b0 !important;
+  color: #909090 !important;
   font-weight: 400 !important;
 }
 
+.sidebar-nav .nav-group-toggle::after{
+  height: 11px !important;
+}
+
+.sidebar-nav .nav-group-items .nav-link{
+  font-size: 0.84rem !important;
+  color: #7d7d7d !important;
+}
+
 .simplebar-content{
-  padding-top: 13px !important;
+  padding-top: 26px !important;
 }
 
 .header > .container-fluid + .container-fluid {
@@ -159,9 +172,18 @@ h1, h2, h3, h4, h5, h6{
 }
 
 .breadcrumb-item > a{
-  color: #5f5f5f !important;
+  color: #7D7D7D !important;
   text-decoration: none !important;
-  font-size: 1.04rem !important;
+  font-size: 0.9rem !important;
+}
+
+.breadcrumb-item + .breadcrumb-item::before{
+  color: #7D7D7D !important;
+}
+
+.breadcrumb-item.active{
+  font-size: 0.9rem;
+  margin-top: 3px;
 }
 
 .p-datatable-table-container{

@@ -1,22 +1,16 @@
 <template>
   <CDropdown placement="bottom-end" variant="nav-item">
     <CDropdownToggle class="py-0 pe-0" :caret="false">
-      <CAvatar :src="avatar" size="md" />
+      <CAvatar :src="authStore?.user?.gender === 'female' ? femaleAvatar : maleAvatar" size="md" />
     </CDropdownToggle>
-    <CDropdownMenu class="pt-0">
-      <CDropdownHeader
-        component="h6"
-        class="bg-body-secondary text-body-secondary fw-semibold mb-2 rounded-top"
-      >
-        Settings
-      </CDropdownHeader>
-      <CDropdownItem> <CIcon icon="cil-user" /> Profile </CDropdownItem>
-      <CDropdownItem> <CIcon icon="cil-settings" /> Settings </CDropdownItem>
-      <CDropdownItem> <CIcon icon="cil-dollar" /> Payments </CDropdownItem>
+    <CDropdownMenu class="pt-3">
+      <CDropdownItem class="py-2 pt-0 fs-8"> <CIcon icon="cil-user" /> Profile </CDropdownItem>
+      <CDropdownItem class="py-2 fs-8"> <CIcon icon="cil-dollar" /> Payments </CDropdownItem>
+      <CDropdownItem class="py-2 fs-8"> <CIcon icon="cil-settings" /> Settings </CDropdownItem>
       <CDropdownDivider />
       <CDropdownItem> 
-        <CButton class="px-4 self-bg-primary self-color-tertiary fs-6" @click="handleLogoutUser">
-          <CIcon icon="cil-lock-locked" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Logout' }} 
+        <CButton class="px-4 self-bg-primary self-color-tertiary fs-8" @click="handleLogoutUser" :disabled="btnLoading">
+          <CIcon icon="cil-lock-locked" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Logging Out...' : 'Logout' }} 
         </CButton>
       </CDropdownItem>
     </CDropdownMenu>
@@ -26,7 +20,8 @@
 <script setup>
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
-  import avatar from '@/assets/images/avatars/profile.jpg'
+  import femaleAvatar from '@/assets/images/avatars/female.png'
+  import maleAvatar from '@/assets/images/avatars/male.png'
   import { logoutUser } from '@/services/api'
   import { useApi } from '@/composables/useApi'
   import { useRouter } from 'vue-router'

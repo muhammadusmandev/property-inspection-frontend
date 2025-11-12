@@ -26,7 +26,7 @@ onMounted(() => {
 
 <template>
   <CBreadcrumb class="my-0 custom-breadcrumb" >
-    <CIcon icon="cilHouse" size="lg" class="me-2" style="color: #07a7d9" />
+    <CIcon icon="cilHouse" size="lg" class="me-2" style="color: rgb(86 86 86)" />
     <CBreadcrumbItem
       v-for="item in breadcrumbs"
       :key="item"
