@@ -97,6 +97,13 @@
           </Column>
           <Column field="gender" header="Gender" style="height: 44px">
           </Column>
+          <Column header="Action" style="height: 44px">
+            <template #body="{ data }">
+              <div class="d-flex gap-1">
+                <CButton class="badge bg-dark" as="a" :href="`/realtor/clients/client/${data.id}`"><CIcon icon="cil-pen" /></CButton>              
+              </div>
+            </template>
+          </Column>
       </DataTable>
   </div>
 </template>

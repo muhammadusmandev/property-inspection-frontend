@@ -107,6 +107,13 @@
               {{ data.property?.name ?? 'Not Associated' }}
             </template>
           </Column>
+          <Column header="Action" style="height: 44px">
+            <template #body="{ data }">
+              <div class="d-flex gap-1">
+                <CButton class="badge bg-dark" as="a" :href="`/realtor/branches/branch/${data.id}`"><CIcon icon="cil-pen" /></CButton>              
+              </div>
+            </template>
+          </Column>
       </DataTable>
   </div>
 </template>

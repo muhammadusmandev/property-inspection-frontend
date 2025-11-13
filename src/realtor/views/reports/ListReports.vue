@@ -110,7 +110,7 @@
           <Column header="Action" style="height: 44px">
             <template #body="{ data }">
               <div class="d-flex gap-1">
-                <span class="badge bg-dark" @click="handleShowUpdateModal(data.id)"><CIcon icon="cil-pen" /></span>
+                <span class="badge bg-dark" @click="handleShowUpdate(data.id)"><CIcon icon="cil-pen" /></span>
                 <span class="badge bg-danger" @click="handleShowDeleteModal(data.id)"><CIcon icon="cil-x" /></span>
               </div>
             </template>
@@ -226,8 +226,8 @@
     showDeleteModal.value = true
   }
 
-  function handleShowUpdateModal(reportId) {
-    router.push({ name: 'realtor.reports.update', params: { id: reportId } })
+  function handleShowUpdate(reportId) {
+    router.push({ name: 'realtor.reports.view', params: { id: reportId } })
   }
 
   async function handleDeleteReport(){
