@@ -1,11 +1,11 @@
 <template>
-  <div class="add-property-form-container">
+  <div class="add-branch-form-container">
     <PageBodyHeader
       heading="Add New Branch"
       description="Create new Branch for your properties"
     />
     <CRow>
-      <CForm class="row g-3 mt-0 w-75" @submit.prevent="submitAddBranch">
+      <CForm class="row g-3 mt-0" @submit.prevent="submitAddBranch">
         <CCol md="12">
             <CFormLabel :for="name" class="form-label-required">Branch Name</CFormLabel>
             <div class="input-group">
@@ -31,9 +31,9 @@
           :clearFormTrigger="clearFormTrigger"
         />
 
-        <CCol xs="12">
-          <CButton color="info" class="text-white mt-3" type="submit"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Add New Branch' }}</CButton>
-          <CButton color="danger" class="text-white mt-3 ms-2" type="button" @click="clearForm"><CIcon icon="cilClearAll" /> Clear Form</CButton>
+        <CCol xs="12" class="form-buttons-row">
+          <CButton color="info" class="text-white mt-3 fs-8" type="submit"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Add New Branch' }}</CButton>
+          <CButton color="danger" class="text-white mt-3 fs-8 ms-2 clear-form-btn" type="button" @click="clearForm"><CIcon icon="cilClearAll" /> Clear Form</CButton>
         </CCol>
       </CForm>
     </CRow>
@@ -134,3 +134,25 @@
     } 
   })
 </script>
+
+<style scoped>
+  .add-branch-form-container form{
+    width: 75%;
+  }
+
+  @media (max-width: 480px) {
+    .add-branch-form-container form{
+      width: 100%;
+    }
+
+    .add-branch-form-container form .clear-form-btn{
+      margin-left: 0px !important;
+      margin-top: 10px !important;
+    }
+    
+    .add-branch-form-container form .form-buttons-row {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+</style>

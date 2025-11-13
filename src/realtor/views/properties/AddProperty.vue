@@ -5,7 +5,7 @@
       description="Create new property for your client"
     />
     <CRow>
-      <CForm class="row g-3 mt-0 w-75" @submit.prevent="submitAddProperty">
+      <CForm class="row g-3 mt-0" @submit.prevent="submitAddProperty">
         <FindAddress 
           inputLabel="Find Client Property" 
           inputPlaceHolder="Search property address on map" 
@@ -94,9 +94,9 @@
             </CCol>
         </div>
 
-        <CCol xs="12">
-          <CButton color="info" class="text-white mt-3" type="submit"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Add New Property' }}</CButton>
-          <CButton color="danger" class="text-white mt-3 ms-2" type="button" @click="clearForm"><CIcon icon="cilClearAll" /> Clear Form</CButton>
+        <CCol xs="12" class="form-buttons-row">
+          <CButton color="info" class="text-white mt-3 fs-8" type="submit"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Add New Property' }}</CButton>
+          <CButton color="danger" class="text-white mt-3 fs-8 ms-2 clear-form-btn" type="button" @click="clearForm"><CIcon icon="cilClearAll" /> Clear Form</CButton>
         </CCol>
       </CForm>
     </CRow>
@@ -233,3 +233,25 @@
     } 
   })
 </script>
+
+<style scoped>
+  .add-property-form-container form{
+    width: 75%;
+  }
+
+  @media (max-width: 480px) {
+    .add-property-form-container form{
+      width: 100%;
+    }
+
+    .add-property-form-container form .clear-form-btn{
+      margin-left: 0px !important;
+      margin-top: 10px !important;
+    }
+
+    .add-property-form-container form .form-buttons-row{
+      display: flex;
+      flex-direction: column;
+    }
+  }
+</style>

@@ -160,6 +160,7 @@ h1, h2, h3, h4, h5, h6{
   background-color: #ffffff;
   border: 1px solid #e4e4e4;
   border-radius: 15px;
+  padding: 3rem;
   box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%);
 }
 
@@ -249,4 +250,132 @@ label.form-label{
 
 .input-group-text {
   background-color: #ffffff !important;
+}
+
+.datatable-container .page-heading h2{
+  color: #4b4949;
+  font-weight: 700;
+  font-size: 2.3rem;
+}
+
+.datatable-container .page-heading p{
+  color: #9b9b9b;
+  font-size: 1.08rem;
+}
+
+.datatable-container .p-paginator #pagination-item-prev,
+.datatable-container  .p-paginator #pagination-item-data,
+.datatable-container .p-paginator #pagination-item-next{
+  max-width: fit-content !important;
+}
+
+.datatable-container .datatable-header-search{
+  background-color: #f1f4f9;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-radius: 10px;
+  border: 1px solid #e9e7e7;
+  box-shadow: 0 10px 12px 0 rgba(218, 218, 253, 0.65), 0 2px 5px 0 rgba(206, 206, 238, 0.6);
+}
+
+@media (max-width: 480px) {
+  .body-card{
+    padding: 2.5rem 2rem !important;
+  }
+
+  .body-card .page-heading h2,
+  .datatable-container .page-heading h2 {
+    font-size: 2rem !important;
+  }
+
+  .body-card .page-heading p,
+  .datatable-container .page-heading p {
+    font-size: 1rem !important;
+  }
+
+  label.form-label {
+    font-size: 13px;
+  }
+
+  input.form-control,
+  .input-group {
+    font-size: 0.84rem;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .input-group .form-select {
+    font-size: 0.84rem;
+  }
+
+  .breadcrumb-item > a {
+    font-size: 0.88rem !important;
+  }
+
+  .breadcrumb-item.active {
+    font-size: 0.88rem !important
+  }
+
+  .datatable-container .datatable-header-top{
+    flex-direction: column;
+    align-items: start !important;
+  }
+
+  .datatable-container .datatable-header-top .page-heading{
+    margin-bottom: 10px;
+  }
+
+  .datatable-container .datatable-header-top .btns-row{
+    text-align: start !important;
+  }
+
+  .datatable-container .datatable-header-top .refresh-btn{
+    margin-top: 0px;
+  }
+  
+  .datatable-container .datatable-header-search{
+    margin-top: 5px !important;
+  }
+
+  .datatable-container .datatable-header-search form{
+    align-items: start !important;
+    flex-direction: column;
+  }
+
+  .datatable-container .btn{
+    font-size: 0.75rem !important;
+  }
+
+  .datatable-container .datatable-header-search form .btn svg{
+    font-size: 0.8rem !important;
+  }
+
+  .datatable-container .datatable-header-search form .search-columns-inputs{
+    display: block !important;
+  }
+
+  .datatable-container .datatable-header-search form .search-btn{
+    text-align: left !important;
+  }
+
+  th.p-datatable-header-cell {
+    font-size: 0.9rem;
+  }
+
+  .p-datatable-tbody > tr > td {
+    font-size: 0.84rem;
+  }
+
+  .p-datatable .p-paginator{
+    padding-left: 0;
+    padding-right: 0;
+    justify-content: start !important;
+  }
+
+  .datatable-container .p-paginator #pagination-item-prev,
+  .datatable-container  .p-paginator #pagination-item-data,
+  .datatable-container .p-paginator #pagination-item-next{
+    font-size: 0.75rem !important;
+    padding: 5px 10px !important;
+  }
 }

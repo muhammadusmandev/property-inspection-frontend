@@ -8,7 +8,7 @@
           <CContainer class="breadcrumb-container">
             <AppBreadcrumb />
           </CContainer>
-          <div class="body-card p-5">
+          <div class="body-card">
             <FullPageSpinnerLoader ref="loader" spinnerSize="medium" spinnerBgColor="#202020" spinnerColor="#ffffff" />
             <router-view />
           </div>

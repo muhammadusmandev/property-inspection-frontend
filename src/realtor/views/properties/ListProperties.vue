@@ -1,23 +1,23 @@
 <template>
   <div class="datatable-container">
-      <div class="row align-items-center justify-between">
-          <div class="page-heading col-6">
+      <div class="datatable-header-top row align-items-center justify-between">
+          <div class="page-heading col-md-6">
             <h2>Properties</h2>
             <p>Full control, monitor and manage all your properties in one place</p>
           </div>
-          <div class="text-end pb-4 col-6">
-            <CButton class="px-4 self-bg-primary self-color-tertiary fs-6" as="a" href="/realtor/properties/add_property">
+          <div class="text-end pb-4 col-md-6 btns-row">
+            <CButton class="px-4 self-bg-primary self-color-tertiary fs-8" as="a" href="/realtor/properties/add_property">
               <CIcon icon="cil-plus" /> Add New Property
             </CButton>
-            <CButton class="ms-2 px-4 self-bg-light-dark self-color-tertiary fs-6" @click="refreshDT"><CIcon icon="cil-reload" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Refreshing...' : 'Refresh' }} </CButton>
+            <CButton class="ms-2 px-4 self-bg-light-dark self-color-tertiary fs-8 refresh-btn" @click="refreshDT"><CIcon icon="cil-reload" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Refreshing...' : 'Refresh' }} </CButton>
           </div>
       </div>
 
       <div class="px-3 mb-4 mt-3 datatable-header-search">
         <CForm class="row align-items-center justify-between" @submit.prevent="searchByColumnName">
-          <div class="col-9">
-              <div class="d-flex gap-4 mt-0">
-                <CCol xs="7">
+          <div class="col-md-9">
+              <div class="d-flex search-columns-inputs gap-4 mt-0">
+                <CCol md="7">
                   <CFormLabel :for="searchByColumn" class="text-start mb-1 form-label-required">Search Property</CFormLabel>
                   <CInputGroup class="mb-3">
                       <CInputGroupText>
@@ -34,7 +34,7 @@
                     <span>* {{ searchByColumnError }}</span>
                   </div>
                 </CCol> 
-                <CCol xs="5">
+                <CCol md="5">
                   <CFormLabel :for="columnName" class="text-start mb-1 form-label-required">Search by Column name</CFormLabel>
                   <CInputGroup class="mb-3">
                       <CInputGroupText>
@@ -58,8 +58,8 @@
                 </CCol> 
               </div>
           </div>
-          <div class="text-end col-3">
-            <CButton class="px-4 self-bg-light-dark self-color-tertiary fs-6" type="submit">
+          <div class="text-end col-md-3 search-btn">
+            <CButton class="px-4 self-bg-light-dark self-color-tertiary fs-8" type="submit">
               <CIcon icon="cil-zoom" v-if="!btnLoading1" /> <ButtonSpinner v-if="btnLoading1" size="small" bgColor="#000000" /> {{ btnLoading1 ? 'Searching...' : 'Search Property' }} 
             </CButton>
           </div>
@@ -199,31 +199,3 @@
   
 
 </script>
-
-<style scoped>
-    .page-heading h2{
-        color: #4b4949;
-        font-weight: 700;
-        font-size: 2.3rem;
-    }
-
-    .page-heading p{
-        color: #9b9b9b;
-        font-size: 1.08rem;
-    }
-
-    .p-paginator #pagination-item-prev,
-    .p-paginator #pagination-item-data,
-    .p-paginator #pagination-item-next{
-      max-width: fit-content !important;
-    }
-
-    .datatable-header-search{
-      background-color: #f1f4f9;
-      padding-top: 20px;
-      padding-bottom: 20px;
-      border-radius: 10px;
-      border: 1px solid #e9e7e7;
-      box-shadow: 0 10px 12px 0 rgba(218, 218, 253, 0.65), 0 2px 5px 0 rgba(206, 206, 238, 0.6);
-    }
-</style>
