@@ -43,12 +43,12 @@
                   <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="passwordMeta.touched && passwordError">
                     <span>* {{ passwordError }}</span>
                   </div>
-                  <CRow class="mt-4">
-                    <CCol :xs="6" class="text-start">
-                      <CButton color="primary" class="px-4 self-button" type="submit"> <CIcon icon="cilLockUnlocked" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Login' }} </CButton>
+                  <CRow class="mt-4 login-form-btns-row">
+                    <CCol md="6" class="text-start">
+                      <CButton color="primary" class="px-4 self-button fs-8" type="submit" :disabled="btnLoading"> <CIcon icon="cilLockUnlocked" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Login' }} </CButton>
                     </CCol>
-                    <CCol :xs="6" class="text-end">
-                      <CButton color="link" @click="showResetPasswordModal" class="px-0 self-color-primary">
+                    <CCol md="6" class="text-end forgot-password-btn">
+                      <CButton color="link" @click="showResetPasswordModal" class="px-0 self-color-primary fs-8">
                         Forgot password?
                       </CButton>
                     </CCol>
@@ -56,7 +56,7 @@
                 </CForm>
               </CCardBody>
             </CCard>
-            <CCard class="text-white" style="max-width: 40%">
+            <CCard class="text-white text-area-card">
               <CCardBody class="text-center bg-wrapper position-relative">
                 <div class="bg-image"></div>
                 <div class="bg-overlay"></div>
@@ -72,7 +72,7 @@
                   <p class="mb-1">
                     <CIcon icon="cilArrowThickRight" /> Client & Team Collaboration Tools
                   </p>
-                  <CButton as="a" href="/realtor/auth/register" class="mt-4 px-4 self-bg-light-dark self-color-tertiary fs-6">
+                  <CButton as="a" href="/realtor/auth/register" class="mt-4 px-4 self-bg-light-dark self-color-tertiary fs-8">
                     <CIcon icon="cilUserPlus" /> Create Your Free Account
                   </CButton>
                 </div>
@@ -208,6 +208,10 @@
     -moz-box-shadow: 6px 15px 35px 8px rgba(0,0,0,0.11);
   }
 
+  .text-area-card{
+    max-width: 40%
+  }
+
   .bg-wrapper {
     overflow: hidden;
     display: flex;
@@ -246,5 +250,30 @@
     border: 3px solid #06c8ff;
     border-radius: 10%;
     padding: 3px
+  }
+
+  @media (max-width: 480px) {
+    .login-card-group{
+      padding: 45px 15px;
+    }
+
+    .bg-wrapper{
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
+
+    .text-area-card{
+      max-width: 100%;
+    }
+
+    .login-card-group .login-form-btns-row{
+      flex-direction: column-reverse;
+      margin-top: 0px !important;
+    }
+
+    .login-card-group .forgot-password-btn{
+      text-align: start !important;
+      padding-bottom: 15px;
+    }
   }
 </style>

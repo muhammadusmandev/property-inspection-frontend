@@ -4,7 +4,7 @@
       <CRow class="justify-content-center">
         <CCol :md="10">
           <CCardGroup class="register-card-group">
-            <CCard class="text-white" style="max-width: 40%">
+            <CCard class="text-white text-area-card">
               <CCardBody class="text-center bg-wrapper position-relative">
                 <div class="bg-image"></div>
                 <div class="bg-overlay"></div>
@@ -20,7 +20,7 @@
                   <p class="mb-1">
                     <CIcon icon="cilArrowThickRight" /> Client & Team Collaboration Tools
                   </p>
-                  <CButton as="a" href="/realtor/auth/login" class="mt-4 px-4 self-bg-light-dark self-color-tertiary fs-6">
+                  <CButton as="a" href="/realtor/auth/login" class="mt-4 px-4 self-bg-light-dark self-color-tertiary fs-8">
                     <CIcon icon="cilUserPlus" /> Already have an account?
                   </CButton>
                 </div>
@@ -183,7 +183,7 @@
                     <p class="term-condition-text mt-3 text-body-secondary">By continuing, you agree to our <span class="fw-bold color-dark">Terms</span>. Learn how we collect, use and share your data in our <span class="fw-bold color-dark">Privacy Policy</span>.</p>
                   </div>
                   <div class="d-grid">
-                    <CButton color="primary" class="px-4 self-button w-50 mx-auto" type="submit"> <CIcon icon="cilUserPlus" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Create Free Account' }} </CButton>
+                    <CButton color="primary" class="px-4 self-button create-account-btn mx-auto fs-8" type="submit" :disabled="btnLoading"> <CIcon icon="cilUserPlus" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Create Free Account' }} </CButton>
                   </div>
                 </CForm>
               </CCardBody>
@@ -338,9 +338,15 @@
     -webkit-box-shadow: 6px 15px 35px 8px rgba(0,0,0,0.11);
     -moz-box-shadow: 6px 15px 35px 8px rgba(0,0,0,0.11);
   }
+
+  .text-area-card{
+    max-width: 40%
+  }
+
   .term-condition-text{
     font-size: 0.91rem;
   }
+
   .bg-wrapper {
     overflow: hidden;
     display: flex;
@@ -379,5 +385,30 @@
     border: 3px solid #06c8ff;
     border-radius: 10%;
     padding: 3px
+  }
+
+  .create-account-btn{
+    width: 50%;
+  }
+
+  @media (max-width: 480px) {
+    .register-card-group{
+      padding: 45px 15px;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+
+    .bg-wrapper{
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
+
+    .text-area-card{
+      max-width: 100%;
+    }
+
+    .create-account-btn{
+      width: 100%;
+    }
   }
 </style>
