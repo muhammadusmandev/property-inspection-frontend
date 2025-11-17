@@ -8,11 +8,10 @@
     size="lg"
   >
     <CModalBody>
-      <CForm class="row g-2" @submit.prevent="handleAddDefect">
-        
-        <h2 class="mt-2 fw-bold mb-0 text-center">Add Area Defect</h2>
+      <CForm class="row g-2" @submit.prevent="handleUpdateDefect">
+        <h2 class="mt-2 fw-bold mb-0 text-center">Update Area Defect</h2>
         <p class="text-body-secondary text-center mb-4 w-75 mx-auto">
-          Add defect details for this inspection area
+          Update defect details for this inspection area
         </p>
 
         <CCol xs="10" class="mx-auto mt-3 pt-2">
@@ -113,8 +112,8 @@
             </div>
           </div>
           <br>
-          <CBadge class="px-4 py-2" style="border-radius: 25px; cursor: pointer" color="info" @click="visibleShowImagesUpload(areaId)">
-            <CIcon icon="cil-camera" /> {{ selectedImages.length > 0 ? 'Re-Select Photos' : 'Attach Photos' }}
+          <CBadge class="px-4 py-2" style="border-radius: 25px; cursor: pointer" color="info" @click="visibleShowImagesUpload(defectId)">
+            <CIcon icon="cil-camera" /> {{ selectedImages.length > 0 ? 'Re-Select Photos' : 'Attach More Photos' }}
           </CBadge>
         </CCol>
 
@@ -122,7 +121,7 @@
         <div class="d-grid mt-4 mb-3">
           <CButton color="primary" class="px-4 py-2 self-button w-75 mx-auto mt-1" type="submit" :disabled="btnLoading">
             <CIcon icon="cilBug" v-if="!btnLoading" /> 
-            {{ btnLoading ? 'Saving...' : 'Save Defect' }}
+            {{ btnLoading ? 'Updating...' : 'Update Defect' }}
           </CButton>
           <CButton color="danger" class="px-4 py-2 text-white w-75 mx-auto mt-2" @click="closeModal">
             Cancel
@@ -133,12 +132,12 @@
     </CModalBody>
   </CModal>
 
-  <MultipleImagesSelector v-model:visibility="showImagesUpload" @images-selected="onImagesSelected" :refItemId="areaId" :resetImages="resetImages" />
+  <MultipleImagesSelector v-model:visibility="showImagesUpload" @images-selected="onImagesSelected" :refItemId="defectId" :resetImages="resetImages" />
 
 </template>
 
 <script setup>
-    import { ref, onBeforeMount } from 'vue'
+    import { ref, onBeforeMount, watch } from 'vue'
     import { useForm, useField } from 'vee-validate'
     import * as yup from 'yup'
     import { toTypedSchema } from '@vee-validate/yup'
@@ -146,11 +145,11 @@
     import { useApi } from '@/composables/useApi'
     import { toastNotifications } from '@/composables/toastNotifications'
     import MultipleImagesSelector from '@/components/Modals/MultipleImagesSelector.vue'
-    import { addReportAreaDefect, getInspectionAreaItemsList } from '@/services/api'
+    import { updateReportAreaDefect, getInspectionAreaItemsList, getReportAreaDefect } from '@/services/api'
 
     const props = defineProps({
         visibility: Boolean,
-        areaId: Number
+        defectId: Number,
     })
 
     const emit = defineEmits(['update:visibility'])
@@ -186,7 +185,7 @@
             .nullable(),
     }))
 
-    const { handleSubmit } = useForm({ validationSchema: schema })
+    const { handleSubmit, setFieldValue } = useForm({ validationSchema: schema })
 
     const { 
         value: defect_item, 
@@ -229,12 +228,29 @@
     const selectedImages = ref([])
     const previewImages = ref([])
 
-    const { loading: btnLoading, execute: saveDefect } = useApi(addReportAreaDefect, false)
+    const { loading: btnLoading, execute: updateDefect } = useApi(updateReportAreaDefect, false)
+    const { data: defectData, execute } = useApi(getReportAreaDefect, false)
     const { data: itemsList, execute: fetchItems } = useApi(getInspectionAreaItemsList, false)
 
-    const handleAddDefect = handleSubmit(async (formData) => {
+    watch(() => props.defectId, async (newId) => {
+        if(newId && newId > 0) {
+            await execute({ pathParams: [props.defectId] })
+            setupPageFieldsData()
+        }
+    })
+
+    function setupPageFieldsData() {
+        const data = defectData.value
+
+        setFieldValue('defect_item', data.inspection_area_item_id)
+        setFieldValue('defect_type', data.defect_type)
+        setFieldValue('remediation', data.remediation)
+        setFieldValue('priority', data.priority)
+        setFieldValue('comments', data.comments)
+    }
+
+    const handleUpdateDefect = handleSubmit(async (formData) => {
         const payload = new FormData()
-        payload.append('inspection_area_id', props.areaId)
         payload.append('defect_item_id', formData.defect_item ?? null)
         payload.append('defect_type', formData.defect_type)
         payload.append('remediation', formData.remediation)
@@ -245,16 +261,16 @@
             payload.append('images[]', image)
         })
 
-        const response = await saveDefect({ payload: payload, config: { isMultipart: true } })
+        const response = await updateDefect({ pathParams: [props.defectId], payload: payload, config: { isMultipart: true } })
 
         if (response.success) {
-            showToast('success', 'Defect added successfully! Wait Redirecting...')
+            showToast('success', 'Defect updated successfully! Wait Redirecting...')
             emit('update:visibility', false)
             setTimeout(() => {
                 window.location.reload()
             }, 2000)
         } else {
-            showToast('error', 'Failed to add defect.')
+            showToast('error', 'Failed to update defect.')
         }
     })
 
@@ -267,9 +283,10 @@
 
     function onImagesSelected({ refId, images }){
         selectedImages.value = images
-
+        console.log(selectedImages)
         const newPreviews = images.map(f => URL.createObjectURL(f))
         previewImages.value.push(...newPreviews)
+        console.log(selectedImages)
     }
 
     function closeModal() {

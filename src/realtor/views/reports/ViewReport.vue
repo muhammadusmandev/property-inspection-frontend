@@ -60,6 +60,7 @@
               </div>
               
               <CAccordion v-if="reportData?.areas.length > 0">
+                <!-- Area -->
                 <CAccordionItem
                   v-for="area in reportData.areas"
                   :key="area.id"
@@ -120,7 +121,7 @@
                           <div class="d-flex flex-wrap gap-2" v-if="area.media.length">
                             <div class="position-relative" v-for="(image, index) in area.media">
                               <CImage class="area-img" :src="createServerImageURL(image.thumbnail_path ? image.thumbnail_path : image.file_path)" alt="Area Image" width="50" height="59" />
-                              <button class="remove-selected-img bg-dark text-white border-0 position-absolute" @click="deleteAreaImg(image.id)">×</button>
+                              <button class="remove-selected-img bg-dark text-white border-0 position-absolute" @click="deleteImg(image.id, 'area')">×</button>
                             </div>
                           </div>
                           <p class="fs-8" v-else>
@@ -133,6 +134,8 @@
                       </CTableRow>
                     </CTableBody>
                   </CTable>
+
+                  <!-- Defects -->
                   <h6>
                     - Defects
                   </h6>
@@ -148,31 +151,32 @@
                         <CTableHeaderCell style="width: 10%;">Action</CTableHeaderCell>
                       </CTableRow>
                     </CTableHead>
-                    <CTableBody class="fs-8 text-secondary">
+                    <CTableBody class="fs-8">
                       <CTableRow v-for="(defect, idx) in area.defects">
                         <CTableDataCell style="width: 10%;">
-                          <span class="text-capitalize">
+                          <span class="text-capitalize text-secondary">
                             {{ defect.defect_type }}
                           </span>
                         </CTableDataCell>
                         <CTableDataCell style="width: 10%;">
-                          <span class="text-capitalize">
+                          <span class="text-capitalize text-secondary">
                             {{ defect.remediation }}
                           </span>
                         </CTableDataCell>
                         <CTableDataCell style="width: 10%;">
-                          <span class="text-capitalize">
+                          <span class="text-capitalize text-secondary">
                             {{ defect.priority }}
                           </span>
                         </CTableDataCell>
-                        <CTableDataCell style="width: 10%;">{{ defect.area_item_name || '-' }}</CTableDataCell>
-                        <CTableDataCell style="width: 25%;">
+                        <CTableDataCell style="width: 10%;" class="text-secondary">{{ defect.area_item_name || '-' }}</CTableDataCell>
+                        <CTableDataCell style="width: 25%;" class="text-secondary">
                           {{ defect.comments || '-' }}
                         </CTableDataCell>
                         <CTableDataCell style="width: 25%;">
                           <div class="d-flex flex-wrap gap-2" v-if="defect.images?.length">
                             <div class="position-relative" v-for="(image, index) in defect.images">
                               <CImage class="area-img" :src="createServerImageURL(image.thumbnail_path ? image.thumbnail_path : image.file_path)" alt="Defect Image" width="50" height="59" />
+                              <button class="remove-selected-img bg-dark text-white border-0 position-absolute" @click="deleteImg(image.id, 'defect')">×</button>
                             </div>
                           </div>
                           <p v-else>
@@ -180,8 +184,8 @@
                           </p>
                         </CTableDataCell>
                         <CTableDataCell style="width: 10%;" class="fs-8 text-secondary">
-                          <span class="badge bg-dark" @click=""><CIcon icon="cil-pen" /></span><br>
-                          <span class="badge bg-danger mt-1" @click="handleShowDeleteModal(defect.id, 'defect')"><CIcon icon="cil-x" /></span>
+                          <span class="badge bg-dark" style="cursor: pointer;" @click="handleShowDefectUpdateModal(defect.id)"><CIcon icon="cil-pen" /></span><br>
+                          <span class="badge bg-danger mt-1" style="cursor: pointer;" @click="handleShowDeleteModal(defect.id, 'defect')"><CIcon icon="cil-x" /></span>
                         </CTableDataCell>
                       </CTableRow>
                     </CTableBody>
@@ -189,7 +193,9 @@
                   <div class="d-block text-center">
                     <CButton color="primary" class="px-4 py-1 self-button mx-auto d-inline-block fs-8" @click="visibleAddAreaDefects(area.id)"> <CIcon icon="cilUserPlus" /> Add Defect</CButton>
                   </div>
+                  <!-- Defects -->
                 </CAccordionItem>
+                <!-- Area -->
               </CAccordion>
             </CRow>
             <div class="mt-4" v-else>
@@ -327,6 +333,7 @@
   <AddReportInspectionArea v-model:visibility="showAddNewArea" />
   <AddReportAreaDefects v-model:visibility="showAddAreaDefects" :areaId="defectAreaId" />
   <UpdateReportInspectionArea v-model:visibility="showUpdateArea" :areaId="updateAreaId" />
+  <UpdateReportAreaDefect v-model:visibility="showUpdateAreaDefect" :defectId="updateDefectId" />
   <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDeleteResource" />
   <MultipleImagesSelector v-model:visibility="showImagesUpload" @images-selected="onImagesSelected" :refItemId="refAreaIdForImages" :resetImages="resetImages" />
 </template>
@@ -340,6 +347,7 @@
   import AddReportInspectionArea from '@/components/Modals/AddReportInspectionArea.vue'
   import AddReportAreaDefects from '@/components/Modals/AddReportAreaDefects.vue'
   import UpdateReportInspectionArea from '@/components/Modals/UpdateReportInspectionArea.vue'
+  import UpdateReportAreaDefect from '@/components/Modals/UpdateReportAreaDefect.vue'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
   import { FullPageSpinnerLoader } from '@/components/General/Loader.vue'
   import MultipleImagesSelector from '@/components/Modals/MultipleImagesSelector.vue'
@@ -361,8 +369,10 @@
   const showAddNewArea = ref(false)
   const showAddAreaDefects = ref(false)
   const showUpdateArea = ref(false)
+  const showUpdateAreaDefect = ref(false)
   const showImagesUpload = ref(false)
   const updateAreaId = ref(0)
+  const updateDefectId = ref(0)
   const defectAreaId = ref(0)
   const showDeleteModal = ref(false)
   const deleteBtnLoading = ref(false)
@@ -428,6 +438,11 @@
   function handleShowUpdateModal(areaId) {
     showUpdateArea.value = true
     updateAreaId.value = areaId
+  } 
+
+  function handleShowDefectUpdateModal(defectId) {
+    showUpdateAreaDefect.value = true
+    updateDefectId.value = defectId
   }
 
   function handleShowDeleteModal(Id, resource) {
@@ -514,11 +529,12 @@
     }
   }
 
-  async function deleteAreaImg(mediaId) {
+  async function deleteImg(mediaId, resource) {
     const response = await executeDeleteMedia({ pathParams: [mediaId] })
 
     if(response.success === true){
-      showToast('success', 'Inspection area photo deleted successfully! Wait redirecting...')
+      const msg = (resource === 'area' ? 'Inspection area photo deleted successfully! Wait redirecting...' : 'Inspection area defect photo deleted successfully! Wait redirecting...');
+      showToast('success', msg)
       setTimeout(() => {
         window.location.reload()
       }, 2000)

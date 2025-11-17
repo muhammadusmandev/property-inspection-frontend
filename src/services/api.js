@@ -70,7 +70,9 @@ export const deleteReportInspectionArea = ({}, id) => axiosInstance.delete(`/rep
 export const uploadReportInspectionAreaImages = (data, {}, config) => axiosInstance.post('report-inspection-areas/upload-images', data, { ...config })
 
 // Report Inspection Area Defects
+export const getReportAreaDefect= ({}, id) => axiosInstance.get(`/report-inspection-area-defects/${id}`)
 export const addReportAreaDefect = (data, {}, config) => axiosInstance.post('/report-inspection-area-defects', data, { ...config })
+export const updateReportAreaDefect = (data, id, config) => axiosInstance.post(`/report-inspection-area-defects/${id}`, data, { ...config })
 export const deleteReportAreaDefect = ({}, id) => axiosInstance.delete(`/report-inspection-area-defects/${id}`)
 
 // Billings
