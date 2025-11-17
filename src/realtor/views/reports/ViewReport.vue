@@ -133,6 +133,62 @@
                       </CTableRow>
                     </CTableBody>
                   </CTable>
+                  <h6>
+                    - Defects
+                  </h6>
+                  <CTable v-if="area.defects?.length > 0" bordered hover responsive>
+                    <CTableHead>
+                      <CTableRow>
+                        <CTableHeaderCell style="width: 10%;">Category</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 10%;">Remediation</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 10%;">Priority</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 10%;">Item Name</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 30%;">Comments</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 30%;">Photos</CTableHeaderCell>
+                        <CTableHeaderCell style="width: 10%;">Action</CTableHeaderCell>
+                      </CTableRow>
+                    </CTableHead>
+                    <CTableBody class="fs-8 text-secondary">
+                      <CTableRow v-for="(defect, idx) in area.defects">
+                        <CTableDataCell style="width: 10%;">
+                          <span class="text-capitalize">
+                            {{ defect.defect_type }}
+                          </span>
+                        </CTableDataCell>
+                        <CTableDataCell style="width: 10%;">
+                          <span class="text-capitalize">
+                            {{ defect.remediation }}
+                          </span>
+                        </CTableDataCell>
+                        <CTableDataCell style="width: 10%;">
+                          <span class="text-capitalize">
+                            {{ defect.priority }}
+                          </span>
+                        </CTableDataCell>
+                        <CTableDataCell style="width: 10%;">{{ defect.area_item_name || '-' }}</CTableDataCell>
+                        <CTableDataCell style="width: 25%;">
+                          {{ defect.comments || '-' }}
+                        </CTableDataCell>
+                        <CTableDataCell style="width: 25%;">
+                          <div class="d-flex flex-wrap gap-2" v-if="defect.images?.length">
+                            <div class="position-relative" v-for="(image, index) in defect.images">
+                              <CImage class="area-img" :src="createServerImageURL(image.thumbnail_path ? image.thumbnail_path : image.file_path)" alt="Defect Image" width="50" height="59" />
+                            </div>
+                          </div>
+                          <p v-else>
+                            No Image Uploaded Yet
+                          </p>
+                        </CTableDataCell>
+                        <CTableDataCell style="width: 10%;" class="fs-8 text-secondary">
+                          <span class="badge bg-dark" @click=""><CIcon icon="cil-pen" /></span><br>
+                          <span class="badge bg-danger mt-1" @click=""><CIcon icon="cil-x" /></span>
+                        </CTableDataCell>
+                      </CTableRow>
+                    </CTableBody>
+                  </CTable>
+                  <div class="d-block text-center">
+                    <CButton color="primary" class="px-4 py-1 self-button mx-auto d-inline-block fs-8" @click="visibleAddAreaDefects(area.id)"> <CIcon icon="cilUserPlus" /> Add Defect</CButton>
+                  </div>
                 </CAccordionItem>
               </CAccordion>
             </CRow>
@@ -183,7 +239,7 @@
               <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
                 <div>
                   <h3>Sign Report</h3>
-                  <p>Sign your report and lock it for download ready</p>
+                  <p class="text-secondary fs-7">Sign your report and lock it for download ready</p>
                 </div>
                 <div class="my-3 text-end">
                   <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Next Step <CIcon icon="cil-arrow-right" /> </span>
@@ -227,7 +283,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
               <div>
                 <h3>Download Report</h3>
-                <p>Download your report!</p>
+                <p class="text-secondary fs-7">Copy your generated pdf report link or directly download from here.</p>
               </div>
               <div class="my-3 text-end">
                 <span class="d-inline-block me-3 fs-8 text-secondary">Proceed to Previous Step <CIcon icon="cil-arrow-right" /> </span>
@@ -237,11 +293,30 @@
               </div>
             </div>
             
-            <div style="padding: 15px; background: #d4edda; border-radius: 4px; color: #155724; margin: 15px 0; font-size: 13px;">
-              ✓ All steps completed successfully
-            </div>
-            <div class="button-group">
-              <button class="btn btn-primary">Download Report</button>
+            <div class="mt-5 py-5 px-4 border">
+              <CAlert color="success" class="fs-8 py-2">✓ All steps completed successfully. Your report is ready to download.</CAlert>
+              <CCol md="12" class="mt-4">
+                  <CFormLabel :for="downloadLink">Report Download Link</CFormLabel>
+                  <div class="input-group">
+                      <span class="input-group-text">
+                          <CIcon icon="cil-link" class="text-info" />
+                      </span>
+                      <CFormInput 
+                          placeholder="Report Download Link"
+                          v-model="downloadLink"
+                          disabled
+                          class="fs-8 py-2"
+                      />
+                      <span class="input-group-text" @click="copyDownloadLink">
+                          <CIcon icon="cil-copy" class="text-secondary" size="sm" />
+                          <span class="copy-text ps-2 text-body-secondary" style="font-size: 14px"> Copy</span>
+                      </span>
+                  </div>
+              </CCol>
+
+              <div class="button-group">
+                <CButton class="self-bg-primary self-color-tertiary fs-8 px-4 py-2 w-auto"><CIcon icon="cil-cloud-download" class="text-white" /> Download Report</CButton>
+              </div>
             </div>
           </div>
         </div>
@@ -250,6 +325,7 @@
   </div>
 
   <AddReportInspectionArea v-model:visibility="showAddNewArea" />
+  <AddReportAreaDefects v-model:visibility="showAddAreaDefects" :areaId="defectAreaId" />
   <UpdateReportInspectionArea v-model:visibility="showUpdateArea" :areaId="updateAreaId" />
   <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDeleteArea" />
   <MultipleImagesSelector v-model:visibility="showImagesUpload" @images-selected="onImagesSelected" :refItemId="refAreaIdForImages" :resetImages="resetImages" />
@@ -262,6 +338,7 @@
   import { CFormSwitch } from '@coreui/vue'
   import PageBodyHeader from '@/components/General/PageBodyHeader.vue'
   import AddReportInspectionArea from '@/components/Modals/AddReportInspectionArea.vue'
+  import AddReportAreaDefects from '@/components/Modals/AddReportAreaDefects.vue'
   import UpdateReportInspectionArea from '@/components/Modals/UpdateReportInspectionArea.vue'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
   import { FullPageSpinnerLoader } from '@/components/General/Loader.vue'
@@ -281,9 +358,11 @@
 
   const pageHeading = ref('')
   const showAddNewArea = ref(false)
+  const showAddAreaDefects = ref(false)
   const showUpdateArea = ref(false)
   const showImagesUpload = ref(false)
   const updateAreaId = ref(0)
+  const defectAreaId = ref(0)
   const showDeleteModal = ref(false)
   const deleteBtnLoading = ref(false)
   const uploadBtnLoading = ref(false)
@@ -295,6 +374,7 @@
   const signErrorMessage = ref('')
   const signBtnLoading = ref(false)
   const checklist = ref('')
+  const downloadLink = ref('https://downloadsample.com')
   const route = useRoute()
   const router = useRouter()
   const reportId = route.params.id
@@ -353,6 +433,11 @@
 
   function visibleAddNewArea() {
     showAddNewArea.value = true
+  }
+
+  function visibleAddAreaDefects(areaId) {
+    showAddAreaDefects.value = true
+    defectAreaId.value = areaId
   }
 
   function visibleShowImagesUpload(areaId) {
@@ -460,6 +545,15 @@
     }
   }
 
+  const copyDownloadLink = async () => {
+    try {
+      await navigator.clipboard.writeText(downloadLink.value)
+      showToast('success', 'Download Link copied!')
+    } catch (err) {
+      showToast('error', 'Failed to copy download link!')
+    }
+  }
+
   const currentStep = ref(1)
 
   const steps = [
@@ -485,7 +579,9 @@
   }
 
   .accordion-item {
-    border: none !important
+    border: 1px solid #e7e7e7 !important;
+    padding: 12px 20px;
+    background: #fbfbfb;
   }
 
   .table th{
