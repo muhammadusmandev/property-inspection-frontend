@@ -91,7 +91,7 @@
                         </CDropdownToggle>
                         <CDropdownMenu placement="bottom-end">
                           <CDropdownItem @click="handleShowUpdateModal(area.id)">Edit</CDropdownItem>
-                          <CDropdownItem @click="handleShowDeleteModal(area.id)">Delete</CDropdownItem>
+                          <CDropdownItem @click="handleShowDeleteModal(area.id, 'area')">Delete</CDropdownItem>
                         </CDropdownMenu>
                       </CDropdown>
                     </div>
@@ -181,7 +181,7 @@
                         </CTableDataCell>
                         <CTableDataCell style="width: 10%;" class="fs-8 text-secondary">
                           <span class="badge bg-dark" @click=""><CIcon icon="cil-pen" /></span><br>
-                          <span class="badge bg-danger mt-1" @click=""><CIcon icon="cil-x" /></span>
+                          <span class="badge bg-danger mt-1" @click="handleShowDeleteModal(defect.id, 'defect')"><CIcon icon="cil-x" /></span>
                         </CTableDataCell>
                       </CTableRow>
                     </CTableBody>
@@ -327,7 +327,7 @@
   <AddReportInspectionArea v-model:visibility="showAddNewArea" />
   <AddReportAreaDefects v-model:visibility="showAddAreaDefects" :areaId="defectAreaId" />
   <UpdateReportInspectionArea v-model:visibility="showUpdateArea" :areaId="updateAreaId" />
-  <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDeleteArea" />
+  <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDeleteResource" />
   <MultipleImagesSelector v-model:visibility="showImagesUpload" @images-selected="onImagesSelected" :refItemId="refAreaIdForImages" :resetImages="resetImages" />
 </template>
 
@@ -351,6 +351,7 @@
     deleteReportInspectionArea, 
     uploadReportInspectionAreaImages, 
     deleteMedia, 
+    deleteReportAreaDefect,
     updateChecklistItem, 
     markReportLocked 
   } from '@/services/api'
@@ -367,6 +368,8 @@
   const deleteBtnLoading = ref(false)
   const uploadBtnLoading = ref(false)
   const deleteAreaId = ref(null)
+  const deleteAreaDefectId = ref(null)
+  const deleteResource = ref('')
   const selectedImages = ref([])
   const resetImages = ref(0)
   const refAreaIdForImages = ref('')
@@ -389,6 +392,7 @@
   const { execute: executeDeleteMedia } = useApi(deleteMedia, false)
   const { execute: executeUpdateChecklist } = useApi(updateChecklistItem, false)
   const { execute: executeLockReport } = useApi(markReportLocked, false)
+  const { execute: executeDeleteAreaDefect } = useApi(deleteReportAreaDefect, false)
 
   onBeforeMount(async () => {
     await execute1({ pathParams: [reportId] })
@@ -426,8 +430,14 @@
     updateAreaId.value = areaId
   }
 
-  function handleShowDeleteModal(areaId) {
-    deleteAreaId.value = areaId
+  function handleShowDeleteModal(Id, resource) {
+    if(resource === "area"){
+      deleteAreaId.value = Id
+    } else if(resource === "defect"){
+      deleteAreaDefectId.value = Id
+    }
+
+    deleteResource.value = resource  // area or defect
     showDeleteModal.value = true
   }
 
@@ -447,19 +457,37 @@
     showImagesUpload.value = true
   }
 
-  async function handleDeleteArea(){
-    deleteBtnLoading.value = true
-    const response = await execute2({ pathParams: [deleteAreaId.value]})
+  async function handleDeleteResource(){
+    if(deleteResource === "area"){
+      deleteBtnLoading.value = true
+      const response = await execute2({ pathParams: [deleteAreaId.value]})
 
-    if(response.success === true){
-      showToast('success', 'Inspection area deleted successfully! Wait redirecting...')
-      setTimeout(() => {
-        window.location.reload()
-      }, 2000)
+      if(response.success === true){
+        showToast('success', 'Inspection area deleted successfully! Wait redirecting...')
+        setTimeout(() => {
+          window.location.reload()
+        }, 2000)
+      } else{
+        deleteAreaId.value = null
+        deleteResource.value = ''
+        deleteBtnLoading.value = false
+        showToast('error', 'Oops! Something went wrong!')
+      }
     } else{
-      deleteAreaId.value = null
-      deleteBtnLoading.value = false
-      showToast('error', 'Oops! Something went wrong!')
+      deleteBtnLoading.value = true
+      const response = await executeDeleteAreaDefect({ pathParams: [deleteAreaDefectId.value]})
+
+      if(response.success === true){
+        showToast('success', 'Inspection area defect deleted successfully! Wait redirecting...')
+        setTimeout(() => {
+          window.location.reload()
+        }, 2000)
+      } else{
+        deleteAreaDefectId.value = null
+        deleteResource.value = ''
+        deleteBtnLoading.value = false
+        showToast('error', 'Oops! Something went wrong!')
+      }
     }
   }
 

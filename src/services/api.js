@@ -71,6 +71,7 @@ export const uploadReportInspectionAreaImages = (data, {}, config) => axiosInsta
 
 // Report Inspection Area Defects
 export const addReportAreaDefect = (data, {}, config) => axiosInstance.post('/report-inspection-area-defects', data, { ...config })
+export const deleteReportAreaDefect = ({}, id) => axiosInstance.delete(`/report-inspection-area-defects/${id}`)
 
 // Billings
 export const getShowBillingsList = () => axiosInstance.get('/billings/show-billing-data')
