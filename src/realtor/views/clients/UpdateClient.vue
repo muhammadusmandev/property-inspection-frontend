@@ -42,7 +42,7 @@
               </div>
             </CCol>
             <CCol md="6">
-                <CFormLabel :for="email" class="form-label-required">Email</CFormLabel>
+                <CFormLabel :for="email" class="mb-1 form-label-required">Email</CFormLabel>
                 <div class="input-group">
                     <span class="input-group-text">
                         <CIcon icon="cilAt" class="text-info" />
@@ -60,18 +60,22 @@
             </CCol>
             <CCol md="6">
               <CFormLabel :for="phone_number" class="mb-1 form-label-required">Phone</CFormLabel>
-              <CInputGroup class="mb-1">
+              <CInputGroup class="mb-1" style="flex-wrap: nowrap">
                 <CInputGroupText>
                   <CIcon icon="cilScreenSmartphone" class="text-info" />
                 </CInputGroupText>
-                <CFormInput 
-                  placeholder="+1 234-456-7890" 
-                  autocomplete="phone_number" 
+                <vue-tel-input
                   v-model="phone_number"
-                  @blur="phoneMeta.touched = true; phoneValidate()"
+                  :preferred-countries="['us', 'ca']"
+                  :inputoptions="{ showDialCode: true, autocomplete: 'tel' }"
+                  mode="international"
+                  :invalid-msg="invalidPhoneMsg"
+                  @validate="onPhoneValidate"
+                  @blur="validatePhone"
+                  :class="{ 'error': showPhoneError }"
                 />
               </CInputGroup>
-              <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="phoneMeta.touched && phoneError">
+              <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="phoneError">
                 <span>* {{ phoneError }}</span>
               </div>
             </CCol>
@@ -98,7 +102,7 @@
         </div>
 
         <CCol xs="12" class="form-buttons-row">
-          <CButton color="info" class="text-white mt-3 fs-8" type="submit"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Update New Client / LandLord' }}</CButton>
+          <CButton color="info" class="text-white mt-3 fs-8" type="submit" :disabled="btnLoading"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Updating...' : 'Update New Client / LandLord' }}</CButton>
           <CButton color="danger" class="text-white mt-3 fs-8 ms-2 delete-form-btn" type="button" @click="handleShowDeleteModal"><CIcon icon="cilClearAll" /> Delete Client / Landlord </CButton>  
         </CCol>
       </CForm>
@@ -120,12 +124,20 @@
   import { toastNotifications } from '@/composables/toastNotifications'
   import { getClient, updateClient, deleteClient } from '@/services/api'
   import { useApi } from '@/composables/useApi'
+  import { VueTelInput } from 'vue-tel-input'
+  import 'vue-tel-input/vue-tel-input.css'
 
   const pageHeading = ref('');
   const pageDescription = ref('')
   const pageLoading = ref(true)
   const showDeleteModal = ref(false)
   const deleteBtnLoading = ref(false)
+  const phone_number = ref('')
+  const phoneValidation = ref(null)
+  const phoneError = ref('')
+  const invalidPhoneMsg = 'Please enter a valid phone number'
+  const showPhoneError = ref(false)
+  const phoneTouched = ref(false)
 
   const route = useRoute()
   const router = useRouter()
@@ -153,9 +165,6 @@
           .email()
           .max(100, 'Must be 100 characters long')
           .required('Email is required.'),
-    phone_number: yup
-          .string()
-          .required('Phone is required'),
     gender: yup
           .string()
           .required('Gender is required'),
@@ -187,13 +196,6 @@
   } = useField('email');
 
   const { 
-    value: phone_number, 
-    errorMessage: phoneError,
-    validate: phoneValidate,
-    meta: phoneMeta
-  } = useField('phone_number');
-
-  const { 
     value: gender, 
     errorMessage: genderError,
     validate: genderValidate,
@@ -216,15 +218,49 @@
     setFieldValue('first_name', firstName)
     setFieldValue('last_name', lastName)
     setFieldValue('email', clientData.value.email)
-    setFieldValue('phone_number', clientData.value.phone_number)
     setFieldValue('gender', clientData.value.gender)
+    phone_number.value = clientData.value.phone_number
   }
 
   function handleShowDeleteModal() {
      showDeleteModal.value = true
   }
 
+  const onPhoneValidate = (result) => {
+    phoneValidation.value = result;
+    
+    if (phoneTouched.value) {
+      if (!result.valid) {
+        phoneError.value = result.message || 'Please enter a valid phone number';
+        showPhoneError.value = true;
+      } else {
+        phoneError.value = '';
+        showPhoneError.value = false;
+      }
+    }
+  }
+
+  const validatePhone = () => {
+    phoneTouched.value = true;
+    
+    if (!phone_number.value) {
+      phoneError.value = 'Phone number is required';
+      showPhoneError.value = true;
+      return;
+    }
+    
+    if (phoneValidation.value && !phoneValidation.value.valid) {
+      phoneError.value = phoneValidation.value.message || 'Please enter a valid phone number';
+      showPhoneError.value = true;
+    } else {
+      phoneError.value = '';
+      showPhoneError.value = false;
+    }
+  }
+
   const submitUpdateClient = handleSubmit(async (formData) => {
+    validatePhone();
+    formData.phone_number = phone_number.value
     const response = await execute({ pathParams: [clientId], payload: formData})
 
     if(response.success === true){
@@ -250,6 +286,14 @@
 <style scoped>
   .update-client-form-container form{
     width: 75%;
+  }
+
+  .vue-tel-input {
+    border: 1px solid #dbdfe6 !important;
+    border-radius: 0.375rem !important;
+    font-size: 15px;
+    padding: 0.07rem 0.375rem 0.07rem 0rem;
+    width: inherit;
   }
 
   @media (max-width: 480px) {

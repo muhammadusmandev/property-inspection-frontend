@@ -70,19 +70,23 @@
                   </CCol>
                   <CCol md="6">
                     <CFormLabel :for="phone_number" class="mb-1 form-label-required">Phone</CFormLabel>
-                    <CInputGroup class="mb-1">
+                    <CInputGroup class="mb-1" style="flex-wrap: nowrap">
                       <CInputGroupText>
                         <CIcon icon="cilScreenSmartphone" />
                       </CInputGroupText>
-                      <CFormInput 
-                        placeholder="+1 234-456-7890" 
-                        autocomplete="phone_number" 
+                      <vue-tel-input
                         v-model="phone_number"
-                        @blur="phoneMeta.touched = true; phoneValidate()"
+                        :preferred-countries="['us', 'ca']"
+                        :inputoptions="{ showDialCode: true, autocomplete: 'tel' }"
+                        mode="international"
+                        :invalid-msg="invalidPhoneMsg"
+                        @validate="onPhoneValidate"
+                        @blur="validatePhone"
+                        :class="{ 'error': showPhoneError }"
                       />
                     </CInputGroup>
-                    <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="phoneMeta.touched && phoneError">
-                      <span>* {{ phoneError }}</span>
+                    <div class="form-field-error d-inline-block mt-0 mx-2 w-auto" v-if="showPhoneError">
+                        <span>* {{ phoneError }}</span>
                     </div>
                   </CCol>
                   <CCol md="6">
@@ -197,7 +201,7 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue'
+  import { ref, watch } from 'vue'
   import { useForm, useField } from 'vee-validate'
   import * as yup from 'yup'
   import { toTypedSchema } from '@vee-validate/yup';
@@ -212,10 +216,18 @@
   import Datepicker from '@vuepic/vue-datepicker'
   import '@vuepic/vue-datepicker/dist/main.css'
   import dateTimeToDateISO from '@/utils/datetimeFormatter'
+  import { VueTelInput } from 'vue-tel-input'
+  import 'vue-tel-input/vue-tel-input.css'
 
   const showVerifyOTPModal = ref(false)
   const identifierValue = ref(null)
   const otpVerificationType = ref('')
+  const phone_number = ref('')
+  const phoneValidation = ref(null)
+  const phoneError = ref('')
+  const invalidPhoneMsg = 'Please enter a valid phone number'
+  const showPhoneError = ref(false)
+  const phoneTouched = ref(false)
   const fifteenYearsAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 15))
 
   const authStore = useAuthStore()
@@ -230,9 +242,6 @@
     last_name: yup
           .string()
           .required('Last name is required'),
-    phone_number: yup
-          .string()
-          .required('Phone is required'),
     email: yup
           .string()
           .email('Invalid email')
@@ -275,13 +284,6 @@
   } = useField('last_name');
 
   const { 
-    value: phone_number, 
-    errorMessage: phoneError,
-    validate: phoneValidate,
-    meta: phoneMeta
-  } = useField('phone_number');
-
-  const { 
     value: email, 
     errorMessage: emailError,
     validate: emailValidate,
@@ -316,7 +318,41 @@
     meta: dobMeta
   } = useField('date_of_birth');
 
+  const onPhoneValidate = (result) => {
+    phoneValidation.value = result;
+    
+    if (phoneTouched.value) {
+      if (!result.valid) {
+        phoneError.value = result.message || 'Please enter a valid phone number';
+        showPhoneError.value = true;
+      } else {
+        phoneError.value = '';
+        showPhoneError.value = false;
+      }
+    }
+  }
+
+  const validatePhone = () => {
+    phoneTouched.value = true;
+    
+    if (!phone_number.value) {
+      phoneError.value = 'Phone number is required';
+      showPhoneError.value = true;
+      return;
+    }
+    
+    if (phoneValidation.value && !phoneValidation.value.valid) {
+      phoneError.value = phoneValidation.value.message || 'Please enter a valid phone number';
+      showPhoneError.value = true;
+    } else {
+      phoneError.value = '';
+      showPhoneError.value = false;
+    }
+  }
+
   const submitRegisterUser = handleSubmit(async (formData) => {
+    validatePhone();
+    formData.phone_number = phone_number.value
     formData.date_of_birth = dateTimeToDateISO(formData.date_of_birth)
     const response = await execute({ payload: formData })
 
@@ -389,6 +425,13 @@
 
   .create-account-btn{
     width: 50%;
+  }
+
+  .vue-tel-input {
+    border: 1px solid #dbdfe6 !important;
+    border-radius: 0.375rem !important;
+    font-size: 15px;
+    padding: 0.13rem 0.375rem 0.13rem 0rem;
   }
 
   @media (max-width: 480px) {
