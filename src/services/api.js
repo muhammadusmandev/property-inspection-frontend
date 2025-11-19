@@ -87,3 +87,7 @@ export const getSubscriptionData = () => axiosInstance.get('/subscriptions/statu
 
 // Medias
 export const deleteMedia = ({}, id) => axiosInstance.delete(`/medias/${id}`)
+
+// Settings
+export const getProfileData = () => axiosInstance.get(`/settings/profile`)
+export const updateProfileData = (data, {}, config) => axiosInstance.post(`/settings/update-profile`, data, { ...config })

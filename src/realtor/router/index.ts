@@ -150,6 +150,11 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
           }
         ]
       },
+      {
+        name: 'realtor.settings',
+        path: '/realtor/settings',
+        component: () => import('@/realtor/views/settings/Settings.vue'),
+      },
     ]
   },
   {

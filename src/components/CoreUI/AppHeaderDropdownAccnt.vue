@@ -1,11 +1,9 @@
 <template>
   <CDropdown placement="bottom-end" variant="nav-item">
     <CDropdownToggle class="py-0 pe-0" :caret="false">
-      <CAvatar :src="authStore?.user?.gender === 'female' ? femaleAvatar : maleAvatar" size="md" />
+      <CAvatar :src="authStore?.user?.avatar_url ? createServerImageURL(authStore?.user?.avatar_url) : (authStore?.user?.gender === 'female' ? femaleAvatar : maleAvatar)"  size="md" />
     </CDropdownToggle>
     <CDropdownMenu class="pt-3">
-      <CDropdownItem class="py-2 pt-0 fs-8"> <CIcon icon="cil-user" /> Profile </CDropdownItem>
-      <CDropdownItem class="py-2 fs-8"> <CIcon icon="cil-dollar" /> Payments </CDropdownItem>
       <CDropdownItem class="py-2 fs-8"> <CIcon icon="cil-settings" /> Settings </CDropdownItem>
       <CDropdownDivider />
       <CDropdownItem> 
@@ -44,11 +42,17 @@
       // handle any case if concerned error data
     }
   }
+
+  // Todo: create global helper method
+  function createServerImageURL(path){
+    return `http://127.0.0.1:8000/storage/` + path;
+  }
 </script>
 
 <style scoped>
   .dropdown-item:focus, 
   .dropdown-item:hover{
     background: transparent !important;
+    cursor: pointer;
   }
 </style>

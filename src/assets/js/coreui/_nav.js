@@ -95,7 +95,7 @@ export default [
   {
     component: 'CNavItem',
     name: 'Settings',
-    to: '/#',
+    to: '/realtor/settings',
     icon: 'cil-settings'
   },
 ]

@@ -75,19 +75,15 @@
 
 <script setup>
   import { ref, onBeforeMount } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
-  import { toastNotifications } from '@/composables/toastNotifications'
   import CreateReport from '@/components/Modals/CreateReport.vue'
   import { getDashboardData } from '@/services/api'
   import { useApi } from '@/composables/useApi'
 
   const showNewReportModal = ref(false)
-  const { showToast } = toastNotifications()
   const { data: dashboardData, execute } = useApi(getDashboardData, false)
 
   onBeforeMount(async () => {
     await execute()
-    console.log(dashboardData)
   })
 
 </script>
