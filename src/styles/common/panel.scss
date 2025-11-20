@@ -225,13 +225,15 @@ th.p-datatable-header-cell {
 
 /*** Form CSS ***/
 input.form-control{
-  font-size: 15px;
+  font-size: 14px;
+  padding-top: 9px;
+  padding-bottom: 9px;
 }
-label.form-label{
-    font-size: 14px;
-}
-.form-label{
-  font-size: 0.89rem;
+
+label{
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 8px;
   color: #747474;
 }
 
@@ -249,7 +251,12 @@ label.form-label{
 }
 
 .input-group-text {
-  background-color: #ffffff !important;
+  background-color: #ffffff!important;
+  padding: 11px 16px;
+  font-size: 14px;
+  color: #999;
+  border-right: 1px solid #ddd;
+  white-space: nowrap;
 }
 
 .datatable-container .page-heading h2{

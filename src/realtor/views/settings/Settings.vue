@@ -39,6 +39,8 @@
 
           <!-- Settings - Profile -->
           <Profile v-if="activeTab === 'Profile'" />
+          <!-- Settings - Password -->
+          <Password v-if="activeTab === 'Password'" />
         </div>
 
       </CCardBody>
@@ -49,6 +51,7 @@
 <script setup>
   import { ref } from 'vue'
   import Profile from '@/realtor/views/settings/Profile.vue'
+  import Password from '@/realtor/views/settings/Password.vue'
 
   const activeTab = ref("Profile")
 
@@ -138,5 +141,4 @@
     font-size: 14px;
     color: #666;
   }
-
 </style>

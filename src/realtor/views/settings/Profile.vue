@@ -3,11 +3,11 @@
     <!-- Profile -->
     <CForm class="settings-profile" @submit.prevent="submitUpdateProfile">
         <!-- Name -->
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label>Name</label>
 
             <CInputGroup class="input-wrapper">
-                <CInputGroupText class="input-prefix">
+                <CInputGroupText>
                     <CIcon icon="cil-user" class="text-info" />
                 </CInputGroupText>
                 <CFormInput
@@ -20,11 +20,11 @@
         </div>
 
         <!-- Email -->
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label>Email</label>
 
             <CInputGroup class="input-wrapper">
-                <CInputGroupText class="input-prefix">
+                <CInputGroupText>
                     <CIcon icon="cil-at" class="text-info" />
                 </CInputGroupText>
                 <CFormInput
@@ -37,11 +37,11 @@
         </div>
 
         <!-- Phone Number -->
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label>Phone Number</label>
 
             <CInputGroup class="input-wrapper">
-                <CInputGroupText class="input-prefix">
+                <CInputGroupText>
                     <CIcon icon="cil-screen-smartphone" class="text-info" />
                 </CInputGroupText>
                 <CFormInput
@@ -54,11 +54,11 @@
         </div>
 
         <!-- Gender -->
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label>Gender</label>
 
             <CInputGroup class="input-wrapper">
-                <CInputGroupText class="input-prefix">
+                <CInputGroupText>
                     <CIcon icon="cil-user" class="text-info" />
                 </CInputGroupText>
                 <CFormInput
@@ -71,11 +71,11 @@
         </div>
 
         <!-- Date of Birth -->
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label>Date of Birth</label>
 
             <CInputGroup class="input-wrapper">
-                <CInputGroupText class="input-prefix">
+                <CInputGroupText>
                     <CIcon icon="cil-calendar" class="text-info" />
                 </CInputGroupText>
                 <CFormInput
@@ -87,7 +87,7 @@
         </div>
 
         <!-- Photo -->
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label>Your Photo</label>
             <p class="form-description">This will be displayed on your profile.</p>
 
@@ -115,7 +115,7 @@
         </div>
 
         <!-- Bio -->
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label>Your Bio</label>
             <p class="form-description">Write a short introduction.</p>
 
@@ -271,64 +271,10 @@
   }
 
   /* Form */
-  .settings-profile .form-group {
-    margin-bottom: 30px;
-  }
-
-  .settings-profile .form-group label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #1a1a1a;
-  }
-
   .settings-profile .form-description {
     font-size: 13px;
     color: #999;
     margin-bottom: 12px;
-  }
-
-  /* Input Fields */
-  .settings-profile .input-wrapper {
-    display: flex;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    overflow: hidden;
-  }
-
-  .settings-profile .input-prefix {
-    background-color: #f5f5f5;
-    padding: 12px 16px;
-    font-size: 14px;
-    color: #999;
-    border-right: 1px solid #ddd;
-    white-space: nowrap;
-  }
-
-  .settings-profile .input-wrapper input {
-    flex: 1;
-    padding: 12px 16px;
-    border: none;
-    font-size: 14px;
-  }
-
-  .settings-profile .input-wrapper input:focus {
-    outline: none;
-    background-color: #fafafa;
-  }
-
-  .settings-profile .form-group input[type="text"] {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
-  }
-
-  .settings-profile .form-group input[type="text"]:focus {
-    outline: none;
-    border-color: #5e5ce6;
   }
 
   /* Photo Upload */
