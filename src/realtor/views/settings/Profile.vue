@@ -59,10 +59,11 @@
 
             <CInputGroup class="input-wrapper">
                 <CInputGroupText class="input-prefix">
-                    <CIcon icon="cil-lock-locked" class="text-info" />
+                    <CIcon icon="cil-user" class="text-info" />
                 </CInputGroupText>
                 <CFormInput
                     v-model="gender"
+                    class="text-capitalize"
                     aria-label="readonly" 
                     readonly
                 />
@@ -105,9 +106,9 @@
                 />
 
                 <div class="photo-actions">
-                    <CButton color="light" class="btn-delete bg-danger text-white">Delete</CButton>
-                    <CButton color="primary" variant="outline" class="btn-update" @click="openPhotoSelector" :disabled="photo">
-                        {{ photo ? 'Photo Selected' : 'Select' }}
+                    <CButton color="light" class="btn-delete bg-danger text-white" v-if="authStore?.user.avatar_url" @click="handleDeleteProfilePhoto">Remove</CButton>
+                    <CButton color="primary" variant="outline" class="btn-update" @click="openPhotoSelector" :disabled="photoSelected">
+                        {{ photoSelected ? 'Profile Photo Selected' : 'Select Photo' }}
                     </CButton>
                 </div>
             </div>
@@ -149,7 +150,7 @@
   import femaleAvatar from '@/assets/images/avatars/female.png'
   import maleAvatar from '@/assets/images/avatars/male.png'
   import { useAuthStore } from '@/stores/auth'
-  import { getProfileData, updateProfileData } from '@/services/api'
+  import { getProfileData, updateProfileData, deleteProfilePhoto } from '@/services/api'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
   import { useApi } from '@/composables/useApi'
@@ -162,12 +163,14 @@
   const gender = ref('')
   const dob = ref('')
   const photo = ref(null)
+  const photoSelected = ref(false)
   const photoInput = ref(null)
   const { showToast } = toastNotifications()
 
   const { data: profileData, execute } = useApi(getProfileData, false)
   const { loading: btnLoading, data: updatedData, execute: updateProfileExecute } = useApi(updateProfileData, false)
-
+  const { execute: deleteProfilePhotoExecute } = useApi(deleteProfilePhoto, false)
+  
   onBeforeMount(async () => {
     await execute()
     
@@ -205,7 +208,9 @@
     if (file) {
         const previewImage = URL.createObjectURL(file)
         photo.value = file
+        photoSelected.value = true
     }
+    e.target.value = null
   }
 
   const charCountLimit = computed(() => {
@@ -236,8 +241,23 @@
       authStore.setUserData(mergedUser)
       photo.value = null
       photoInput.value = null
+      photoSelected.value = false
     }
   })
+
+  async function handleDeleteProfilePhoto(){
+    const response = await deleteProfilePhotoExecute()
+
+    if(response.success === true){
+      showToast('success', 'Photo deleted successfully!')
+
+      const mergedUser = {
+        ...authStore.user,
+        avatar_url: null
+      }
+      authStore.setUserData(mergedUser)
+    }
+  }
 
   // Todo: create global helper method
   function createServerImageURL(path){

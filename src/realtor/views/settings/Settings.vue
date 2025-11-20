@@ -105,8 +105,9 @@
   }
 
   .settings-card .nav-tab.active-section {
-    color: #5e5ce6;
-    border-bottom-color: #5e5ce6;
+    color: #02aad3;
+    border-bottom-color: #02aad3;
+    font-weight: bold;
   }
 
   .settings-card .badge {

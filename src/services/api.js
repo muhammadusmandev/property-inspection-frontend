@@ -91,3 +91,4 @@ export const deleteMedia = ({}, id) => axiosInstance.delete(`/medias/${id}`)
 // Settings
 export const getProfileData = () => axiosInstance.get(`/settings/profile`)
 export const updateProfileData = (data, {}, config) => axiosInstance.post(`/settings/update-profile`, data, { ...config })
+export const deleteProfilePhoto = () => axiosInstance.delete('/settings/delete-profile-photo')
