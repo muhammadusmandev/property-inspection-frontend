@@ -32,7 +32,7 @@
                         <CFormLabel :for="items" class="text-start mb-0 form-label-required">Items</CFormLabel>
                         <CInputGroup class="mb-3">
                             <CInputGroupText>
-                            <CIcon icon="cil-user" />
+                            <CIcon icon="cil-list-rich" />
                             </CInputGroupText>
                             <Multiselect
                                 v-model="items"
@@ -62,7 +62,7 @@
                     </CCol>
                 </CCol>
                 <div class="d-grid mt-3 mb-3">
-                    <CButton color="primary" class="px-4 py-2 self-button w-75 mx-auto mt-1" type="submit"> <CIcon icon="cilUserPlus" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Adding...' : 'Add Now' }}</CButton>
+                    <CButton color="primary" class="px-4 py-2 self-button w-75 mx-auto mt-1" type="submit" :disabled="btnLoading"> <CIcon icon="cilUserPlus" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Adding...' : 'Add Now' }}</CButton>
                     <CButton color="danger" class="px-4 py-2 text-white w-75 mx-auto mt-2" @click="closeModal">Cancel</CButton>
                 </div>
             </CForm>

@@ -25,7 +25,7 @@
                     </div>
                 </CCol>
                 <div class="d-grid mt-4 mb-3">
-                    <CButton color="danger" class="px-4 py-2 text-white w-75 mx-auto mt-1" @click="handleDelete"><CIcon icon="cilDelete" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" />{{ btnLoading ? 'Deleting...' : 'Delete' }}</CButton>
+                    <CButton color="danger" class="px-4 py-2 text-white w-75 mx-auto mt-1" @click="handleDelete" :disabled="btnLoading"><CIcon icon="cil-trash" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" />{{ btnLoading ? 'Deleting...' : 'Delete' }}</CButton>
                     <CButton color="primary" class="px-4 py-2 self-button w-75 mx-auto mt-2" @click="closeModal">Cancel</CButton>
                 </div>
             </div>

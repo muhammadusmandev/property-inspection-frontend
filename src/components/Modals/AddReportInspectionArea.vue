@@ -5,6 +5,7 @@
       :visible="visibility"
       backdrop="static"
       :keyboard="false"
+      size="lg"
   >
       <CModalBody>
           <CForm class="row g-2 mt-0" @submit.prevent="handleAddReportInspectionArea">
@@ -37,19 +38,25 @@
                     <CRow class="justify-content-between">
                         <CCol xs="6">
                             <CFormLabel :for="condition" class="text-start mb-0 form-label-required">Condition</CFormLabel>
-                            <CFormSelect
-                                v-model="condition"
-                                @blur="conditionMeta.touched = true; conditionValidate()"
-                            >
-                                <option value="">Choose Condition...</option>
-                                <option 
-                                    v-for="(opt, idx) in conditionOptions" 
-                                    :key="idx" 
-                                    :value="opt"
+                            <CInputGroup class="mb-3">
+                                <CInputGroupText>
+                                    <CIcon icon="cil-badge" />
+                                </CInputGroupText>
+                                <CFormSelect
+                                    v-model="condition"
+                                    class="text-capitalize"
+                                    @blur="conditionMeta.touched = true; conditionValidate()"
                                 >
-                                    {{ opt }}
-                                </option>
-                            </CFormSelect>
+                                    <option value="">Choose Condition...</option>
+                                    <option 
+                                        v-for="(opt, idx) in conditionOptions" 
+                                        :key="idx" 
+                                        :value="opt"
+                                    >
+                                        {{ opt }}
+                                    </option>
+                                </CFormSelect>
+                            </CInputGroup>
                             <div class="form-field-error d-inline-block mt-2 mx-2 w-auto" v-if="conditionMeta.touched && conditionError">
                                 <span>* {{ conditionError }}</span>
                             </div>
@@ -57,19 +64,25 @@
 
                         <CCol xs="6">
                             <CFormLabel :for="cleanliness" class="text-start mb-0 form-label-required">Cleanliness</CFormLabel>
-                            <CFormSelect
-                                v-model="cleanliness"
-                                @blur="cleanlinessMeta.touched = true; cleanlinessValidate()"
-                            >
-                                <option value="">Choose Cleanliness...</option>
-                                <option 
-                                    v-for="(opt, idx) in conditionOptions" 
-                                    :key="idx" 
-                                    :value="opt"
+                            <CInputGroup class="mb-3">
+                                <CInputGroupText>
+                                    <CIcon icon="cil-badge" />
+                                </CInputGroupText>
+                                <CFormSelect
+                                    v-model="cleanliness"
+                                    class="text-capitalize"
+                                    @blur="cleanlinessMeta.touched = true; cleanlinessValidate()"
                                 >
-                                    {{ opt }}
-                                </option>
-                            </CFormSelect>
+                                    <option value="">Choose Cleanliness...</option>
+                                    <option 
+                                        v-for="(opt, idx) in conditionOptions" 
+                                        :key="idx" 
+                                        :value="opt"
+                                    >
+                                        {{ opt }}
+                                    </option>
+                                </CFormSelect>
+                            </CInputGroup>
                             <div class="form-field-error d-inline-block mt-2 mx-2 w-auto" v-if="cleanlinessMeta.touched && cleanlinessError">
                                 <span>* {{ cleanlinessError }}</span>
                             </div>
@@ -93,7 +106,7 @@
                       <CFormLabel :for="items" class="text-start mb-0 form-label-required">Items</CFormLabel>
                       <CInputGroup class="mb-3">
                           <CInputGroupText>
-                              <CIcon icon="cil-user" />
+                              <CIcon icon="cil-list-rich" />
                           </CInputGroupText>
                           <Multiselect
                               v-model="items"
@@ -124,8 +137,8 @@
               </CCol>
 
               <div class="d-grid mt-3 mb-3">
-                  <CButton color="primary" class="px-4 py-2 self-button w-75 mx-auto mt-1" type="submit">
-                      <CIcon icon="cilHouse" v-if="!btnLoading" /> 
+                  <CButton color="primary" class="px-4 py-2 self-button w-75 mx-auto mt-1" type="submit" :disabled="btnLoading">
+                      <CIcon icon="cil-room" v-if="!btnLoading" /> 
                       <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> 
                       {{ btnLoading ? 'Adding...' : 'Add Now' }}
                   </CButton>

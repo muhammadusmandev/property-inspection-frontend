@@ -11,7 +11,7 @@
               <CFormLabel :for="first_name" class="mb-1 form-label-required">First Name</CFormLabel>
               <CInputGroup class="mb-1">
                 <CInputGroupText>
-                  <CIcon icon="cil-user" />
+                  <CIcon icon="cil-user" class="text-info" />
                 </CInputGroupText>
                 <CFormInput 
                   placeholder="John" 
@@ -28,7 +28,7 @@
               <CFormLabel :for="last_name" class="mb-1 form-label-required">Last Name</CFormLabel>
               <CInputGroup class="mb-1">
                 <CInputGroupText>
-                  <CIcon icon="cil-user" />
+                  <CIcon icon="cil-user" class="text-info" />
                 </CInputGroupText>
                 <CFormInput 
                   placeholder="Doe" 

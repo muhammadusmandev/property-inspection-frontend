@@ -1,6 +1,5 @@
 <template>
-    
-    <div class="mb-1">
+    <div class="mb-1 mt-0">
         <CCol xs="12" v-if="isFindPropertyEnable">
             <CFormLabel :for="inputId">{{ inputLabel }}</CFormLabel>
             <div class="input-group">
@@ -67,7 +66,7 @@
                 <CFormLabel for="city" class="form-label-required">City</CFormLabel>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <CIcon icon="cilChevronRight" class="text-info" />
+                        <CIcon icon="cilLocationPin" class="text-info" />
                     </span>
                     <CFormInput
                         placeholder="New York" 
@@ -83,10 +82,10 @@
                 <CFormLabel for="state">State</CFormLabel>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <CIcon icon="cilChevronRight" class="text-info" />
+                        <CIcon icon="cilLocationPin" class="text-info" />
                     </span>
                     <CFormInput
-                        placeholder="New York" 
+                        placeholder="NY" 
                         v-model="state"
                         @blur="stateMeta.touched = true; stateValidate()"
                     />
@@ -99,7 +98,7 @@
                 <CFormLabel for="postal_code" class="form-label-required">Zip Code</CFormLabel>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <CIcon icon="cilChevronRight" class="text-info" />
+                        <CIcon icon="cilLocationPin" class="text-info" />
                     </span>
                     <CFormInput 
                         placeholder="10005" 

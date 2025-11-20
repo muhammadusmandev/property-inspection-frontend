@@ -6,18 +6,12 @@
     />
     <CRow>
       <CForm class="row g-3 mt-0" @submit.prevent="submitUpdateProperty">
-        <FindAddress 
-          inputLabel="Find Client Property" 
-          inputPlaceHolder="Search property address on map" 
-          inputId="findClientProperty"
-        />
-
         <div class="row g-3 mt-0">
             <CCol md="6">
                 <CFormLabel :for="name" class="form-label-required">Name</CFormLabel>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <CIcon icon="cilLocationPin" class="text-info" />
+                        <CIcon icon="cil-user" class="text-info" />
                     </span>
                     <CFormInput 
                         placeholder="Western Side House"
@@ -50,6 +44,12 @@
                 </div>
             </CCol>
         </div>
+        
+        <FindAddress 
+          inputLabel="Find Client Property" 
+          inputPlaceHolder="Search property address on map" 
+          inputId="findClientProperty"
+        />
 
         <div class="row g-3 mt-0">
             <CCol md="6">
@@ -63,7 +63,7 @@
                         @blur="clientMeta.touched = true; clientValidate()"
                     >                    
                         <option value="">Choose...</option>
-                        <option :value="client.id" v-for="(client, idx) in clientsData" :key="idx">{{client.name}}</option>
+                        <option :value="client.id" v-for="(client, idx) in clientsData?.data" :key="idx">{{client.name}}</option>
 
                     </CFormSelect>
                 </div>
@@ -83,7 +83,7 @@
                         @blur="branchMeta.touched = true; branchValidate()"
                     >
                         <option value="">Choose Branch...</option>
-                        <option :value="branch.id" v-for="(branch, idx) in branchesData" :key="idx">{{branch.name}}</option>
+                        <option :value="branch.id" v-for="(branch, idx) in branchesData?.data" :key="idx">{{branch.name}}</option>
 
                     </CFormSelect>
                 </div>
@@ -172,8 +172,8 @@
 
   onBeforeMount(async () => {
     await execute1({ pathParams: [propertyId] })
-    await execute2()
-    await execute3()
+    await execute2({ queryParameters: { paginate: false } })
+    await execute3({ queryParameters: { paginate: false } })
     setupPageFieldsData();
   })
 

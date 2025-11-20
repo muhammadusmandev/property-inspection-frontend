@@ -3,8 +3,8 @@
     <CDropdownToggle class="py-0 pe-0" :caret="false">
       <CAvatar :src="authStore?.user?.avatar_url ? createServerImageURL(authStore?.user?.avatar_url) : (authStore?.user?.gender === 'female' ? femaleAvatar : maleAvatar)"  size="md" />
     </CDropdownToggle>
-    <CDropdownMenu class="pt-3">
-      <CDropdownItem class="py-2 fs-8"> <CIcon icon="cil-settings" /> Settings </CDropdownItem>
+    <CDropdownMenu class="pt-2">
+      <CDropdownItem class="py-2 fs-8" as="a" href="/realtor/settings"> <CIcon icon="cil-settings" /> Settings </CDropdownItem>
       <CDropdownDivider />
       <CDropdownItem> 
         <CButton class="px-4 self-bg-primary self-color-tertiary fs-8" @click="handleLogoutUser" :disabled="btnLoading">

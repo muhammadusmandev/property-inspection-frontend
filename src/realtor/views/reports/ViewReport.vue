@@ -8,7 +8,7 @@
       <!-- Main Wizard Area -->
       <div>
         <!-- Header with Step Indicators -->
-        <div class="wizard-header">
+        <div class="wizard-header mt-4">
           <div class="steps-container">
             <button
               v-for="(step, i) in steps"
@@ -43,7 +43,7 @@
             <CRow v-if="!reportData?.locked_at">
               <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
                 <div>
-                  <h3>Inspection Areas</h3>
+                  <h3><CIcon icon="cil-room" size="xxl" /> Inspection Areas</h3>
                   <p class="text-secondary fs-7">Manage selected template areas and custom inspection areas</p>
                 </div>
                 <div class="my-3 text-end">
@@ -71,12 +71,12 @@
                     <h5 class="mb-0">{{ area.name }}</h5>
 
                     <div class="d-flex gap-2 align-items-center">
-                      <CBadge class="px-3 py-2 h-100" v-if="refAreaIdForImages === area.id && selectedImages.length > 0" style="border-radius: 25px; cursor: pointer" color="info" @click="uploadInpsectionAreaPhotos">
+                      <CButton class="px-3 py-1 h-100 text-white" v-if="refAreaIdForImages === area.id && selectedImages.length > 0" style="border-radius: 25px; cursor: pointer; font-size: 0.78rem" color="info" @click="uploadInpsectionAreaPhotos" :disabled="uploadBtnLoading">
                         <CIcon icon="cil-cloud-upload" v-if="!uploadBtnLoading" /> <ButtonSpinner v-if="uploadBtnLoading" size="small" bgColor="#000000" /> {{ uploadBtnLoading ? 'Uploading...' : 'Upload ' + selectedImages.length + ' Selected Photos' }} 
-                      </CBadge>
-                      <CBadge class="px-3 py-2 h-100" v-else style="border-radius: 25px; cursor: pointer" color="info" @click="visibleShowImagesUpload(area.id)">
+                      </CButton>
+                      <CButton class="px-3 py-1 h-100 text-white" v-else style="border-radius: 25px; cursor: pointer; font-size: 0.78rem" color="info" @click="visibleShowImagesUpload(area.id)">
                         <CIcon icon="cil-camera" /> Attach Photos
-                      </CBadge>
+                      </CButton>
                       <CDropdown variant="link" class="p-0">
                         <CDropdownToggle class="text-dark">
                           <svg
@@ -97,7 +97,7 @@
                       </CDropdown>
                     </div>
                   </div>
-                  <CTable bordered hover responsive>
+                  <CTable bordered hover responsive class="mb-3">
                     <CTableHead>
                       <CTableRow>
                         <CTableHeaderCell style="width: 10%;">Quality</CTableHeaderCell>
@@ -137,7 +137,7 @@
 
                   <!-- Defects -->
                   <h6>
-                    - Defects
+                    <CIcon icon="cil-warning" /> Defects
                   </h6>
                   <CTable v-if="area.defects?.length > 0" bordered hover responsive>
                     <CTableHead>
@@ -190,8 +190,11 @@
                       </CTableRow>
                     </CTableBody>
                   </CTable>
+                  <h5 class="no-defect-added-text text-body-secondary" v-else>
+                    No Defects Added
+                  </h5>
                   <div class="d-block text-center">
-                    <CButton color="primary" class="px-4 py-1 self-button mx-auto d-inline-block fs-8" @click="visibleAddAreaDefects(area.id)"> <CIcon icon="cilUserPlus" /> Add Defect</CButton>
+                    <CButton color="primary" class="px-4 py-1 self-button mx-auto d-inline-block fs-8" @click="visibleAddAreaDefects(area.id)"> <CIcon icon="cil-warning" /> Add Defect</CButton>
                   </div>
                   <!-- Defects -->
                 </CAccordionItem>
@@ -634,150 +637,160 @@
     font-size: 0.95rem;
   }
 
-    /* Horizontal Step Indicator */
-    .wizard-header {
-      background: white;
-      padding: 20px;
-      border-radius: 6px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  /* Horizontal Step Indicator */
+  .wizard-header {
+    background: #f7f7f7;
+    padding: 20px 70px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+  }
+
+  .steps-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 45px;
+  }
+
+  .step-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid #dee2e6;
+    background: white;
+    color: #6c757d;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .step-btn:hover {
+    border-color: #0c63e4;
+  }
+
+  .step-btn.active {
+    background: #02aad3;
+    color: white;
+    border-color: #02aad3;
+    box-shadow: 0 4px 12px rgb(118 118 118 / 30%);
+  }
+
+  .step-btn.completed {
+    background: #212631;
+    color: white;
+    border-color: #212631;
+  }
+
+  /* Connecting line between steps */
+  .steps-container::before {
+    content: '';
+    position: absolute;
+    left: 24px;
+    top: 22px;
+    width: calc(100% - 48px);
+    height: 2px;
+    background: #dee2e6;
+    z-index: 0;
+  }
+
+  .step-btn {
+    z-index: 1;
+  }
+
+  /* Step Labels */
+  .step-labels {
+    display: flex;
+    gap: 30px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #6c757d;
+  }
+
+  .step-label {
+    flex: 0 0 53px;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .step-btn.active ~ .step-labels .step-label,
+  .step-label.active {
+    color: #212529;
+    font-weight: 600;
+  }
+
+  /* Content Area */
+  .wizard-content {
+    min-height: 300px;
+  }
+
+  .content-step {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .content-step.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Button Group */
+  .button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+    justify-content: space-between;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .wizard-container {
+      grid-template-columns: 1fr;
     }
 
     .steps-container {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 45px;
+      flex-wrap: wrap;
     }
+  }
 
-    .step-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: 2px solid #dee2e6;
-      background: white;
-      color: #6c757d;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      position: relative;
-    }
+  .area-img {
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+  }
 
-    .step-btn:hover {
-      border-color: #0c63e4;
-    }
+  .remove-selected-img {
+    top: -5px;
+    right: -5px;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 10px;
+    cursor: pointer;
+    font-size: 13px;
+  }
 
-    .step-btn.active {
-      background: #02aad3;
-      color: white;
-      border-color: #02aad3;
-      box-shadow: 0 4px 12px rgb(118 118 118 / 30%);
-    }
-
-    .step-btn.completed {
-      background: #212631;
-      color: white;
-      border-color: #212631;
-    }
-
-    /* Connecting line between steps */
-    .steps-container::before {
-      content: '';
-      position: absolute;
-      left: 24px;
-      top: 22px;
-      width: calc(100% - 48px);
-      height: 2px;
-      background: #dee2e6;
-      z-index: 0;
-    }
-
-    .step-btn {
-      z-index: 1;
-    }
-
-    /* Step Labels */
-    .step-labels {
-      display: flex;
-      gap: 30px;
-      margin-top: 12px;
-      font-size: 12px;
-      color: #6c757d;
-    }
-
-    .step-label {
-      flex: 0 0 53px;
-      text-align: center;
-      font-weight: 500;
-    }
-
-    .step-btn.active ~ .step-labels .step-label,
-    .step-label.active {
-      color: #212529;
-      font-weight: 600;
-    }
-
-    /* Content Area */
-    .wizard-content {
-      min-height: 300px;
-    }
-
-    .content-step {
-      display: none;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .content-step.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Button Group */
-    .button-group {
-      display: flex;
-      gap: 12px;
-      margin-top: 30px;
-      justify-content: space-between;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .wizard-container {
-        grid-template-columns: 1fr;
-      }
-
-      .steps-container {
-        flex-wrap: wrap;
-      }
-    }
-
-    .area-img {
-      object-fit: cover;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-    }
-
-    .remove-selected-img {
-      top: -5px;
-      right: -5px;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      line-height: 10px;
-      cursor: pointer;
-      font-size: 13px;
-    }
+  .no-defect-added-text{
+    text-align: center;
+    background: #ffffff;
+    padding: 10px;
+    font-size: 13px;
+  }
 </style>

@@ -110,7 +110,7 @@
                     </CCol>
                 </CCol>
                 <div class="d-grid mt-3 mb-3">
-                    <CButton color="primary" class="px-4 py-2 self-button w-75 mx-auto mt-1" type="submit"> <CIcon icon="cilUserPlus" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Creating...' : 'Create Report' }}</CButton>
+                    <CButton color="primary" class="px-4 py-2 self-button w-75 mx-auto mt-1" type="submit" :disabled="btnLoading"> <CIcon icon="cilUserPlus" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Creating...' : 'Create Report' }}</CButton>
                     <CButton color="danger" class="px-4 py-2 text-white w-75 mx-auto mt-2" @click="closeModal"> <CIcon icon="cilX" /> Cancel</CButton>
                 </div>
             </CForm>
