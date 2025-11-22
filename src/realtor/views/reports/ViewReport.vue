@@ -44,7 +44,7 @@
 
           <!-- Step 3 -->
           <div v-if="currentStep === 3" class="content-step active">
-            <LockReport @goToStep="goToStep" />
+            <GenerateReport @goToStep="goToStep" />
           </div>
 
           <!-- Step 4 -->
@@ -64,7 +64,7 @@
   import InspectionAreas from '@/realtor/views/reports/InspectionAreas.vue'
   import Checklist from '@/realtor/views/reports/Checklist.vue'
   import Download from '@/realtor/views/reports/Download.vue'
-  import LockReport from '@/realtor/views/reports/LockReport.vue'
+  import GenerateReport from '@/realtor/views/reports/GenerateReport.vue'
   import { localeAwareLongDateFormat } from '@/utils/datetimeFormatter'
   import { 
     getReport
@@ -92,7 +92,7 @@
   const steps = [
     { id: 1, label: "Inspection Area" },
     { id: 2, label: "Checklist" },
-    { id: 3, label: "Lock" },
+    { id: 3, label: "Generate" },
     { id: 4, label: "Download" },
   ]
 

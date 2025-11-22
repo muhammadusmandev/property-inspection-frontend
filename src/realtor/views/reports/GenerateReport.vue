@@ -3,8 +3,8 @@
     <div v-if="!reportData?.locked_at">
       <div class="d-flex justify-content-between align-items-center mb-4 mt-4 p-4" style="border: 1px solid #e0e0e0">
         <div>
-            <h3>Lock Report</h3>
-            <p class="text-secondary fs-7">Sign your report and lock it for download ready</p>
+            <h3>Generate Report</h3>
+            <p class="text-secondary fs-7">Sign your report and lock/non-editable it for download ready</p>
         </div>
         <div class="my-3 text-end">
         </div>
@@ -26,7 +26,7 @@
             </div>
         </CCol>
         <div class="d-grid mt-4 mb-3">
-            <CButton color="info" class="px-4 py-2 text-white w-25 fs-8 mx-auto mt-1" @click="handleLockReport" :disabled="lockBtnLoading"><CIcon icon="cil-lock-locked" v-if="!lockBtnLoading" /> <ButtonSpinner v-if="lockBtnLoading" size="small" bgColor="#000000" />{{ lockBtnLoading ? 'Locking...' : 'Lock Report' }}</CButton>
+            <CButton color="info" class="px-4 py-2 text-white w-25 fs-8 mx-auto mt-1" @click="handleGenerateReport" :disabled="generateBtnLoading"><CIcon icon="cil-lock-locked" v-if="!generateBtnLoading" /> <ButtonSpinner v-if="generateBtnLoading" size="small" bgColor="#000000" />{{ generateBtnLoading ? 'Generating...' : 'Generate Report' }}</CButton>
             <CButton color="dark" class="px-4 py-2 w-25 fs-8 mx-auto mt-2" @click="handleGoToStep(2)"><CIcon icon="cil-arrow-left" /> Go Back</CButton>
         </div>
       </div>
@@ -47,13 +47,13 @@
   import { toastNotifications } from '@/composables/toastNotifications'
   import { 
     getReport,
-    markReportLocked 
+    generateReport 
   } from '@/services/api'
   import { useApi } from '@/composables/useApi'
 
   const signatureName = ref('')
   const signErrorMessage = ref('')
-  const lockBtnLoading = ref(false)
+  const generateBtnLoading = ref(false)
   const route = useRoute()
   const reportId = route.params.id
   const { showToast } = toastNotifications()
@@ -62,7 +62,7 @@
   const authUserName = authStore.user.name
 
   const { data: reportData, execute: execute1 } = useApi(getReport, false)
-  const { execute: executeLockReport } = useApi(markReportLocked, false)
+  const { execute: executeGenerateReport } = useApi(generateReport, false)
 
   onBeforeMount(async () => {
     await execute1({ pathParams: [reportId] })
@@ -72,25 +72,25 @@
     emit('goToStep', step)
   }
 
-  async function handleLockReport(item){
-    lockBtnLoading.value = true
+  async function handleGenerateReport(item){
+    generateBtnLoading.value = true
 
     if (signatureName.value.trim() === authUserName) {
       signErrorMessage.value = ''
-      const response = await executeLockReport({ pathParams: [reportId] })
+      const response = await executeGenerateReport({ pathParams: [reportId] })
 
       if(response.success === true){
-        showToast('success', 'Report Locked successfully! Wait Redirecting...')
+        showToast('success', 'Report Generated successfully! Wait Redirecting...')
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       } else{
-        showToast('error', 'Oops! Something went wrong while locking report!')
-        lockBtnLoading.value = false
+        showToast('error', 'Oops! Something went wrong while generating report!')
+        generateBtnLoading.value = false
       }
     } else{
       signErrorMessage.value = 'Must add valid signature of account holder name.'
-      lockBtnLoading.value = false
+      generateBtnLoading.value = false
     }
   }
 </script>

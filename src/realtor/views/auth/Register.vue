@@ -351,7 +351,8 @@
   }
 
   const submitRegisterUser = handleSubmit(async (formData) => {
-    validatePhone();
+    validatePhone()
+    if(!phone_number.value) return
     formData.phone_number = phone_number.value
     formData.date_of_birth = dateTimeToDateISO(formData.date_of_birth)
     const response = await execute({ payload: formData })

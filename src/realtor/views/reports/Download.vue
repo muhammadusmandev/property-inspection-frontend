@@ -8,8 +8,8 @@
       </div>
       
       <div class="mt-5 py-5 px-4 border">
-        <CAlert color="success" class="fs-8 py-2">✓ All steps completed successfully. Your report is ready to download.</CAlert>
-        <CCol md="12" class="mt-4">
+        <CAlert color="info" class="fs-8 py-2 d-inline-block">✓ All steps completed successfully. Your report is ready to download.</CAlert>
+        <CCol md="12" class="mt-2">
             <CFormLabel :for="downloadLink">Report Download Link</CFormLabel>
             <div class="input-group">
                 <span class="input-group-text">
@@ -19,7 +19,7 @@
                     placeholder="Report Download Link"
                     v-model="downloadLink"
                     disabled
-                    class="fs-8 py-2"
+                    class="py-2"
                 />
                 <span class="input-group-text" @click="copyDownloadLink">
                     <CIcon icon="cil-copy" class="text-secondary" size="sm" />
@@ -28,8 +28,8 @@
             </div>
         </CCol>
 
-        <div class="button-group">
-          <CButton class="self-bg-primary self-color-tertiary fs-8 px-4 py-2 w-auto"><CIcon icon="cil-cloud-download" class="text-white" /> Download Report</CButton>
+        <div class="button-group mt-4">
+          <CButton class="self-bg-primary self-color-tertiary fs-8 px-4 py-2 w-auto" @click="downloadReport" v-if="downloadLink"><CIcon icon="cil-cloud-download" class="text-white" /> Download Report</CButton>
         </div>
       </div>
     </div>
@@ -51,7 +51,7 @@
   } from '@/services/api'
   import { useApi } from '@/composables/useApi'
 
-  const downloadLink = ref('https://downloadsample.com')
+  const downloadLink = ref('')
   const route = useRoute()
   const reportId = route.params.id
   const emit = defineEmits(['goToStep'])
@@ -61,6 +61,7 @@
 
   onBeforeMount(async () => {
     await execute1({ pathParams: [reportId] })
+    downloadLink.value = reportData.value.download_link
   })
 
   const handleGoToStep = (step) => {
@@ -74,6 +75,11 @@
     } catch (err) {
       showToast('error', 'Failed to copy download link!')
     }
+  }
+
+  const downloadReport = async() => {
+    window.location.href = downloadLink.value;
+
   }
 </script>
 
