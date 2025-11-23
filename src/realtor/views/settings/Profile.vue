@@ -186,6 +186,7 @@
   const schema = toTypedSchema( yup.object({
     bio: yup
         .string()
+        .notRequired()
   }))
 
   const { handleSubmit, isSubmitting } = useForm({

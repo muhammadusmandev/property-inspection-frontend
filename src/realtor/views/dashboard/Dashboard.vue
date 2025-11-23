@@ -160,4 +160,10 @@
     text-transform: uppercase;
     font-weight: 500;
   }
+
+  @media (max-width: 480px) {
+    .statistics-row{
+      flex-direction: column !important;
+    }
+  }
 </style>

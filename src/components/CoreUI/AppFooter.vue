@@ -1,6 +1,6 @@
 <template>
   <CFooter class="px-4 footer">
-    <div class="text-center w-100">
+    <div class="text-center w-100 fs-8">
       Copyright
       <span class="ms-1"
         >&copy; {{ new Date().getFullYear() }}. All right resereved. <a href="https://inspexly.com" class="text-decoration-none brand-link" target="_blank">Inspexly</a></span
