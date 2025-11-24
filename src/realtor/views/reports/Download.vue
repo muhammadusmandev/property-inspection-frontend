@@ -9,7 +9,7 @@
       
       <div class="mt-5 py-5 px-4 border">
         <CAlert color="info" class="fs-8 py-2 d-inline-block">✓ All steps completed successfully. Your report is ready to download.</CAlert>
-        <CCol md="12" class="mt-2">
+        <CCol md="10">
             <CFormLabel :for="downloadLink">Report Download Link</CFormLabel>
             <div class="input-group">
                 <span class="input-group-text">
@@ -21,23 +21,23 @@
                     disabled
                     class="py-2"
                 />
-                <span class="input-group-text" @click="copyDownloadLink">
-                    <CIcon icon="cil-copy" class="text-secondary" size="sm" />
-                    <span class="copy-text ps-2 text-body-secondary" style="font-size: 14px"> Copy</span>
-                </span>
+                <CButton class="self-bg-primary text-white" @click="copyDownloadLink">
+                    <CIcon icon="cil-copy" class="text-white" size="sm" />
+                    <span class="ps-2 text-white" style="font-size: 14px"> Copy</span>
+                </CButton>
             </div>
         </CCol>
 
-        <div class="button-group mt-4">
+        <div class="button-group mt-5">
           <CButton class="self-bg-primary self-color-tertiary fs-8 px-4 py-2 w-auto" @click="downloadReport" v-if="downloadLink"><CIcon icon="cil-cloud-download" class="text-white" /> Download Report</CButton>
         </div>
       </div>
     </div>
 
     <div class="d-flex flex-column justify-content-center mt-5 mx-auto" style="width: fit-content" v-else>
-      <h3 class="mb-4 self-color-primary">First Lock report to Download</h3>
+      <h3 class="mb-4 self-color-primary">First generate report to Download</h3>
       <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto ms-4"  @click="handleGoToStep(3)">
-        <CIcon icon="cil-lock-locked" /> Lock Report
+        <CIcon icon="cil-reload" /> Generate Report
       </CButton>
     </div>
 </template>

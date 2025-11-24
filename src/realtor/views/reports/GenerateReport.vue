@@ -26,14 +26,23 @@
             </div>
         </CCol>
         <div class="d-grid mt-4 mb-3">
-            <CButton color="info" class="px-4 py-2 text-white w-25 fs-8 mx-auto mt-1" @click="handleGenerateReport" :disabled="generateBtnLoading"><CIcon icon="cil-lock-locked" v-if="!generateBtnLoading" /> <ButtonSpinner v-if="generateBtnLoading" size="small" bgColor="#000000" />{{ generateBtnLoading ? 'Generating...' : 'Generate Report' }}</CButton>
+            <!-- Report Generate Progress Bar -->
+            <div v-if="reportStatus === 'pending'" class="mt-4 w-50 mx-auto">
+              <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" :style="{ width: progress + '%' }">
+                  {{ progress }}%
+                </div>
+              </div>
+              <p class="mt-2 fs-7 text-body-secondary text-center">Hold tight! Generating report...</p>
+            </div>
+            <CButton color="info" class="px-4 py-2 text-white w-25 fs-8 mx-auto mt-1" @click="handleGenerateReport" :disabled="generateBtnLoading"><CIcon icon="cil-reload" v-if="!generateBtnLoading" /> <ButtonSpinner v-if="generateBtnLoading" size="small" bgColor="#000000" />{{ generateBtnLoading ? 'Generating...' : 'Generate Report' }}</CButton>
             <CButton color="dark" class="px-4 py-2 w-25 fs-8 mx-auto mt-2" @click="handleGoToStep(2)"><CIcon icon="cil-arrow-left" /> Go Back</CButton>
         </div>
       </div>
     </div>
     <div class="d-flex flex-column justify-content-center mt-5 mx-auto" style="width: fit-content" v-else>
       <h3 class="mb-4 self-color-primary"><CIcon icon="cil-lock-locked" size="xl" /> Report Locked</h3>
-      <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto ms-4"  @click="handleGoToStep(4)">
+      <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto ms-4" @click="handleGoToStep(4)">
         <CIcon icon="cil-cloud-download" /> Download Report
       </CButton>
     </div>
@@ -47,7 +56,8 @@
   import { toastNotifications } from '@/composables/toastNotifications'
   import { 
     getReport,
-    generateReport 
+    generateReport,
+    checkReportStatus
   } from '@/services/api'
   import { useApi } from '@/composables/useApi'
 
@@ -60,9 +70,13 @@
   const emit = defineEmits(['goToStep'])
   const authStore = useAuthStore()
   const authUserName = authStore.user.name
+  const reportStatus = ref(null)
+  const progress = ref(0)
+  let pollInterval = null
 
   const { data: reportData, execute: execute1 } = useApi(getReport, false)
   const { execute: executeGenerateReport } = useApi(generateReport, false)
+  const { execute: executeReportStatus } = useApi(checkReportStatus, false)
 
   onBeforeMount(async () => {
     await execute1({ pathParams: [reportId] })
@@ -74,16 +88,17 @@
 
   async function handleGenerateReport(item){
     generateBtnLoading.value = true
+    progress.value = 0
+    reportStatus.value = 'pending'
+    animateProgress() // Start progress bar
 
     if (signatureName.value.trim() === authUserName) {
       signErrorMessage.value = ''
       const response = await executeGenerateReport({ pathParams: [reportId] })
 
       if(response.success === true){
-        showToast('success', 'Report Generated successfully! Wait Redirecting...')
-        setTimeout(() => {
-          window.location.reload()
-        }, 2000)
+        showToast('success', 'Report queued successfully! Wait generating...')
+        startPolling()
       } else{
         showToast('error', 'Oops! Something went wrong while generating report!')
         generateBtnLoading.value = false
@@ -93,8 +108,49 @@
       generateBtnLoading.value = false
     }
   }
+
+  function startPolling() {
+    pollInterval = setInterval(() => {
+      handleCheckReportStatus()
+    }, 1800)
+  }
+
+  function animateProgress() {
+    const interval = setInterval(() => {
+      if (progress.value < 90) {
+        progress.value += 1
+      } else {
+        clearInterval(interval)
+      }
+    }, 100)
+  }
+
+  async function handleCheckReportStatus(){
+    const response = await executeReportStatus({ pathParams: [reportId] })
+    if(response.success === true){
+      if(response.data.status === "completed"){
+        showToast('success', 'Report generated successfully!')
+        progress.value = 100
+        clearInterval(pollInterval)
+        generateBtnLoading.value = false
+        handleGoToStep(4)
+      }
+    } else{
+      showToast('error', 'Oops! Something went wrong while generating report!')
+      clearInterval(pollInterval)
+      generateBtnLoading.value = false
+    }
+  }
 </script>
 
 <style scoped>
- 
+  .progress {
+    background-color: #f5f7f8;
+    height: 25px;
+  }
+
+  .progress-bar {
+    background-color: #02aad3;
+    transition: width 0.3s;
+  }
 </style>

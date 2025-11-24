@@ -5,6 +5,9 @@
       <div>
         <h2 v-if="pageHeading" class="page-heading">{{ pageHeading }}</h2>
         <div class="d-flex report-data mt-4">
+          <h6 class="report-date text-secondary"><CIcon icon="cil-house" /><span class="text-dark"> Property Name - </span>{{ reportData?.property?.name || 'N/A' }}</h6>
+        </div>
+        <div class="d-flex report-data mt-4">
           <h6 class="report-date text-secondary"><CIcon icon="cil-calendar" /><span class="text-dark"> Report Date - </span>{{ reportData?.report_date ? localeAwareLongDateFormat(reportData?.report_date) : 'N/A' }}</h6>
           <h6 class="report-type text-secondary"><CIcon icon="cil-tag" /><span class="text-dark"> Report Type - </span><span class="text-capitalize">{{ reportData?.type || 'N/A'  }}</span></h6>
         </div>
@@ -84,7 +87,7 @@
   })
 
   function setupPageFieldsData(){
-    pageHeading.value = reportData.value.title + ' - ' + reportData.value.property.name
+    pageHeading.value = reportData.value.title
   }
 
   const currentStep = ref(1)

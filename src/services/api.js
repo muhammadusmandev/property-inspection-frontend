@@ -64,6 +64,7 @@ export const updateReport = (data, id) => axiosInstance.put(`/reports/${id}`, da
 export const deleteReport = ({}, id) => axiosInstance.delete(`/reports/${id}`)
 export const updateChecklistItem = (data) => axiosInstance.put(`/update-report-inspection-checklist`, data)
 export const generateReport = ({}, id) => axiosInstance.put(`/generate-report/${id}`)
+export const checkReportStatus = ({}, id) => axiosInstance.get(`/check-report-status/${id}`)
 
 // Report Inspection Areas
 export const getReportInspectionArea= ({}, id) => axiosInstance.get(`/report-inspection-areas/${id}`)
