@@ -122,7 +122,7 @@
     onBeforeMount(async () => {
         await execute1({ pathParams: [reportId] })
 
-        pdfUrl.value = 'http://127.0.0.1:8000/storage/' + reportData.value.download_link
+        pdfUrl.value = import.meta.env.VITE_SERVER_STORAGE_URL + reportData.value.pdf_path
 
         const canvasEl = canvas.value
 
