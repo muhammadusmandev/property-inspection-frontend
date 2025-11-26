@@ -25,16 +25,16 @@ export const addClient = (data) => axiosInstance.post('/clients', data)
 export const updateClient = (data, id) => axiosInstance.put(`/clients/${id}`, data)
 export const getClient = ({}, id) => axiosInstance.get(`/clients/${id}`)
 export const deleteClient = ({}, id) => axiosInstance.delete(`/clients/${id}`)
-export const getRealtorClients = ({}, params) => axiosInstance.get(`/clients/${params}`)
+export const getInspectorClients = ({}, params) => axiosInstance.get(`/clients/${params}`)
 export const getClientProperties = ({}, id) => axiosInstance.get(`/clients/properties/${id}`)
 export const associateProperty = (data) => axiosInstance.post('/clients/associate-property', data)
 
 // Branches
-export const addRealtorBranch = (data) => axiosInstance.post('/branches', data)
+export const addInspectorBranch = (data) => axiosInstance.post('/branches', data)
 export const updateBranch = (data, id) => axiosInstance.put(`/branches/${id}`, data)
 export const getBranch = ({}, id) => axiosInstance.get(`/branches/${id}`)
 export const deleteBranch = ({}, id) => axiosInstance.delete(`/branches/${id}`)
-export const getRealtorBranches = ({}, params) => axiosInstance.get(`/branches/${params}`)
+export const getInspectorBranches = ({}, params) => axiosInstance.get(`/branches/${params}`)
 
 // Countries
 export const getCountriesList = () => axiosInstance.get('/countries/list')

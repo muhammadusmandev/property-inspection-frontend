@@ -6,7 +6,7 @@
             <p>Associate properties to your clients for easy management</p>
           </div>
           <div class="text-end pb-4 col-md-6">
-            <CButton class="px-4 self-bg-primary self-color-tertiary fs-8" as="a" href="/realtor/clients/add_client">
+            <CButton class="px-4 self-bg-primary self-color-tertiary fs-8" as="a" href="/inspector/clients/add_client">
               <CIcon icon="cil-plus" /> Add New Client
             </CButton>
             <CButton class="ms-2 px-4 self-bg-light-dark self-color-tertiary fs-8" @click="refreshDT"><CIcon icon="cil-reload" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Refreshing...' : 'Refresh' }} </CButton>

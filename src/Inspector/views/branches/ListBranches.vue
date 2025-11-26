@@ -6,7 +6,7 @@
             <p>Full control, monitor and manage all your branches in one place</p>
           </div>
           <div class="text-end pb-4 col-md-6 btns-row">
-            <CButton class="px-4 self-bg-primary self-color-tertiary fs-8" as="a" href="/realtor/branches/add_branch">
+            <CButton class="px-4 self-bg-primary self-color-tertiary fs-8" as="a" href="/inspector/branches/add_branch">
               <CIcon icon="cil-plus" /> Add New Branch
             </CButton>
             <CButton class="ms-2 px-4 self-bg-light-dark self-color-tertiary fs-8 refresh-btn" @click="refreshDT"><CIcon icon="cil-reload" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Refreshing...' : 'Refresh' }} </CButton>
@@ -110,7 +110,7 @@
           <Column header="Action" style="height: 44px">
             <template #body="{ data }">
               <div class="d-flex gap-1">
-                <CButton class="badge bg-dark" as="a" :href="`/realtor/branches/branch/${data.id}`"><CIcon icon="cil-pen" /></CButton>              
+                <CButton class="badge bg-dark" as="a" :href="`/inspector/branches/branch/${data.id}`"><CIcon icon="cil-pen" /></CButton>              
               </div>
             </template>
           </Column>
@@ -126,7 +126,7 @@
   import * as yup from 'yup'
   import { toTypedSchema } from '@vee-validate/yup'
   import { useApi } from '@/composables/useApi'
-  import { getRealtorBranches } from '@/services/api'
+  import { getInspectorBranches } from '@/services/api'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
 
   const perPage = ref(10)
@@ -162,7 +162,7 @@
     meta: columnNameMeta
   } = useField('columnName');
 
-  const { loading, data, execute } = useApi(getRealtorBranches, false)
+  const { loading, data, execute } = useApi(getInspectorBranches, false)
 
   onBeforeMount(async () => {
     await loadLazyBranches({ first: 0, rows: perPage.value })

@@ -102,8 +102,8 @@
         </div>
 
         <CCol xs="12" class="form-buttons-row">
-          <CButton color="info" class="text-white mt-3 fs-8" type="submit" :disabled="btnLoading"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Updating...' : 'Update New Client / LandLord' }}</CButton>
-          <CButton color="danger" class="text-white mt-3 fs-8 ms-2 delete-form-btn" type="button" @click="handleShowDeleteModal"><CIcon icon="cilClearAll" /> Delete Client / Landlord </CButton>  
+          <CButton color="info" class="text-white mt-3 fs-8" type="submit" :disabled="btnLoading"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Updating...' : 'Update New Client' }}</CButton>
+          <CButton color="danger" class="text-white mt-3 fs-8 ms-2 delete-form-btn" type="button" @click="handleShowDeleteModal"><CIcon icon="cilClearAll" /> Delete Client </CButton>  
         </CCol>
       </CForm>
     </CRow>
@@ -274,7 +274,7 @@
 
     if(response.success === true){
       showToast('success', 'Client deleted successfully!')
-      router.push({ name: 'realtor.clients' })
+      router.push({ name: 'inspector.clients' })
     } else{
         deleteBtnLoading.value = false
         showDeleteModal.value = false

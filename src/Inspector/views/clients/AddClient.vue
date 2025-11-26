@@ -1,8 +1,8 @@
 <template>
   <div class="add-client-form-container">
     <PageBodyHeader
-      heading="Add New Client / Landlord"
-      description="Create new Client / Landlord for properties"
+      heading="Add New Client"
+      description="Create new Client for properties"
     />
     <CRow>
       <CForm class="row g-3 mt-0" @submit.prevent="submitAddClient">
@@ -102,7 +102,7 @@
         </div>
 
         <CCol xs="12" class="form-buttons-row">
-          <CButton color="info" class="text-white mt-3 fs-8" type="submit" :disabled="btnLoading"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Add New Client / LandLord' }}</CButton>
+          <CButton color="info" class="text-white mt-3 fs-8" type="submit" :disabled="btnLoading"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Add New Client' }}</CButton>
           <CButton color="danger" class="text-white mt-3 fs-8 ms-2 clear-form-btn" type="button" @click="clearForm"><CIcon icon="cilClearAll" /> Clear Form</CButton>
         </CCol>
       </CForm>
@@ -229,8 +229,8 @@
     const response = await execute({ payload: formData })
 
     if(response.success === true){
-      showToast('success', 'Client / Landlord added successfully!')
-      router.push({ name: 'realtor.clients' })
+      showToast('success', 'Client added successfully!')
+      router.push({ name: 'inspector.clients' })
     } 
   })
 </script>

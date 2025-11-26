@@ -50,8 +50,8 @@
 
 <script setup>
   import { ref } from 'vue'
-  import Profile from '@/realtor/views/settings/Profile.vue'
-  import Password from '@/realtor/views/settings/Password.vue'
+  import Profile from '@/inspector/views/settings/Profile.vue'
+  import Password from '@/inspector/views/settings/Password.vue'
 
   const activeTab = ref("Profile")
 

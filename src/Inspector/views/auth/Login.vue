@@ -72,7 +72,7 @@
                   <p class="mb-1">
                     <CIcon icon="cilArrowThickRight" /> Client & Team Collaboration Tools
                   </p>
-                  <CButton as="a" href="/realtor/auth/register" class="mt-4 px-4 self-bg-light-dark self-color-tertiary fs-8">
+                  <CButton as="a" href="/inspector/auth/register" class="mt-4 px-4 self-bg-light-dark self-color-tertiary fs-8">
                     <CIcon icon="cilUserPlus" /> Create Your Free Account
                   </CButton>
                 </div>
@@ -104,7 +104,7 @@
   import { useAuthStore } from '@/stores/auth'
   import { useRouter } from 'vue-router'
 
-  const role = ref('realtor')
+  const role = ref('inspector')
   const userRole = readonly(role)
   const loginError = ref('')
   const showVerifyOTPModal = ref(false)
@@ -156,7 +156,7 @@
       authStore.setUserData(data.value.user)
       authStore.setToken(data.value.token.text, data.value.token.expires_at)
       showToast('success', 'Logged in successfully!')
-      router.push( '/realtor/dashboard' )
+      router.push( '/inspector/dashboard' )
     } else{
       if(response.status === 403){
           if(response.data?.errors?.flag === 'email_non_verified'){

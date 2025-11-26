@@ -18,12 +18,12 @@ export default [
       {
         component: 'CNavItem',
         name: 'Add Property',
-        to: '/realtor/properties/add_property',
+        to: '/inspector/properties/add_property',
       },
       {
         component: 'CNavItem',
         name: 'List Properties',
-        to: '/realtor/properties/list',
+        to: '/inspector/properties/list',
       },
     ],
   },
@@ -36,7 +36,7 @@ export default [
       {
         component: 'CNavItem',
         name: 'List Reports',
-        to: '/realtor/reports/#',
+        to: '/inspector/reports/list',
       },
     ],
   },
@@ -49,12 +49,12 @@ export default [
       {
         component: 'CNavItem',
         name: 'Add Client/Landloard',
-        to: '/realtor/clients/add_client',
+        to: '/inspector/clients/add_client',
       },
       {
         component: 'CNavItem',
         name: 'List Clients',
-        to: '/realtor/clients/list',
+        to: '/inspector/clients/list',
       },
     ],
   },
@@ -67,25 +67,25 @@ export default [
       {
         component: 'CNavItem',
         name: 'Add Branch',
-        to: '/realtor/branches/add_branch',
+        to: '/inspector/branches/add_branch',
       },
       {
         component: 'CNavItem',
         name: 'List Branches',
-        to: '/realtor/branches/list',
+        to: '/inspector/branches/list',
       },
     ],
   },
   {
     component: 'CNavItem',
     name: 'Templates',
-    to: '/realtor/templates/list',
+    to: '/inspector/templates/list',
     icon: 'cil-text-square',
   },
   {
     component: 'CNavItem',
     name: 'Inspection Areas',
-    to: '/realtor/inspection_areas/list',
+    to: '/inspector/inspection_areas/list',
     icon: 'cil-search',
   },
   {
@@ -95,7 +95,7 @@ export default [
   {
     component: 'CNavItem',
     name: 'Settings',
-    to: '/realtor/settings',
+    to: '/inspector/settings',
     icon: 'cil-settings'
   },
 ]

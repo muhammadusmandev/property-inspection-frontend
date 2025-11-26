@@ -49,7 +49,7 @@
   import PageBodyHeader from '@/components/General/PageBodyHeader.vue'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
-  import { addRealtorBranch } from '@/services/api'
+  import { addInspectorBranch } from '@/services/api'
   import { useRouter } from 'vue-router'
   import { useApi } from '@/composables/useApi'
 
@@ -122,7 +122,7 @@
     clearFormTrigger.value++
   }
 
-  const { loading: btnLoading, execute } = useApi(addRealtorBranch, false)
+  const { loading: btnLoading, execute } = useApi(addInspectorBranch, false)
 
   const submitAddBranch = handleSubmit(async (formData) => {
     console.log(formData)
@@ -130,7 +130,7 @@
 
     if(response.success === true){
       showToast('success', 'Branch added successfully!')
-      router.push({ name: 'realtor.branches' })
+      router.push({ name: 'inspector.branches' })
     } 
   })
 </script>

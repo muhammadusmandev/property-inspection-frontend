@@ -152,7 +152,7 @@
                     break;
                 
                 case "verified":
-                    if (route.path === '/realtor/auth/login') {
+                    if (route.path === '/inspector/auth/login') {
                         if(props.otpVerificationType === "reset-password"){
                             showToast('success', 'Thanks for verification! Please set your new password.')
                             emit('otpVerified', {email: props.identifierValue, token: response.data.otp_session_token})
@@ -166,7 +166,7 @@
                         }
                     } else{
                         showToast('success', 'Account verified successfully!')
-                        router.push( '/realtor/auth/login' )
+                        router.push( '/inspector/auth/login' )
                     }
                     break;
             

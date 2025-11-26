@@ -64,10 +64,10 @@
   import { ref, onBeforeMount } from 'vue'
   import { useRoute } from 'vue-router'
   import { toastNotifications } from '@/composables/toastNotifications'
-  import InspectionAreas from '@/realtor/views/reports/InspectionAreas.vue'
-  import Checklist from '@/realtor/views/reports/Checklist.vue'
-  import Download from '@/realtor/views/reports/Download.vue'
-  import GenerateReport from '@/realtor/views/reports/GenerateReport.vue'
+  import InspectionAreas from '@/inspector/views/reports/InspectionAreas.vue'
+  import Checklist from '@/inspector/views/reports/Checklist.vue'
+  import Download from '@/inspector/views/reports/Download.vue'
+  import GenerateReport from '@/inspector/views/reports/GenerateReport.vue'
   import { localeAwareLongDateFormat } from '@/utils/datetimeFormatter'
   import { 
     getReport

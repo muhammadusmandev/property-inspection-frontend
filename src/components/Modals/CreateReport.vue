@@ -213,12 +213,12 @@
 
         if (response.success === true) {
             showToast('success', 'Report created successfully! Wait redirecting...')
-            if (route.name === 'realtor.reports.list') {
+            if (route.name === 'inspector.reports.list') {
                 setTimeout(() => {
                     window.location.reload()
                 }, 2000)
             } else {
-                router.push({ name: 'realtor.reports' })
+                router.push({ name: 'inspector.reports' })
             }
         } else {
             showToast('error', 'Oops! Something went wrong. Failed to create report.')

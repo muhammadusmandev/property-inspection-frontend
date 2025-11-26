@@ -210,7 +210,7 @@
 
     if(response.success === true){
       showToast('success', 'Branch deleted successfully!')
-      router.push({ name: 'realtor.branches' })
+      router.push({ name: 'inspector.branches' })
     } else{
         deleteBtnLoading.value = false
         showDeleteModal.value = false

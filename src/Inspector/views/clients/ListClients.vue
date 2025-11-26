@@ -6,8 +6,8 @@
             <p>Full control, monitor and manage all your clients in one place</p>
           </div>
           <div class="text-end pb-4 col-md-6 btns-row">
-            <CButton class="px-2 self-bg-primary self-color-tertiary fs-8" as="a" href="/realtor/clients/add_client">
-              <CIcon icon="cil-plus" /> Add New Client/Landlord
+            <CButton class="px-2 self-bg-primary self-color-tertiary fs-8" as="a" href="/inspector/clients/add_client">
+              <CIcon icon="cil-plus" /> Add New Client
             </CButton>
             <CButton class="ms-2 px-4 self-bg-light-dark self-color-tertiary fs-8 refresh-btn" @click="refreshDT"><CIcon icon="cil-reload" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Refreshing...' : 'Refresh' }} </CButton>
           </div>
@@ -18,7 +18,7 @@
           <div class="col-md-9">
               <div class="d-flex search-columns-inputs gap-4 mt-0">
                 <CCol md="7">
-                  <CFormLabel :for="searchByColumn" class="text-start mb-1 form-label-required">Search Client / Landlord</CFormLabel>
+                  <CFormLabel :for="searchByColumn" class="text-start mb-1 form-label-required">Search Client</CFormLabel>
                   <CInputGroup class="mb-3">
                       <CInputGroupText>
                       <CIcon icon="cil-user" />
@@ -100,7 +100,7 @@
           <Column header="Action" style="height: 44px">
             <template #body="{ data }">
               <div class="d-flex gap-1">
-                <CButton class="badge bg-dark" as="a" :href="`/realtor/clients/client/${data.id}`"><CIcon icon="cil-pen" /></CButton>              
+                <CButton class="badge bg-dark" as="a" :href="`/inspector/clients/client/${data.id}`"><CIcon icon="cil-pen" /></CButton>              
               </div>
             </template>
           </Column>
@@ -116,7 +116,7 @@
   import * as yup from 'yup'
   import { toTypedSchema } from '@vee-validate/yup'
   import { useApi } from '@/composables/useApi'
-  import { getRealtorClients } from '@/services/api'
+  import { getInspectorClients } from '@/services/api'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
 
   const perPage = ref(10)
@@ -152,7 +152,7 @@
     meta: columnNameMeta
   } = useField('columnName');
 
-  const { loading, data, execute } = useApi(getRealtorClients, false)
+  const { loading, data, execute } = useApi(getInspectorClients, false)
 
   onBeforeMount(async () => {
     await loadLazyClients({ first: 0, rows: perPage.value })

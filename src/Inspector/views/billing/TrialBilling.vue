@@ -451,7 +451,7 @@
         if(response.success === true){
             showToast('success', 'Great! Trial activated successfully! Wait redirecting...')
             setTimeout(() => {
-                router.push({ name: 'realtor.dashboard' })
+                router.push({ name: 'inspector.dashboard' })
             }, 5000)
         } else{
             btnLoading.value = false

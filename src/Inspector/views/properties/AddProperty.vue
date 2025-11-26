@@ -1,11 +1,11 @@
 <template>
-  <div class="update-property-form-container">
+  <div class="add-property-form-container">
     <PageBodyHeader
-      :heading="pageHeading"
-      :description="pageDescription"
+      heading="Add New Property"
+      description="Create new property for your client"
     />
     <CRow>
-      <CForm class="row g-3 mt-0" @submit.prevent="submitUpdateProperty">
+      <CForm class="row g-3 mt-0" @submit.prevent="submitAddProperty">
         <div class="row g-3 mt-0">
             <CCol md="6">
                 <CFormLabel :for="name" class="form-label-required">Name</CFormLabel>
@@ -14,7 +14,7 @@
                         <CIcon icon="cil-user" class="text-info" />
                     </span>
                     <CFormInput 
-                        placeholder="Western Side House"
+                        placeholder="Western side house"
                         v-model="name"
                         @blur="nameMeta.touched = true; nameValidate()"
                     />
@@ -49,6 +49,7 @@
           inputLabel="Find Client Property" 
           inputPlaceHolder="Search property address on map" 
           inputId="findClientProperty"
+          :clearFormTrigger="clearFormTrigger"
         />
 
         <div class="row g-3 mt-0">
@@ -91,91 +92,42 @@
                     <span>* {{ branchError }}</span>
                 </div>
             </CCol>
-              <CCol md="12">
-                  <CFormLabel :for="reference">Reference</CFormLabel>
-                  <div class="input-group">
-                      <span class="input-group-text">
-                          <CIcon icon="cilColorBorder" class="text-info" />
-                      </span>
-                      <CFormInput
-                          placeholder="Add property #023123"
-                          v-model="reference"
-                          @blur="referenceMeta.touched = true; referenceValidate()"
-                      />
-                  </div>
-                  <div class="flex form-field-error d-inline-block mt-2" v-if="referenceMeta.touched && referenceError">
-                      <span>* {{ referenceError }}</span>
-                  </div>
-              </CCol>
-
-              <CCol md="12">
-                  <CFormLabel :for="notes">Additional Notes</CFormLabel>
-                  <div class="input-group">
-                      <span class="input-group-text">
-                          <CIcon icon="cilShortText" class="text-info" />
-                      </span>
-                      <CFormTextarea
-                          placeholder="Add additional information..."
-                          rows="4"
-                          v-model="notes"
-                          @blur="notesMeta.touched = true; notesValidate()"
-                      ></CFormTextarea>
-                  </div>
-                  
-                  <div class="flex form-field-error d-inline-block mt-2" v-if="notesMeta.touched && notesError">
-                      <span>* {{ notesError }}</span>
-                  </div>
-              </CCol>
         </div>
 
         <CCol xs="12" class="form-buttons-row">
-          <CButton color="info" class="text-white mt-3 fs-8" type="submit"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Updating...' : 'Update Property' }}</CButton>
-          <CButton color="danger" class="text-white mt-3 fs-8 ms-2 delete-form-btn" type="button" @click="handleShowDeleteModal"><CIcon icon="cilClearAll" /> Delete Property </CButton>
+          <CButton color="info" class="text-white mt-3 fs-8" type="submit"><CIcon icon="cilHouse" v-if="!btnLoading" /> <ButtonSpinner v-if="btnLoading" size="small" bgColor="#000000" /> {{ btnLoading ? 'Processing...' : 'Add New Property' }}</CButton>
+          <CButton color="danger" class="text-white mt-3 fs-8 ms-2 clear-form-btn" type="button" @click="clearForm"><CIcon icon="cilClearAll" /> Clear Form</CButton>
         </CCol>
       </CForm>
     </CRow>
   </div>
-  <DeleteWarningModal v-model:visibility="showDeleteModal" :btnLoading="deleteBtnLoading" @confirmedDelete="handleDelete" />
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive, onBeforeMount } from 'vue'
+  import { ref, reactive, watch, onMounted } from 'vue'
   import { useForm, useField } from 'vee-validate'
   import * as yup from 'yup'
   import { toTypedSchema } from '@vee-validate/yup'
-  import { useRoute, useRouter } from 'vue-router'
   import FindAddress from '@/components/General/FindAddress.vue'
   import PageBodyHeader from '@/components/General/PageBodyHeader.vue'
   import { ButtonSpinner } from '@/components/General/Spinner.vue'
-  import { FullPageSpinnerLoader } from '@/components/General/Loader.vue'
-  import DeleteWarningModal from '@/components/Modals/DeleteWarningModal.vue'
   import { toastNotifications } from '@/composables/toastNotifications'
-  import { getProperty, updateProperty, getRealtorClients, getRealtorBranches, deleteProperty } from '@/services/api'
+  import { addProperty, getInspectorClients, getInspectorBranches } from '@/services/api'
+  import { useRouter } from 'vue-router'
   import { useApi } from '@/composables/useApi'
 
-  const pageHeading = ref('');
-  const pageDescription = ref('')
-  const pageLoading = ref(true)
-  const showDeleteModal = ref(false)
-  const deleteBtnLoading = ref(false)
+  const clearFormTrigger = ref(0)
 
-  const route = useRoute()
-  const router = useRouter()
-  const propertyId = route.params.id
-  const { showToast } = toastNotifications()
+  const {data: clientsData, execute: execute1 } = useApi(getInspectorClients, false)
+  const {data: branchesData, execute: execute2 } = useApi(getInspectorBranches, false)
 
-  const { data: propertyData, execute: execute1 } = useApi(getProperty, false)
-  const { data: clientsData, execute: execute2 } = useApi(getRealtorClients, false)
-  const { data: branchesData, execute: execute3 } = useApi(getRealtorBranches, false)
-  const { loading: btnLoading, execute } = useApi(updateProperty, false)
-  const { execute: execute4 } = useApi(deleteProperty, false)
-
-  onBeforeMount(async () => {
-    await execute1({ pathParams: [propertyId] })
+  onMounted(async () => {
+    await execute1({ queryParameters: { paginate: false } })
     await execute2({ queryParameters: { paginate: false } })
-    await execute3({ queryParameters: { paginate: false } })
-    setupPageFieldsData();
   })
+
+  const { showToast } = toastNotifications()
+  const router = useRouter()
 
   const postalCodePatterns = {
     US: /^\d{5}(-\d{4})?$/,
@@ -198,8 +150,7 @@
           .max(100, 'Must be 100 characters long'),
     address_2: yup
           .string()
-          .max(100, 'Must be 100 characters long')
-          .notRequired(),
+          .max(100, 'Must be 100 characters long'),
     city: yup
           .string()
           .required('Must add city.')
@@ -207,12 +158,11 @@
           .max(50, 'Must be 50 characters long'),
     state: yup
           .string()
-          .max(50, 'Must be 50 characters long')
-          .notRequired(),
+          .max(50, 'Must be 50 characters long'),
     postal_code: yup
           .string()
           .required('Must add zip code.')
-          .when('country', (country, schema) => {
+          .when('country', (country, schema) => { // temp 'US' else dynamic
             const regex = postalCodePatterns[country]    
             return regex
               ? schema.matches(regex, `ZIP code must be valid for ${country}`)
@@ -229,22 +179,12 @@
           .string()
           .required('Type is required.'),
     client_id: yup
-          .string()
-          .notRequired(),
+          .string(),
     branch_id: yup
-          .string()
-          .notRequired(),
-    reference: yup
-          .string()
-          .max(100, 'Must be 100 characters long')
-          .notRequired(),
-    notes: yup
-          .string()
-          .max(500, 'Must be 500 characters long')
-          .notRequired(),
+          .string(),
   }))
 
-  const { handleSubmit, isSubmitting, setFieldValue } = useForm({
+  const { handleSubmit, isSubmitting, resetForm } = useForm({
     validationSchema: schema
   })
 
@@ -276,86 +216,40 @@
     meta: typeMeta
   } = useField('type');
 
-  const { 
-    value: reference, 
-    errorMessage: referenceError,
-    validate: referenceValidate,
-    meta: referenceMeta
-  } = useField('reference');
-
-  const { 
-    value: notes, 
-    errorMessage: notesError,
-    validate: notesValidate,
-    meta: notesMeta
-  } = useField('notes');
-
-  function setupPageFieldsData(){
-    // set page heading data
-    pageHeading.value = propertyData.value.name
-    pageDescription.value = [propertyData.value.address, propertyData.value.address_2, propertyData.value.city, propertyData.value.state, propertyData.value.postal_code]
-        .filter(Boolean)
-        .join(', ')
-
-    // set form data
-    setFieldValue('address', propertyData.value.address)
-    setFieldValue('address_2', propertyData.value.address_2)
-    setFieldValue('city', propertyData.value.city)
-    setFieldValue('state', propertyData.value.state)
-    setFieldValue('postal_code', propertyData.value.postal_code)
-    setFieldValue('country', propertyData.value.country)
-    setFieldValue('name', propertyData.value.name)
-    setFieldValue('type', propertyData.value.type)
-    setFieldValue('client_id', propertyData.value.client_id)
-    setFieldValue('branch_id', propertyData.value.branch_id)
-    setFieldValue('reference', propertyData.value.reference)
-    setFieldValue('notes', propertyData.value.notes)
+  function clearForm() {
+    resetForm()
+    clearFormTrigger.value++
   }
 
-  function handleShowDeleteModal() {
-     showDeleteModal.value = true
-  }
+  const { loading: btnLoading, execute } = useApi(addProperty, false)
 
-  const submitUpdateProperty = handleSubmit(async (formData) => {
-    console.log(formData)
-    const response = await execute({ pathParams: [propertyId], payload: formData})
+  const submitAddProperty = handleSubmit(async (formData) => {
+    // mutate fields before push
+    const response = await execute({ payload: formData })
 
     if(response.success === true){
-      showToast('success', 'Property updated successfully!')
+      showToast('success', 'Property added successfully!')
+      router.push({ name: 'inspector.properties' })
     } 
   })
-
-  async function handleDelete(){
-    deleteBtnLoading.value = true
-    const response = await execute4({ pathParams: [propertyId]})
-
-    if(response.success === true){
-      showToast('success', 'Property deleted successfully!')
-      router.push({ name: 'realtor.properties' })
-    } else{
-        deleteBtnLoading.value = false
-        showDeleteModal.value = false
-        showToast('error', 'Oops! Something went wrong!')
-    }
-  }
 </script>
 
 <style scoped>
-  .update-property-form-container form{
+  .add-property-form-container form{
     width: 75%;
   }
 
   @media (max-width: 480px) {
-    .update-property-form-container form{
+    .add-property-form-container form{
       width: 100%;
     }
 
-    .update-property-form-container form .delete-form-btn{
+    .add-property-form-container form .clear-form-btn{
       margin-left: 0px !important;
       margin-top: 10px !important;
     }
-    
-    .update-property-form-container form .form-buttons-row {
+
+    .add-property-form-container form .form-buttons-row{
       display: flex;
       flex-direction: column;
     }

@@ -20,7 +20,7 @@
                   <p class="mb-1">
                     <CIcon icon="cilArrowThickRight" /> Client & Team Collaboration Tools
                   </p>
-                  <CButton as="a" href="/realtor/auth/login" class="mt-4 px-4 self-bg-light-dark self-color-tertiary fs-8">
+                  <CButton as="a" href="/inspector/auth/login" class="mt-4 px-4 self-bg-light-dark self-color-tertiary fs-8">
                     <CIcon icon="cilUserPlus" /> Already have an account?
                   </CButton>
                 </div>

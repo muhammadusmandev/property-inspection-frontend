@@ -53,7 +53,7 @@ axiosInstance.interceptors.response.use(
 
             case 401:
                 showToast('error', 'Oops! You are not authenticated. Try to login.')
-                router.push({ name: 'realtor.login' })
+                router.push({ name: 'inspector.login' })
                 break
 
             case 403:

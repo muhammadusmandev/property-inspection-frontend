@@ -4,7 +4,7 @@
       <CAvatar :src="authStore?.user?.avatar_url ? createServerImageURL(authStore?.user?.avatar_url) : (authStore?.user?.gender === 'female' ? femaleAvatar : maleAvatar)"  size="md" />
     </CDropdownToggle>
     <CDropdownMenu class="pt-2">
-      <CDropdownItem class="py-2 fs-8" as="a" href="/realtor/settings"> <CIcon icon="cil-settings" /> Settings </CDropdownItem>
+      <CDropdownItem class="py-2 fs-8" as="a" href="/inspector/settings"> <CIcon icon="cil-settings" /> Settings </CDropdownItem>
       <CDropdownDivider />
       <CDropdownItem> 
         <CButton class="px-4 self-bg-primary self-color-tertiary fs-8" @click="handleLogoutUser" :disabled="btnLoading">
@@ -37,7 +37,7 @@
     if(response.success === true){
       authStore.logout()
       showToast('success', 'Logout successfully!')
-      router.push({ name: 'realtor.login' })
+      router.push({ name: 'inspector.login' })
     } else{
       // handle any case if concerned error data
     }

@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useSubscriptionStore } from '@/stores/subscription'
-import realtorRoutes from '@/realtor/router'
+import inspectorRoutes from '@/inspector/router'
 
 const routes = [
-  ...realtorRoutes,
+  ...inspectorRoutes,
 ]
 
 const router = createRouter({
@@ -23,11 +23,11 @@ router.beforeEach(async (to, from, next) => {
   authStore.checkTokenExpiry() // check token expiry
 
   if (to.meta.requireAuth && !authStore.checkAuth) {
-    return next('/realtor/auth/login')
+    return next('/inspector/auth/login')
   }
 
   if (to.meta.guest && authStore.checkAuth && !to.meta.allowIfAuth) {
-    return next('/realtor/dashboard')
+    return next('/inspector/dashboard')
   }
 
   if (to.meta.requiresSubscription) {
@@ -40,10 +40,10 @@ router.beforeEach(async (to, from, next) => {
     
       case 'expired':
       case 'cancelled':
-        return next('/realtor/dashboard') // Todo: need to redirect to upgrade page
+        return next('/inspector/dashboard') // Todo: need to redirect to upgrade page
       
       case 'non_subscribe':
-        return next('/realtor/billing')
+        return next('/inspector/billing')
 
       default:
         return next()

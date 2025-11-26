@@ -159,7 +159,7 @@
         if(response.success === true){
             showToast('success', 'Report signed successfully!')
             setTimeout(() => {
-                router.push({ name: 'realtor.login' })
+                router.push({ name: 'inspector.login' })
             }, 2000)
         } else{
             showToast('error', 'Oops! Something went wrong. Failed to sign.')

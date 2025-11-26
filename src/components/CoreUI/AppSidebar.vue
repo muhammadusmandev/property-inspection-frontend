@@ -16,7 +16,7 @@
     @visible-change="(value) => sidebar.toggleVisible(value)"
   >
     <CSidebarHeader class="border-bottom app-header">
-      <RouterLink custom to="/realtor/dashboard" v-slot="{ href, navigate }">
+      <RouterLink custom to="/inspector/dashboard" v-slot="{ href, navigate }">
         <CSidebarBrand v-bind="$attrs" as="a" :href="href" @click="navigate">
           <CImage :src="appLogo" alt="Inspexly Logo" class="sidebar-brand-full app-logo" fluid />
           <CImage :src="appSygnet" alt="Inspexly Logo" class="sidebar-brand-narrow app-sygnet" fluid />
