@@ -33,6 +33,7 @@
     "pinia": "^3.0.3",
     "primeicons": "^7.0.0",
     "primevue": "^4.4.1",
+    "signature_pad": "^5.1.2",
     "simplebar": "^6.3.2",
     "simplebar-vue": "^2.4.2",
     "vee-validate": "^4.15.1",

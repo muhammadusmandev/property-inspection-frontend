@@ -23,6 +23,14 @@ const realtorRoutes: Array<RouteRecordRaw> =  [
         path: '/realtor/auth/register',
         name: 'realtor.register',
         component: () => import('@/realtor/views/auth/Register.vue'),
+      },
+      {
+        path: '/report-signature/:uuid/:role',
+        name: 'report.signature',
+        component: () => import('@/realtor/views/reports/ReportSignature.vue'),
+        meta: {
+          allowIfAuth: true
+        }
       }
     ]
   },

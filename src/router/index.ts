@@ -26,7 +26,7 @@ router.beforeEach(async (to, from, next) => {
     return next('/realtor/auth/login')
   }
 
-  if (to.meta.guest && authStore.checkAuth) {
+  if (to.meta.guest && authStore.checkAuth && !to.meta.allowIfAuth) {
     return next('/realtor/dashboard')
   }
 
