@@ -80,6 +80,12 @@ export const addReportAreaDefect = (data, {}, config) => axiosInstance.post('/re
 export const updateReportAreaDefect = (data, id, config) => axiosInstance.post(`/report-inspection-area-defects/${id}`, data, { ...config })
 export const deleteReportAreaDefect = ({}, id) => axiosInstance.delete(`/report-inspection-area-defects/${id}`)
 
+// Report Contacts
+export const getReportContacts = ({}, id) => axiosInstance.get(`/list-report-contacts/${id}`)
+export const addReportContact = (data) => axiosInstance.post('/report-contacts', data)
+export const updateReportContact = (data, id) => axiosInstance.put(`/report-contacts/${id}`, data)
+export const deleteReportContact = ({}, id) => axiosInstance.delete(`/report-contacts/${id}`)
+
 // Billings
 export const getShowBillingsList = () => axiosInstance.get('/billings/show-billing-data')
 export const activateSubscription = (data) => axiosInstance.post('/billings/activate-subscription', data)

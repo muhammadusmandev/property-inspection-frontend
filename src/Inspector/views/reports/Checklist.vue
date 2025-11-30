@@ -1,5 +1,4 @@
 <template>
-  <!-- Step 2 -->
   <div v-if="!reportData?.locked_at">
     <div class="d-flex justify-content-between align-items-center mb-4 mt-4 p-4" style="border: 1px solid #e0e0e0">
       <div>
@@ -24,7 +23,7 @@
     <h3 class="mb-4 self-color-primary">
       <CIcon icon="cil-lock-locked" size="xl" /> Report Locked
     </h3>
-    <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto ms-4" @click="handleGoToStep(4)">
+    <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto ms-4" @click="handleGoToStep('download')">
       <CIcon icon="cil-cloud-download" /> Download Report
     </CButton>
   </div>

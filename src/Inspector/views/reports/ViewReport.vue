@@ -22,7 +22,7 @@
               }"
               @click="goToStep(step.id)"
             >
-              {{ step.id }} 
+              {{ ++i }} 
             </button>
             <div
               class="step-label text-secondary"
@@ -36,22 +36,27 @@
         <!-- Content Area -->
         <div class="wizard-content">
            <!-- Step 1 -->
-          <div v-if="currentStep === 1" class="content-step active">
+          <div v-if="currentStep === 'inspection_area'" class="content-step active">
             <InspectionAreas @goToStep="goToStep" />
           </div>
 
           <!-- Step 2 -->
-          <div v-if="currentStep === 2" class="content-step active">
+          <div v-if="currentStep === 'checklist'" class="content-step active">
             <Checklist @goToStep="goToStep" />
           </div>
 
           <!-- Step 3 -->
-          <div v-if="currentStep === 3" class="content-step active">
+          <div v-if="currentStep === 'generate'" class="content-step active">
             <GenerateReport @goToStep="goToStep" />
           </div>
 
           <!-- Step 4 -->
-          <div v-if="currentStep === 4" class="content-step active">
+          <div v-if="currentStep === 'contacts'" class="content-step active">
+            <Contacts @goToStep="goToStep" />
+          </div>
+
+          <!-- Step 5 -->
+          <div v-if="currentStep === 'download'" class="content-step active">
             <Download @goToStep="goToStep" />
           </div>
         </div>
@@ -66,6 +71,7 @@
   import { toastNotifications } from '@/composables/toastNotifications'
   import InspectionAreas from '@/inspector/views/reports/InspectionAreas.vue'
   import Checklist from '@/inspector/views/reports/Checklist.vue'
+  import Contacts from '@/inspector/views/reports/Contacts.vue'
   import Download from '@/inspector/views/reports/Download.vue'
   import GenerateReport from '@/inspector/views/reports/GenerateReport.vue'
   import { localeAwareLongDateFormat } from '@/utils/datetimeFormatter'
@@ -90,13 +96,14 @@
     pageHeading.value = reportData.value.title
   }
 
-  const currentStep = ref(1)
+  const currentStep = ref('inspection_area')
 
   const steps = [
-    { id: 1, label: "Inspection Area" },
-    { id: 2, label: "Checklist" },
-    { id: 3, label: "Generate" },
-    { id: 4, label: "Download" },
+    { id: 'inspection_area', label: "Inspection Area" },
+    { id: 'checklist', label: "Checklist" },
+    { id: 'generate', label: "Generate" },
+    { id: 'contacts', label: "Contacts" },
+    { id: 'download', label: "Download" },
   ]
 
   const goToStep = (step) => {

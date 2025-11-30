@@ -176,7 +176,7 @@
     <h3 class="mb-4 self-color-primary">
       <CIcon icon="cil-lock-locked" size="xl" /> Report Locked
     </h3>
-    <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto ms-4" @click="handleGoToStep(4)">
+    <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto ms-4" @click="handleGoToStep('download')">
       <CIcon icon="cil-cloud-download" /> Download Report
     </CButton>
   </div>

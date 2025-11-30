@@ -36,7 +36,7 @@
 
     <div class="d-flex flex-column justify-content-center mt-5 mx-auto" style="width: fit-content" v-else>
       <h3 class="mb-4 self-color-primary">First generate report to Download</h3>
-      <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto ms-4"  @click="handleGoToStep(3)">
+      <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto ms-4"  @click="handleGoToStep('generate')">
         <CIcon icon="cil-reload" /> Generate Report
       </CButton>
     </div>

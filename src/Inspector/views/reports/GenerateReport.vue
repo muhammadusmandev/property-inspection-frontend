@@ -36,13 +36,13 @@
               <p class="mt-2 fs-7 text-body-secondary text-center">Hold tight! Generating report...</p>
             </div>
             <CButton color="info" class="px-4 py-2 text-white w-25 fs-8 mx-auto mt-1" @click="handleGenerateReport" :disabled="generateBtnLoading"><CIcon icon="cil-reload" v-if="!generateBtnLoading" /> <ButtonSpinner v-if="generateBtnLoading" size="small" bgColor="#000000" />{{ generateBtnLoading ? 'Generating...' : 'Generate Report' }}</CButton>
-            <CButton color="dark" class="px-4 py-2 w-25 fs-8 mx-auto mt-2" @click="handleGoToStep(2)"><CIcon icon="cil-arrow-left" /> Go Back</CButton>
+            <CButton color="dark" class="px-4 py-2 w-25 fs-8 mx-auto mt-2" @click="handleGoToStep('checklist')"><CIcon icon="cil-arrow-left" /> Go Back</CButton>
         </div>
       </div>
     </div>
     <div class="d-flex flex-column justify-content-center mt-5 mx-auto" style="width: fit-content" v-else>
       <h3 class="mb-4 self-color-primary"><CIcon icon="cil-lock-locked" size="xl" /> Report Locked</h3>
-      <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto ms-4" @click="handleGoToStep(4)">
+      <CButton class="px-4 self-bg-primary self-color-tertiary fs-8 w-auto ms-4" @click="handleGoToStep('download')">
         <CIcon icon="cil-cloud-download" /> Download Report
       </CButton>
     </div>
@@ -133,7 +133,7 @@
         progress.value = 100
         clearInterval(pollInterval)
         generateBtnLoading.value = false
-        handleGoToStep(4)
+        handleGoToStep('download')
       }
     } else{
       showToast('error', 'Oops! Something went wrong while generating report!')
