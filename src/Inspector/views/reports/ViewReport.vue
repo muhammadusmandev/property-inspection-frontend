@@ -13,16 +13,16 @@
         </div>
         <!-- Header with Step Indicators -->
         <div class="wizard-header mt-4">
-          <div v-for="(step, i) in steps" :key="i" class="step-wrapper">
+          <div v-for="(step, i) in steps" :key="step.id" class="step-wrapper">
             <button
               class="step-btn"
               :class="{
                 active: currentStep === step.id,
-                completed: currentStep > step.id
+                completed: steps.findIndex(s => s.id === currentStep) > i
               }"
               @click="goToStep(step.id)"
             >
-              {{ ++i }} 
+              {{ i + 1 }}
             </button>
             <div
               class="step-label text-secondary"
@@ -30,7 +30,7 @@
             >
               {{ step.label }}
             </div>
-          </div>  
+          </div>
         </div>
 
         <!-- Content Area -->
@@ -107,7 +107,8 @@
   ]
 
   const goToStep = (step) => {
-    currentStep.value = step;
+    currentStep.value = step
+    // currentStepIndex.value = 
   }
 </script>
 

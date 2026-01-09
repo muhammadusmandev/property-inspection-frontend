@@ -82,6 +82,7 @@ export const deleteReportAreaDefect = ({}, id) => axiosInstance.delete(`/report-
 
 // Report Contacts
 export const getReportContacts = ({}, id) => axiosInstance.get(`/list-report-contacts/${id}`)
+export const getReportContact = ({}, id) => axiosInstance.get(`/report-contacts/${id}`)
 export const addReportContact = (data) => axiosInstance.post('/report-contacts', data)
 export const updateReportContact = (data, id) => axiosInstance.put(`/report-contacts/${id}`, data)
 export const deleteReportContact = ({}, id) => axiosInstance.delete(`/report-contacts/${id}`)

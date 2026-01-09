@@ -72,7 +72,7 @@
     import * as yup from 'yup'
     import { toTypedSchema } from '@vee-validate/yup'
     import appLogo from '@/assets/images/Inspexly_logo.jpg'
-    import { getReport, saveReportSignature } from '@/services/api'
+    import { getReportContact, saveReportSignature } from '@/services/api'
     import SignaturePad from "signature_pad"
     import { useApi } from '@/composables/useApi'
 
@@ -81,11 +81,11 @@
     const pdfUrl = ref(null)
     const route = useRoute()
     const router = useRouter()
-    const reportId = route.params.uuid
+    const reportContactId = route.params.uuid
     const role = route.params.role
     const { showToast } = toastNotifications()
 
-    const { data: reportData, execute: execute1 } = useApi(getReport, false)
+    const { data: reportContactData, execute: execute1 } = useApi(getReportContact, false)
     const { loading: btnLoading, execute: executeSaveReportSignature } = useApi(saveReportSignature, false)
 
     const schema = toTypedSchema( yup.object({
@@ -118,9 +118,12 @@
 
     const signatureTouched = ref(false)
     const signatureError = ref(null)
+    const reportData = ref([])
 
     onBeforeMount(async () => {
-        await execute1({ pathParams: [reportId] })
+        await execute1({ pathParams: [reportContactId] })
+
+        reportData.value = reportContactData.value.report
 
         pdfUrl.value = import.meta.env.VITE_SERVER_STORAGE_URL + reportData.value.pdf_path
 

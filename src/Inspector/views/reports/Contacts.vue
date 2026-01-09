@@ -8,7 +8,7 @@
             <div class="my-3 text-end">
             </div>
         </div>
-        <div class="mt-5 py-5 border">
+        <div class="mt-5 py-4 px-4 border">
             <CTable hover responsive class="mb-3">
                 <CTableHead>
                     <CTableRow>
@@ -26,32 +26,32 @@
                     <CTableRow v-for="(contact, index) in contacts" :key="contact.local_id">
                         <!-- NAME -->
                         <CTableDataCell>
-                            <CFormInput v-if="contact.isEditing" v-model="contact.name" placeholder="Name" />
-                            <span v-else>{{ contact.name }}</span>
+                            <CFormInput v-if="contact.isEditing" v-model="contact.name" placeholder="Name" required />
+                            <span class="fs-8 text-secondary" v-else>{{ contact.name }}</span>
                         </CTableDataCell>
 
                         <!-- EMAIL -->
                         <CTableDataCell>
                             <CFormInput v-if="contact.isEditing" v-model="contact.email" type="email"
-                                placeholder="Email" />
-                            <span v-else>{{ contact.email }}</span>
+                                placeholder="Email" required />
+                            <span class="fs-8 text-secondary" v-else>{{ contact.email }}</span>
                         </CTableDataCell>
 
                         <!-- CONTACT TYPE -->
                         <CTableDataCell>
-                            <CFormSelect v-if="contact.isEditing" v-model="contact.contact_type" style="height: 41px">
+                            <CFormSelect v-if="contact.isEditing" v-model="contact.contact_type" style="height: 41px" required >
                                 <option v-for="type in contactTypes" :key="type" :value="type">
                                     {{ type }}
                                 </option>
                             </CFormSelect>
-                            <span v-else>{{ contact.contact_type }}</span>
+                            <span class="fs-8 text-secondary" v-else>{{ contact.contact_type }}</span>
                         </CTableDataCell>
 
                         <!-- PHONE -->
                         <CTableDataCell>
                             <CFormInput v-if="contact.isEditing" v-model="contact.phone"
-                                placeholder="Phone" />
-                            <span v-else>{{ contact.phone }}</span>
+                                placeholder="Phone" required />
+                            <span class="fs-8 text-secondary" v-else>{{ contact.phone }}</span>
                         </CTableDataCell>
 
                         <!-- CAN SIGN -->
