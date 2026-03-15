@@ -41,10 +41,10 @@
                         <CTableDataCell>
                             <CFormSelect v-if="contact.isEditing" v-model="contact.contact_type" style="height: 41px" required >
                                 <option v-for="type in contactTypes" :key="type" :value="type">
-                                    {{ type }}
+                                    {{ formatContactType(type) }}
                                 </option>
                             </CFormSelect>
-                            <span class="fs-8 text-secondary" v-else>{{ contact.contact_type }}</span>
+                            <span class="fs-8 text-secondary" v-else>{{ formatContactType(contact.contact_type) }}</span>
                         </CTableDataCell>
 
                         <!-- PHONE -->
@@ -225,6 +225,12 @@
         Object.assign(contact, contact.backup)
         contact.isEditing = false
     }
+
+    function formatContactType(type) {
+        return type
+            .replaceAll('_', ' ')
+            .replace(/\b\w/g, (char) => char.toUpperCase());
+    };
 
     async function deleteContact(contact) {
         // If it's a new unsaved row then just remove locally
