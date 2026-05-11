@@ -173,6 +173,8 @@
   
   onBeforeMount(async () => {
     await execute()
+
+    console.log(profileData.value.bio + ',........................')
     
     // Set fields
     name.value = profileData.value.name
@@ -180,7 +182,7 @@
     phone_number.value = profileData.value.phone_number
     gender.value = profileData.value.gender
     dob.value = localeAwareLongDateFormat(profileData.value.date_of_birth)
-    bio.value = profileData.value.bio
+    bio.value = profileData.value.bio != 'null' ? profileData.value.bio : ''
   })
 
   const schema = toTypedSchema( yup.object({

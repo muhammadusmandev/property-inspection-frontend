@@ -60,7 +60,7 @@
                         </CTableDataCell>
 
                         <!-- ACTIONS -->
-                        <CTableDataCell class="text-center">
+                        <CTableDataCell class="text-center actions-btns">
                             <div class="d-flex gap-1">
                                 <span class="badge bg-dark" v-if="contact.isEditing && contact.isNew" @click="saveContact(contact)">
                                     <CIcon icon="cil-save" /> Save
@@ -71,7 +71,7 @@
                                 <span class="badge bg-dark" v-else @click="editContact(contact)">
                                     <CIcon icon="cil-pen" /> Edit
                                 </span>
-                                <span class="badge bg-danger" @click="deleteContact(contact)">
+                                <span class="badge bg-danger" v-if="!contact.isEditing" @click="deleteContact(contact)">
                                     <CIcon icon="cil-delete" /> Delete
                                 </span>
                                 <span class="badge bg-warning" v-if="contact.isEditing" @click="cancelEdit(contact)">
@@ -257,5 +257,7 @@
 </script>
 
 <style scoped>
-
+    .actions-btns .badge{
+        cursor: pointer;
+    }
 </style>
