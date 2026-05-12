@@ -155,6 +155,7 @@
   import { toastNotifications } from '@/composables/toastNotifications'
   import { useApi } from '@/composables/useApi'
   import { localeAwareLongDateFormat } from '@/utils/datetimeFormatter'
+  import storageURL from '@/utils/pathHelper'
 
   const authStore = useAuthStore()
   const name = ref('')
@@ -173,8 +174,6 @@
   
   onBeforeMount(async () => {
     await execute()
-
-    console.log(profileData.value.bio + ',........................')
     
     // Set fields
     name.value = profileData.value.name
@@ -262,9 +261,8 @@
     }
   }
 
-  // Todo: create global helper method
   function createServerImageURL(path){
-    return `http://127.0.0.1:8000/storage/` + path;
+    return storageURL(path)
   }
 </script>
 

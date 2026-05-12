@@ -89,10 +89,10 @@
   async function handleGenerateReport(item){
     generateBtnLoading.value = true
     progress.value = 0
-    reportStatus.value = 'pending'
-    animateProgress() // Start progress bar
 
     if (signatureName.value.trim() === authUserName) {
+      reportStatus.value = 'pending'
+      animateProgress() // Start progress bar
       signErrorMessage.value = ''
       const response = await executeGenerateReport({ pathParams: [reportId] })
 

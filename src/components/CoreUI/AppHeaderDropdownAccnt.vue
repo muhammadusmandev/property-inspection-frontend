@@ -24,6 +24,7 @@
   import { useApi } from '@/composables/useApi'
   import { useRouter } from 'vue-router'
   import { useAuthStore } from '@/stores/auth'
+  import storageURL from '@/utils/pathHelper'
 
   const router = useRouter()
   const authStore = useAuthStore()
@@ -43,9 +44,8 @@
     }
   }
 
-  // Todo: create global helper method
   function createServerImageURL(path){
-    return `http://127.0.0.1:8000/storage/` + path;
+    return storageURL(path)
   }
 </script>
 

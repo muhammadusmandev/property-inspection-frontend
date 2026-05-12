@@ -211,6 +211,7 @@
     deleteReportAreaDefect
   } from '@/services/api'
   import { useApi } from '@/composables/useApi'
+  import storageURL from '@/utils/pathHelper'
 
   const showAddNewArea = ref(false)
   const showAddAreaDefects = ref(false)
@@ -375,9 +376,8 @@
     emit('goToStep', step)
   }
 
-  // Todo: create global helper method
-  function createServerImageURL(path) {
-    return `http://127.0.0.1:8000/storage/` + path;
+  function createServerImageURL(path){
+    return storageURL(path)
   }
 </script>
 
