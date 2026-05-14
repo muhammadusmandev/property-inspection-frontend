@@ -63,7 +63,7 @@
         </div>
         <div class="dashboard-create-btns-data">
           <h3>Let's Dive Into</h3>
-          <div class="text-body-secondary fs-6 mb-1">Create new report for your client or create new client</div>
+          <div class="text-body-secondary fs-6 mb-1">Add new report for your client or create new client</div>
           <CButton color="info" class="text-white mt-3 px-4 py-2 fs-8" @click="showNewReportModal = true"><CIcon icon="cilDescription" /> Add New Report</CButton>
           <CButton color="dark" class="text-white mt-3 px-4 py-2 fs-8 ms-2" as="a" href="/inspector/clients/add_client"><CIcon icon="cilUser" /> Add New Client</CButton>
         </div>

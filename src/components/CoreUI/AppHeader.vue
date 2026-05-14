@@ -6,7 +6,7 @@
       </CHeaderToggler>
       <CHeaderNav class="d-none d-md-flex ms-4">
         <CNavItem>
-          <CNavLink href="#" class="btn px-4 self-bg-primary self-color-tertiary fs-8" @click="showNewReportModal = true"><CIcon icon="cil-description" /> Create New Report </CNavLink>
+          <CNavLink href="#" class="btn px-4 self-bg-primary self-color-tertiary fs-8" @click="showNewReportModal = true"><CIcon icon="cil-description" /> Add New Report </CNavLink>
         </CNavItem>
       </CHeaderNav>
       <CHeaderNav class="ms-auto">

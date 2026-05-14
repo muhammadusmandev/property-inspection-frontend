@@ -4,7 +4,7 @@
             <CForm class="row g-2 mt-0" @submit.prevent="newReport">
                 <CCol xs="12">
                     <h2 class="mt-3 fw-bold mb-0 text-center">New Report</h2>
-                    <p class="text-body-secondary text-center my-1 mb-4 w-75 mx-auto">Create new report for any property
+                    <p class="text-body-secondary text-center my-1 mb-4 w-75 mx-auto">Add new report for any property
                     </p>
                     <CCol xs="10" class="mx-auto mt-2">
                         <CFormLabel :for="title" class="text-start mb-2 form-label-required">Title</CFormLabel>
