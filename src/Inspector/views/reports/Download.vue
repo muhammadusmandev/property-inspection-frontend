@@ -55,13 +55,11 @@
   const route = useRoute()
   const reportId = route.params.id
   const emit = defineEmits(['goToStep'])
+  const props = defineProps({ reportData: Object })
   const { showToast } = toastNotifications()
 
-  const { data: reportData, execute: execute1 } = useApi(getReport, false)
-
   onBeforeMount(async () => {
-    await execute1({ pathParams: [reportId] })
-    downloadLink.value = reportData.value.download_link
+    downloadLink.value = props.reportData.download_link
   })
 
   const handleGoToStep = (step) => {

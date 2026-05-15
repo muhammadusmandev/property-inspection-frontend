@@ -37,17 +37,17 @@
         <div class="wizard-content">
            <!-- Step 1 -->
           <div v-if="currentStep === 'inspection_area'" class="content-step active">
-            <InspectionAreas @goToStep="goToStep" />
+            <InspectionAreas :reportData="reportData" @goToStep="goToStep" />
           </div>
 
           <!-- Step 2 -->
           <div v-if="currentStep === 'checklist'" class="content-step active">
-            <Checklist @goToStep="goToStep" />
+            <Checklist :reportData="reportData" @goToStep="goToStep" />
           </div>
 
           <!-- Step 3 -->
           <div v-if="currentStep === 'generate'" class="content-step active">
-            <GenerateReport @goToStep="goToStep" />
+            <GenerateReport :reportData="reportData" @goToStep="goToStep" />
           </div>
 
           <!-- Step 4 -->
@@ -57,7 +57,7 @@
 
           <!-- Step 5 -->
           <div v-if="currentStep === 'download'" class="content-step active">
-            <Download @goToStep="goToStep" />
+            <Download :reportData="reportData" @goToStep="goToStep" />
           </div>
         </div>
       </div>

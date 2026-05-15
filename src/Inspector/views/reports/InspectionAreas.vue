@@ -234,16 +234,12 @@
   const reportId = route.params.id
   const { showToast } = toastNotifications()
   const emit = defineEmits(['goToStep'])
+  const props = defineProps({ reportData: Object })
 
-  const { data: reportData, execute: execute1 } = useApi(getReport, false)
   const { execute: execute2 } = useApi(deleteReportInspectionArea, false)
   const { execute: executeUploadImages } = useApi(uploadReportInspectionAreaImages, false)
   const { execute: executeDeleteMedia } = useApi(deleteMedia, false)
   const { execute: executeDeleteAreaDefect } = useApi(deleteReportAreaDefect, false)
-
-  onBeforeMount(async () => {
-    await execute1({ pathParams: [reportId] })
-  })
 
   function getStatusColor(status) {
     switch (status.toLowerCase()) {

@@ -45,17 +45,16 @@
   const reportId = route.params.id
   const { showToast } = toastNotifications()
   const emit = defineEmits(['goToStep'])
+  const props = defineProps({ reportData: Object })
 
-  const { data: reportData, execute: execute1 } = useApi(getReport, false)
   const { execute: executeUpdateChecklist } = useApi(updateChecklistItem, false)
 
   onBeforeMount(async () => {
-    await execute1({ pathParams: [reportId] })
     setupPageFieldsData();
   })
 
   function setupPageFieldsData() {
-    checklist.value = reportData.value.checklist.map(item => ({
+    checklist.value = props.reportData.checklist.map(item => ({
       id: item.id,
       label: item.label,
       checked: item.checked,

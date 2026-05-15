@@ -73,14 +73,10 @@
   const reportStatus = ref(null)
   const progress = ref(0)
   let pollInterval = null
+  const props = defineProps({ reportData: Object })
 
-  const { data: reportData, execute: execute1 } = useApi(getReport, false)
   const { execute: executeGenerateReport } = useApi(generateReport, false)
   const { execute: executeReportStatus } = useApi(checkReportStatus, false)
-
-  onBeforeMount(async () => {
-    await execute1({ pathParams: [reportId] })
-  })
 
   const handleGoToStep = (step) => {
     emit('goToStep', step)
